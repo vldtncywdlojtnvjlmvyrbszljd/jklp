@@ -1,10 +1,9 @@
---longma
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 
 local LongmaWebhookUrl = "https://discord.com/api/webhooks/1291252399176028204/HWW9d9k-VKmO7QM42kfUFgWUQWaVJZ_pFS2AA_zE9injyOQGspjPkKARrPEzCIzEGypO"
 local lastWebhookTime = 0
-local COOLDOWN_TIME = 60
+local COOLDOWN_TIME = 30
 
 local function SendWebhook(webhookUrl, data)
     local currentTime = os.time()
@@ -56,6 +55,7 @@ local colors = {
     tonumber(0x0000ff), -- Blue
     tonumber(0xff0000), -- Red
     tonumber(0xffff00), -- Yellow
+    tonumber(0xffffff),
 }
 
 -- Fungsi untuk mendapatkan warna secara acak
@@ -77,32 +77,32 @@ local function SendLongmaWebhook(bossName)
             timestamp = DateTime.now():ToIsoDate(),
             fields = {
                 {
+                    name = "<a:location:1281145107134812171> Location",
+                    value = "```" .. location .. "```",
+                    inline = true
+                },
+                {
+                    name = "<:botunalock:1291855989997441144> Boss Name",
+                    value = "```" .. bossName .. "```",
+                    inline = true
+                },
+                {
+                    name = "<a:stickglowdance18:1291912943428177991> Player Count",
+                    value = "```" .. PlayerCount .. "/12```",
+                    inline = true
+                },
+                {
                     name = "<a:online:1291408185390923878> Overview",
                     value = "```Note: If No Message, it got blocked by Discord (wait 1-2 hours and it will self-fix) - 𝕭𝖔𝖙𝖚𝖓𝖆.inc```",
                     inline = false
                 },
                 {
-                    name = "🗺️ Location",
-                    value = "```" .. location .. "```",
-                    inline = false
-                },
-                {
-                    name = "<:botunalock:1291855989997441144> Boss Name",
-                    value = "```" .. bossName .. "```",
-                    inline = false
-                },
-                {
-                    name = "⚡ Player Count",
-                    value = "```" .. PlayerCount .. "/12```",
-                    inline = false
-                },
-                {
-                    name = "📄 Job ID",
+                    name = "<a:meluncurbotuna:1292227272379732009> Job ID",
                     value = tostring(game.JobId),
                     inline = false
                 },
                 {
-                    name = "📝 Join Script",
+                    name = "<a:sword:1292227701859418279> Join Script",
                     value = "game:GetService('TeleportService'):TeleportToPlaceInstance(" .. game.PlaceId .. ", '" .. game.JobId .. "', game:GetService('Players').LocalPlayer)",
                     inline = false
                 }
