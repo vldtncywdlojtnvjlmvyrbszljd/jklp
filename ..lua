@@ -2,7 +2,7 @@
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 
-local LongmaWebhookUrl = "https://discord.com/api/webhooks/1291252394944106526/9EIKB-WZYJeIIQmqLB9_th8IYRVOFxl8sEDIFmQO_usf54JaBz85rsGzSe767AtnhodU"
+local LongmaWebhookUrl = "https://discord.com/api/webhooks/1291252399176028204/HWW9d9k-VKmO7QM42kfUFgWUQWaVJZ_pFS2AA_zE9injyOQGspjPkKARrPEzCIzEGypO"
 local lastWebhookTime = 0
 local COOLDOWN_TIME = 60
 
