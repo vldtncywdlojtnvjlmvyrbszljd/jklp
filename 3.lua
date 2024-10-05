@@ -14,6 +14,33 @@ local function SendWebhook(webhookUrl, data)
     end
 end
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function AntiBan()
+    for i,v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+        if v:IsA("LocalScript") then
+            if v.Name == "General" or v.Name == "Shiftlock"  or v.Name == "FallDamage" or v.Name == "4444" or v.Name == "CamBob" or v.Name == "JumpCD" or v.Name == "Looking" or v.Name == "Run" then
+                v:Destroy()
+            end
+        end
+     end
+     for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescendants()) do
+        if v:IsA("LocalScript") then
+            if v.Name == "RobloxMotor6DBugFix" or v.Name == "Clans"  or v.Name == "Codes" or v.Name == "CustomForceField" or v.Name == "MenuBloodSp"  or v.Name == "PlayerList" then
+                v:Destroy()
+            end
+        end
+     end
+    end
+    AntiBan()
+
+game:GetService("Players").LocalPlayer.Idled:connect(function()
+	game:GetService("VirtualUser"):Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	wait(1)
+	game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 local location
 if game.PlaceId == 2753915549 then
     location = "Sea 1"
@@ -4786,7 +4813,7 @@ elseif World2 then
 elseif World3 then
  tableMon = {"Pirate Millionaire","Dragon Crew Warrior","Dragon Crew Archer","Female Islander","Giant Islander","Marine Commodore","Marine Rear Admiral","Fishman Raider","Fishman Captain","Forest Pirate","Mythological Pirate","Jungle Pirate","Musketeer Pirate","Reborn Skeleton","Living Zombie","Demonic Soul","Posessed Mummy","Peanut Scout","Peanut President","Ice Cream Chef","Ice Cream Commander","Cookie Crafter","Cake Guard","Baking Staff","Head Baker","Cocoa Warrior","Chocolate Bar Battler","Sweet Thief","Candy Rebel","Candy Pirate","Snow Demon","Isle Outlaw","Island Boy","Sun-kissed Warrior","Isle Champion"}
 end
---[[
+
     Main:AddToggle("Auto Farm Level",_G.AutoFarm,function(value)
         _G.AutoFarm = value
         StopTween(_G.AutoFarm)
@@ -4890,66 +4917,7 @@ end
             end
         end
     end)
-]]--
 
-Main:AddToggle("Auto Farm Level", _G.AutoFarm, function(value)
-    _G.AutoFarm = value
-    StopTween(_G.AutoFarm)
-    saveSettings()
-end)
-
-spawn(function()
-    while wait() do
-        if _G.AutoFarm then
-            pcall(function()
-                -- Ambil nama NPC dari quest yang diambil
-                local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
-                local NameMon = string.match(QuestTitle, "%s([%w%s]+)")
-
-                -- Memeriksa apakah NPC dari quest ditemukan
-                if not string.find(QuestTitle, NameMon) then
-                    StartMagnet = false
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-                else
-                    -- Periksa apakah quest sudah aktif dan tidak disembunyikan
-                    if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible then
-                        -- Mulai mencari dan menyerang NPC setelah misi diambil
-                        for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                            if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                                -- Periksa apakah NPC sesuai dengan quest
-                                if string.find(v.Name, NameMon) then
-                                    repeat
-                                        task.wait()
-                                        EquipWeapon(_G.SelectWeapon) -- Pilih senjata
-                                        AutoHaki() -- Aktifkan Haki
-                                        
-                                        -- Teleport ke NPC
-                                        PosMon = v.HumanoidRootPart.CFrame
-                                        TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX, PosY, PosZ))
-
-                                        -- Nonaktifkan tabrakan NPC dan ubah kecepatannya
-                                        v.HumanoidRootPart.CanCollide = false
-                                        v.Humanoid.WalkSpeed = 2
-                                        v.Head.CanCollide = false
-                                        v.HumanoidRootPart.Size = Vector3.new(70, 70, 70)
-
-                                        -- Mulai menyerang
-                                        StartMagnet = true
-                                        game:GetService("VirtualUser"):CaptureController()
-                                        game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-
-                                        -- Tambahkan delay berdasarkan _G.FastAttackDelay
-                                        task.wait(_G.FastAttackDelay)
-                                    until not _G.AutoFarm or v.Humanoid.Health <= 0 or not v.Parent or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                end
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
 
 
    Main:AddToggle("Auto Farm Nearest ",_G.AutoFarmNearest,function(value)
