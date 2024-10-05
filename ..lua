@@ -77,7 +77,7 @@ local function SendLongmaWebhook(bossName)
             timestamp = DateTime.now():ToIsoDate(),
             fields = {
                 {
-                    name = "<a:location:1281145107134812171> Location",
+                    name = "<:location_1281145107134812171:1292229102937313381> Location",
                     value = "```" .. location .. "```",
                     inline = true
                 },
