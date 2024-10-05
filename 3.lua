@@ -8216,13 +8216,11 @@ spawn(function()
     end
 end)
 
-    SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,_G.IncreaseBoatSpeed,function(state)
+    SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
     if state then
         _G.BiirTrax = true
     else
         _G.BiirTrax = false
-    else
-        _G.IncreaseBoatSpeed = false
     end
 
 
