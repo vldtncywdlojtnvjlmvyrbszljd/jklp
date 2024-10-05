@@ -4902,64 +4902,46 @@ spawn(function()
     while wait() do
         if _G.AutoFarm then
             pcall(function()
-                -- Ambil nama quest dan nama NPC dari quest yang sedang aktif
+                -- Ambil nama NPC dari quest yang diambil
                 local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
-                local NameMon = string.match(QuestTitle, "%s([%w%s]+)") -- Ambil nama NPC dari judul quest
+                local NameMon = string.match(QuestTitle, "%s([%w%s]+)")
 
-                -- Memastikan quest diambil
-                CheckQuest()
-
-                -- Periksa apakah quest yang diambil sesuai dengan NPC yang sedang diserang
+                -- Memeriksa apakah NPC dari quest ditemukan
                 if not string.find(QuestTitle, NameMon) then
                     StartMagnet = false
                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-                end
+                else
+                    -- Periksa apakah quest sudah aktif dan tidak disembunyikan
+                    if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible then
+                        -- Mulai mencari dan menyerang NPC setelah misi diambil
+                        for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                            if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                                -- Periksa apakah NPC sesuai dengan quest
+                                if string.find(v.Name, NameMon) then
+                                    repeat
+                                        task.wait()
+                                        EquipWeapon(_G.SelectWeapon) -- Pilih senjata
+                                        AutoHaki() -- Aktifkan Haki
+                                        
+                                        -- Teleport ke NPC
+                                        PosMon = v.HumanoidRootPart.CFrame
+                                        TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX, PosY, PosZ))
 
-                -- Jika quest tidak terlihat (belum diambil)
-                if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
-                    StartMagnet = false
-                    -- BypassTP digunakan untuk teleportasi otomatis
-                    if BypassTP then
-                        if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude > 1500 then
-                            BTP(CFrameQuest)
-                        elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude < 1500 then
-                            TP1(CFrameQuest)
-                        end
-                    else
-                        TP1(CFrameQuest)
-                    end
+                                        -- Nonaktifkan tabrakan NPC dan ubah kecepatannya
+                                        v.HumanoidRootPart.CanCollide = false
+                                        v.Humanoid.WalkSpeed = 2
+                                        v.Head.CanCollide = false
+                                        v.HumanoidRootPart.Size = Vector3.new(70, 70, 70)
 
-                    -- Mulai quest jika dekat dengan quest giver
-                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 20 then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
-                    end
+                                        -- Mulai menyerang
+                                        StartMagnet = true
+                                        game:GetService("VirtualUser"):CaptureController()
+                                        game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
 
-                -- Jika quest sudah aktif dan terlihat
-                elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
-                    -- Cari musuh yang sesuai dengan nama di quest (misalnya Sun-Kissed Warrior)
-                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                            if string.find(v.Name, NameMon) then
-                                repeat
-                                    task.wait()
-                                    EquipWeapon(_G.SelectWeapon) -- Pilih senjata
-                                    AutoHaki() -- Aktifkan Haki
-                                    
-                                    -- Teleport ke NPC musuh
-                                    PosMon = v.HumanoidRootPart.CFrame
-                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX, PosY, PosZ))
-
-                                    -- Modifikasi NPC agar lebih mudah diserang
-                                    v.HumanoidRootPart.CanCollide = false
-                                    v.Humanoid.WalkSpeed = 2
-                                    v.Head.CanCollide = false
-                                    v.HumanoidRootPart.Size = Vector3.new(70, 70, 70)
-
-                                    -- Mulai menyerang
-                                    StartMagnet = true
-                                    game:GetService("VirtualUser"):CaptureController()
-                                    game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                                until not _G.AutoFarm or v.Humanoid.Health <= 0 or not v.Parent or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                        -- Tambahkan delay berdasarkan _G.FastAttackDelay
+                                        task.wait(_G.FastAttackDelay)
+                                    until not _G.AutoFarm or v.Humanoid.Health <= 0 or not v.Parent or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                end
                             end
                         end
                     end
@@ -4968,6 +4950,7 @@ spawn(function()
         end
     end
 end)
+
 
    Main:AddToggle("Auto Farm Nearest ",_G.AutoFarmNearest,function(value)
    _G.AutoFarmNearest = value
