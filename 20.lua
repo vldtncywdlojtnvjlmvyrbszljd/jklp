@@ -13889,7 +13889,9 @@ end)
         "Control-Control",
         "Soul-Soul",
         "Dragon-Dragon",
-        "Leopard-Leopard"
+        "Leopard-Leopard",
+        "T-Rex-T-Rex",
+        "Kitsune-Kitsune"
     }
     
     local Remote_GetFruits = game.ReplicatedStorage:FindFirstChild("Remotes").CommF_:InvokeServer("GetFruits");
@@ -14186,7 +14188,7 @@ closeButton.MouseButton1Click:Connect(closeGUI)
                     if _G.FruitCheck then
                         for i,v in pairs(game.Workspace:GetChildren()) do
                             if string.find(v.Name, "Fruit") then
-                                require(game:GetService("ReplicatedStorage").Notification).new("Fruit Spawn"):Display();
+                                require(game:GetService("ReplicatedStorage").Notification).new("Notification Fruit Spawn"):Display();
                                 wait()
                                 setthreadcontext(5)
                             end
@@ -14657,6 +14659,24 @@ end)
 
     Mh:AddSeperator("Auto Hop Server")
     Mh:AddLabel("Click And Wait 5 Second")
+
+    Mh:AddToggle("Mirage Island Notification",true ,_G.Mirragecheck,function(value)
+        _G.Mirragecheck = value
+        end)
+        
+        spawn(function()
+                while wait(.1) do
+                    if _G.Mirragecheck then
+                        for i,v in pairs(game.Workspace._WorldOrigin.Locations:FindFirstChild('Mirage Island')) do
+                            if string.find(v.Name, "Mirage Island") then
+                                require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
+                                wait()
+                                setthreadcontext(5)
+                            end
+                        end
+                    end
+                  end
+                 end)
 
     Mh:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
         _G.Hopfinddao = value
