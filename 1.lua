@@ -4786,7 +4786,7 @@ elseif World2 then
 elseif World3 then
  tableMon = {"Pirate Millionaire","Dragon Crew Warrior","Dragon Crew Archer","Female Islander","Giant Islander","Marine Commodore","Marine Rear Admiral","Fishman Raider","Fishman Captain","Forest Pirate","Mythological Pirate","Jungle Pirate","Musketeer Pirate","Reborn Skeleton","Living Zombie","Demonic Soul","Posessed Mummy","Peanut Scout","Peanut President","Ice Cream Chef","Ice Cream Commander","Cookie Crafter","Cake Guard","Baking Staff","Head Baker","Cocoa Warrior","Chocolate Bar Battler","Sweet Thief","Candy Rebel","Candy Pirate","Snow Demon","Isle Outlaw","Island Boy","Sun-kissed Warrior","Isle Champion"}
 end
-   
+--[[
     Main:AddToggle("Auto Farm Level",_G.AutoFarm,function(value)
         _G.AutoFarm = value
         StopTween(_G.AutoFarm)
@@ -4890,6 +4890,84 @@ end
             end
         end
     end)
+]]--
+
+Main:AddToggle("Auto Farm Level", _G.AutoFarm, function(value)
+    _G.AutoFarm = value
+    StopTween(_G.AutoFarm)
+    saveSettings()
+end)
+
+spawn(function()
+    while wait() do
+        if _G.AutoFarm then
+            pcall(function()
+                -- Ambil nama quest dan nama NPC dari quest yang sedang aktif
+                local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
+                local NameMon = string.match(QuestTitle, "%s([%w%s]+)") -- Ambil nama NPC dari judul quest
+
+                -- Memastikan quest diambil
+                CheckQuest()
+
+                -- Periksa apakah quest yang diambil sesuai dengan NPC yang sedang diserang
+                if not string.find(QuestTitle, NameMon) then
+                    StartMagnet = false
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                end
+
+                -- Jika quest tidak terlihat (belum diambil)
+                if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+                    StartMagnet = false
+                    -- BypassTP digunakan untuk teleportasi otomatis
+                    if BypassTP then
+                        if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude > 1500 then
+                            BTP(CFrameQuest)
+                        elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude < 1500 then
+                            TP1(CFrameQuest)
+                        end
+                    else
+                        TP1(CFrameQuest)
+                    end
+
+                    -- Mulai quest jika dekat dengan quest giver
+                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 20 then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
+                    end
+
+                -- Jika quest sudah aktif dan terlihat
+                elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+                    -- Cari musuh yang sesuai dengan nama di quest (misalnya Sun-Kissed Warrior)
+                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                            if string.find(v.Name, NameMon) then
+                                repeat
+                                    task.wait()
+                                    EquipWeapon(_G.SelectWeapon) -- Pilih senjata
+                                    AutoHaki() -- Aktifkan Haki
+                                    
+                                    -- Teleport ke NPC musuh
+                                    PosMon = v.HumanoidRootPart.CFrame
+                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX, PosY, PosZ))
+
+                                    -- Modifikasi NPC agar lebih mudah diserang
+                                    v.HumanoidRootPart.CanCollide = false
+                                    v.Humanoid.WalkSpeed = 2
+                                    v.Head.CanCollide = false
+                                    v.HumanoidRootPart.Size = Vector3.new(70, 70, 70)
+
+                                    -- Mulai menyerang
+                                    StartMagnet = true
+                                    game:GetService("VirtualUser"):CaptureController()
+                                    game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                                until not _G.AutoFarm or v.Humanoid.Health <= 0 or not v.Parent or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
 
    Main:AddToggle("Auto Farm Nearest ",_G.AutoFarmNearest,function(value)
    _G.AutoFarmNearest = value
@@ -4938,7 +5016,7 @@ end)
         while wait() do
             pcall(function()
                 if _G.StopItemsChest or not AutoFarmChest then
-                    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fist of Darkness") then
+                    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fish of Darkness") then
                         _G.ChestBypass = false
                         AutoFarmChest = false
                         topos(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
@@ -14660,13 +14738,31 @@ end)
     Mh:AddSeperator("Auto Hop Server")
     Mh:AddLabel("Click And Wait 5 Second")
 
-    Mh:AddToggle("Mirage Island Notification",true ,_G.Mirragecheck,function(value)
-        _G.Mirragecheck = value
+    Mh:AddToggle("God's Chalice & FOD Notify (beta)",false ,_G.NotifItemChestheck,function(value)
+        _G.NotifItemChestcheck = value
         end)
         
         spawn(function()
                 while wait(.1) do
-                    if _G.Mirragecheck then
+                    if _G.NotifItemChestcheck then
+                        for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fish of Darkness")) do
+                            if string.find(v.Name, "God's Chalice", "Fish of Darkness") then
+                                require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
+                                wait()
+                                setthreadcontext(5)
+                            end
+                        end
+                    end
+                  end
+                 end)
+
+    Mh:AddToggle("Mirage Island Notify (beta)",false ,_G.NotifMirragecheck,function(value)
+        _G.NotifMirragecheck = value
+        end)
+        
+        spawn(function()
+                while wait(.1) do
+                    if _G.NotifMirragecheck then
                         for i,v in pairs(game.Workspace._WorldOrigin.Locations:FindFirstChild('Mirage Island')) do
                             if string.find(v.Name, "Mirage Island") then
                                 require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
@@ -14677,6 +14773,34 @@ end)
                     end
                   end
                  end)
+
+    D:AddToggle("Fruit Notification",false ,_G.EliteCheck,function(value)
+_G.EliteCheck = value
+end)
+        
+spawn(function()
+while wait(.1) do
+if _G.EliteCheck then
+for i,v in pairs(game:GetService("ReplicatedStorage"):FindFirstChild("Diablo") or game:GetService("ReplicatedStorage"):FindFirstChild("Deandre") or game:GetService("ReplicatedStorage"):FindFirstChild("Urban") or game:GetService("Workspace").Enemies:FindFirstChild("Diablo") or game:GetService("Workspace").Enemies:FindFirstChild("Deandre") or game:GetService("Workspace").Enemies:FindFirstChild("Urban")) do
+if string.find(v.Name, "Diablo", "Deandre", "Urban") then
+require(game:GetService("ReplicatedStorage").Notification).new("Notification Elite Hunter Spawn"):Display();
+wait()
+setthreadcontext(5)
+end
+end
+end
+end
+end)
+
+
+
+
+
+
+
+
+
+
 
     Mh:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
         _G.Hopfinddao = value
