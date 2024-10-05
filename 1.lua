@@ -5442,18 +5442,18 @@ spawn(function()
         end
     end)
 end)
-    
+
 spawn(function()
-while wait(.1) do
-    if _G.HyperSonic then
-        pcall(function()
-            repeat task.wait(0,09)
-                AttackHit()
-            until not _G.HyperSonic
-        end)
+    while wait(.1) do
+        if _G.HyperSonic then
+            pcall(function()
+                repeat task.wait(_G.AttackDelay) -- use this intead of random numbers
+                    AttackHit()
+                until not _G.HyperSonic
+            end)
+        end
     end
-end
-end)    
+    end) 
     
 Main:AddToggle("Auto Click",false,function(value)
 _G.AutoClick = value
