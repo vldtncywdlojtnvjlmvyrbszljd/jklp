@@ -8807,111 +8807,79 @@ end)
         StopTween(_G.AutoFarmGunMastery)
     end)
     
-    spawn(function()
-        pcall(function()
-            while wait() do
-                if _G.AutoFarmGunMastery then
-                    local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
-                    if not string.find(QuestTitle, NameMon) then
-                        Magnet = false                                      
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-                    end
-                    if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
-                        StartMasteryGunMagnet = false
-                        CheckQuest()
-                        if BypassTP then
-                            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude > 1500 then
-                                BTP(CFrameQuest)
-                            else
-                                TP1(CFrameQuest)
-                            end
-                        else
-                            TP1(CFrameQuest)
-                        end
-                        if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 10 then
-                            wait(1.2)
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
-                        end
-                    elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
-                        CheckQuest()
-                        if game:GetService("Workspace").Enemies:FindFirstChild(Mon) then
-                            pcall(function()
-                                for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                                    if v.Name == Mon then
-                                        repeat task.wait()
-                                            if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
-                                                HealthMin = v.Humanoid.MaxHealth * _G.Kill_At/100
-                                                if v.Humanoid.Health <= HealthMin then
-                                                    -- Menggunakan gun untuk menyerang musuh
-                                                    EquipWeapon(SelectWeaponGun)
-                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
-                                                    v.Humanoid.WalkSpeed = 2
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    v.HumanoidRootPart.Size = Vector3.new(2,2,1)
-                                                    v.Head.CanCollide = false
-    
-                                                    -- Menyerang musuh dengan gun
-                                                    local args = {
-                                                        [1] = v.HumanoidRootPart.Position,
-                                                        [2] = v.HumanoidRootPart
-                                                    }
-                                                    game:GetService("Players").LocalPlayer.Character[SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
-    
-                                                    -- Menambahkan logika untuk mengarahkan CFrame ke NPC sebelum menggunakan skill Gun
-                                                    if _G.GunSkillZ then
-                                                    -- Mengarahkan karakter ke NPC sebelum menembakkan skill Z
-                                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.lookAt(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, v.HumanoidRootPart.Position)
-                                                    game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
-                                                    game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
-                                                    end
-                                                    if _G.GunSkillX then
-                                                    -- Mengarahkan karakter ke NPC sebelum menembakkan skill X
-                                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.lookAt(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, v.HumanoidRootPart.Position)
-                                                    game:GetService("VirtualInputManager"):SendKeyEvent(true, "X", false, game)
-                                                    game:GetService("VirtualInputManager"):SendKeyEvent(false, "X", false, game)
-                                                    end
+    -- Kode untuk AutoFarm Gun Mastery mirip dengan Blox Fruit Mastery
+spawn(function()
+    pcall(function()
+        while wait() do
+            if _G.AutoFarmGunMastery then
+                local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
+                if not string.find(QuestTitle, NameMon) then
+                    Magnet = false                                      
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                end
 
-    
-                                                else
-                                                    -- Jika kesehatan musuh masih tinggi, gunakan senjata biasa dan auto haki
-                                                    AutoHaki()
-                                                    EquipWeapon(_G.SelectWeapon)
-                                                    v.Humanoid.WalkSpeed = 2
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    v.Head.CanCollide = false
-                                                    v.HumanoidRootPart.Size = Vector3.new(60,60,60)
-                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX,PosY,PosZ))
-                                                end
-                                                StartMasteryGunMagnet = true 
-                                                PosMonMasteryGun = v.HumanoidRootPart.CFrame
-                                            else
-                                                StartMasteryGunMagnet = false
-                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+                    StartMasteryGunMagnet = false
+                    CheckQuest()
+
+                    -- Teleport ke Quest
+                    if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+                        wait(1.2)
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
+                    end
+                elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+                    CheckQuest()
+                    if game:GetService("Workspace").Enemies:FindFirstChild(Mon) then
+                        pcall(function()
+                            for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                                if v.Name == Mon then
+                                    repeat task.wait()
+                                        -- Hit NPC menggunakan Melee sampai health di bawah threshold
+                                        if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Kill_At/100 then
+                                            -- Pindah ke Gun setelah health sesuai
+                                            EquipWeapon(SelectWeaponGun)
+                                            TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
+                                            
+                                            -- Spam skill Gun (Z dan X) ke NPC
+                                            if _G.GunSkillZ then
+                                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.lookAt(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, v.HumanoidRootPart.Position)
+                                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
+                                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
                                             end
-                                        until v.Humanoid.Health <= 0 or not _G.AutoFarmGunMastery or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                        StartMasteryGunMagnet = false
-                                    end
-                                end
-                            end)
-                        else
-                            TP1(CFrameMon)
-                            StartMasteryGunMagnet = false
-                            local Mob = game:GetService("ReplicatedStorage"):FindFirstChild(Mon) 
-                            if Mob then
-                                TP1(Mob.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
-                            else
-                                if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame.Y <= 1 then
-                                    game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = true
-                                    task.wait()
-                                    game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = false
+                                            if _G.GunSkillX then
+                                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.lookAt(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, v.HumanoidRootPart.Position)
+                                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "X", false, game)
+                                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "X", false, game)
+                                            end
+                                            
+                                            -- Pengaturan NPC
+                                            v.Humanoid.WalkSpeed = 2
+                                            v.HumanoidRootPart.CanCollide = false
+                                            v.HumanoidRootPart.Size = Vector3.new(2,2,1)
+                                            v.Head.CanCollide = false
+                                        else
+                                            -- Tetap menggunakan melee jika health belum sesuai
+                                            AutoHaki()
+                                            EquipWeapon(_G.SelectWeapon)
+                                            TP1(v.HumanoidRootPart.CFrame)
+                                        end
+                                        StartMasteryGunMagnet = true
+                                        PosMonMasteryGun = v.HumanoidRootPart.CFrame
+                                    until v.Humanoid.Health <= 0 or not _G.AutoFarmGunMastery or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                    StartMasteryGunMagnet = false
                                 end
                             end
-                        end 
+                        end)
+                    else
+                        TP1(CFrameMon)
+                        StartMasteryGunMagnet = false
                     end
                 end
             end
-        end)
+        end
     end)
+end)
+
     
 
     
