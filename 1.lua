@@ -8291,20 +8291,28 @@ spawn(function()
                 local targetModel = workspace.Boats:FindFirstChild(targetModelName)
 
                 if targetModel and targetModel.PrimaryPart then
-                    -- Atur kecepatan tinggi seperti Rocket Boat
-                    local speed = 5 -- Mengatur kecepatan lebih rendah agar pergerakan lebih stabil
+                    -- Atur kecepatan pergerakan ke depan
+                    local speed = 5 -- Mengatur kecepatan maju
                     -- Atur ketinggian perahu untuk efek melayang
-                    local altitude = 30 -- Ketinggian perahu
+                    local hoverHeight = 30 -- Ketinggian melayang
+                    local hoverSpeed = 2 -- Kecepatan melayang naik turun
 
-                    -- Pergerakan ke depan dan ketinggian kapal
                     while _G.BiirTrax do
+                        -- Mengambil arah orientasi dari PrimaryPart
                         local forwardDirection = targetModel.PrimaryPart.CFrame.LookVector
-                        local newPosition = targetModel.PrimaryPart.Position + (forwardDirection * speed)
-                        -- Menambahkan ketinggian ke posisi baru
-                        newPosition = Vector3.new(newPosition.X, altitude, newPosition.Z)
 
-                        -- Menggerakkan kapal ke posisi baru dengan mempertahankan orientasi
-                        local newCFrame = CFrame.new(newPosition) * CFrame.fromMatrix(Vector3.new(0, 0, 0), targetModel.PrimaryPart.CFrame.RightVector, targetModel.PrimaryPart.CFrame.UpVector, targetModel.PrimaryPart.CFrame.LookVector)
+                        -- Menghitung posisi baru ke arah depan
+                        local newPosition = targetModel.PrimaryPart.Position + (forwardDirection * speed)
+
+                        -- Menambahkan efek melayang dengan perhitungan sinus untuk naik turun
+                        local hoverOffset = math.sin(tick() * hoverSpeed) * 0.5 -- Amplitudo kecil untuk stabilitas
+                        newPosition = Vector3.new(newPosition.X, hoverHeight + hoverOffset, newPosition.Z)
+
+                        -- Membuat CFrame baru untuk posisi baru dengan mempertahankan rotasi asli
+                        local currentRotation = targetModel.PrimaryPart.CFrame - targetModel.PrimaryPart.Position
+                        local newCFrame = CFrame.new(newPosition) * currentRotation
+
+                        -- Mengatur posisi dan orientasi model
                         targetModel:SetPrimaryPartCFrame(newCFrame)
 
                         task.wait(0.01) -- Menunggu sedikit sebelum update selanjutnya
@@ -8314,6 +8322,7 @@ spawn(function()
         end)
     end
 end)
+
 
 
 
