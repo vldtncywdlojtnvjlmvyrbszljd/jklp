@@ -8765,10 +8765,8 @@ end)
         end)
     end)
     
-    M:AddToggle("Auto Gun Mastery (manual skill)",function(value)
+    M:AddToggle("Auto Gun Mastery (manual skill)", _G.AutoFarmGunMastery, function(value)
         _G.AutoFarmGunMastery = value
-        _G.GunSkillZ = value
-        _G.GunSkillX = value
         StopTween(_G.AutoFarmGunMastery)
     end)
     
@@ -8778,23 +8776,22 @@ end)
                 if _G.AutoFarmGunMastery then
                     local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
                     if not string.find(QuestTitle, NameMon) then
-                        Magnet = false                                      
+                        Magnet = false
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
                     end
+                    
                     if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
                         StartMasteryGunMagnet = false
                         CheckQuest()
-                            if BypassTP then
-                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude > 1500 then
-                                    BTP(CFrameQuest)
-                                elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 1500 then
-                                    TP1(CFrameQuest)
-                                else
-                                    TP1(CFrameQuest)
-                                end
+                        if BypassTP then
+                            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude > 1500 then
+                                BTP(CFrameQuest)
                             else
                                 TP1(CFrameQuest)
                             end
+                        else
+                            TP1(CFrameQuest)
+                        end
                         if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 10 then
                             wait(1.2)
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
@@ -8803,23 +8800,36 @@ end)
                         CheckQuest()
                         if game:GetService("Workspace").Enemies:FindFirstChild(Mon) then
                             pcall(function()
-                                for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                     if v.Name == Mon then
-                                        repeat task.wait()
+                                        repeat
+                                            task.wait()
                                             if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
                                                 HealthMin = v.Humanoid.MaxHealth * _G.Kill_At/100
-                                                if v.Humanoid.Health <= HealthMin then                                                
+                                                if v.Humanoid.Health <= HealthMin then
                                                     EquipWeapon(SelectWeaponGun)
                                                     TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
+                                                    
                                                     v.Humanoid.WalkSpeed = 2
                                                     v.HumanoidRootPart.CanCollide = false
                                                     v.HumanoidRootPart.Size = Vector3.new(2,2,1)
-                                                    v.Head.CanCollide = false                                 
-                                                    local args = {
-                                                        [1] = v.HumanoidRootPart.Position,
-                                                        [2] = v.HumanoidRootPart
-                                                    }
-                                                    game:GetService("Players").LocalPlayer.Character[SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
+                                                    v.Head.CanCollide = false
+                                                    
+                                                    -- Spam skill Z
+                                                    if _G.GunSkillZ and CanUseSkill("Z") then
+                                                        UseSkill("Z", v.HumanoidRootPart)
+                                                        task.wait(1) -- Jeda skill Z
+                                                    end
+                                                    
+                                                    -- Spam skill X
+                                                    if _G.GunSkillX and CanUseSkill("X") then
+                                                        UseSkill("X", v.HumanoidRootPart)
+                                                        task.wait(1) -- Jeda skill X
+                                                    end
+                                                
+                                                    
+                                                    StartMasteryGunMagnet = true 
+                                                    PosMonMasteryGun = v.HumanoidRootPart.CFrame
                                                 else
                                                     AutoHaki()
                                                     EquipWeapon(_G.SelectWeapon)
@@ -8829,8 +8839,6 @@ end)
                                                     v.HumanoidRootPart.Size = Vector3.new(60,60,60)
                                                     TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX,PosY,PosZ))
                                                 end
-                                                StartMasteryGunMagnet = true 
-                                                PosMonMasteryGun = v.HumanoidRootPart.CFrame
                                             else
                                                 StartMasteryGunMagnet = false
                                                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
@@ -8841,24 +8849,45 @@ end)
                                 end
                             end)
                         else
-                           TP1(CFrameMon)
+                            TP1(CFrameMon)
                             StartMasteryGunMagnet = false
-                            local Mob = game:GetService("ReplicatedStorage"):FindFirstChild(Mon) 
-                            if Mob then
-                                TP1(Mob.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
-                            else
-                                if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame.Y <= 1 then
-                                    game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = true
-                                    task.wait()
-                                    game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = false
-                                end
-                            end
-                        end 
+                        end
                     end
                 end
             end
         end)
     end)
+    
+    -- Fungsi tambahan untuk cek cooldown dan gunakan skill
+    function CanUseSkill(skill)
+        return true  -- Sesuaikan logika cooldown di sini sesuai kebutuhan
+    end
+    
+    function UseSkill(skill, target)
+        local args = {
+            [1] = target.Position,
+            [2] = target
+        }
+        local success, errorMessage = pcall(function()
+            game:GetService("Players").LocalPlayer.Character[SelectWeaponGun]["RemoteFunction" .. skill]:InvokeServer(unpack(args))
+        end)
+        if not success and errorMessage and string.find(errorMessage, "Skill locked!") then
+            -- Menghapus notifikasi "Skill locked!" jika muncul
+            RemoveSkillLockedNotification()
+        end
+    end
+    
+    -- Fungsi untuk menghapus notifikasi "Skill locked!"
+    function RemoveSkillLockedNotification()
+        spawn(function()
+            for i, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Notifications:GetChildren()) do
+                if v.Name == "NotificationTemplate" and string.find(v.Text, "Skill locked!") then
+                    v:Destroy()
+                end
+            end
+        end)
+    end
+    
 
     
     
