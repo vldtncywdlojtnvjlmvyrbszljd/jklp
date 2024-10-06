@@ -8918,8 +8918,14 @@ end)
                                         [1] = PosMonMasteryFruit.Position
                                     }
                                     equippedGun.RemoteEvent:FireServer(unpack(args))
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
+                                    game:GetService("VirtualInputManager"):SendKeyEvent(true,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							game:GetService("VirtualInputManager"):SendKeyEvent(false,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							wait(.2)
+							game:GetService("VirtualInputManager"):SendKeyEvent(true,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							game:GetService("VirtualInputManager"):SendKeyEvent(false,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							wait(.2)
+							game:GetService("VirtualInputManager"):SendKeyEvent(true,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							game:GetService("VirtualInputManager"):SendKeyEvent(false,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
                                     wait(0.5) -- Tunggu sejenak sebelum melanjutkan skill berikutnya
                                 end
                                 if _G.SkillX then          
@@ -8927,8 +8933,14 @@ end)
                                         [1] = PosMonMasteryFruit.Position
                                     }
                                     equippedGun.RemoteEvent:FireServer(unpack(args))
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
+                                    game:GetService("VirtualInputManager"):SendKeyEvent(true,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							game:GetService("VirtualInputManager"):SendKeyEvent(false,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							wait(.2)
+							game:GetService("VirtualInputManager"):SendKeyEvent(true,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							game:GetService("VirtualInputManager"):SendKeyEvent(false,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							wait(.2)
+							game:GetService("VirtualInputManager"):SendKeyEvent(true,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
+							game:GetService("VirtualInputManager"):SendKeyEvent(false,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
                                     wait(0.5)
                                 end
                             end
