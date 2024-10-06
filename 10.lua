@@ -6479,22 +6479,7 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.dao then
-                local batuLaut = {
-                    "SmallGroup", 
-                    "SmallCluster", 
-                    "MediumGroup", 
-                    "MediumFlat", 
-                    "Large", 
-                    "Largest", 
-                    "RockPart", 
-                    "RockGroup", 
-                    "Coral", 
-                    "BigRock", 
-                    "SmallRock", 
-                    "SeaRock", 
-                    "RockPile", 
-                    "Cliff"
-                }
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}
                 
 
                 for _, v in pairs(workspace:GetChildren()) do
@@ -8321,22 +8306,7 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.Anchor then
-                local batuLaut = {
-                    "SmallGroup", 
-                    "SmallCluster", 
-                    "MediumGroup", 
-                    "MediumFlat", 
-                    "Large", 
-                    "Largest", 
-                    "RockPart", 
-                    "RockGroup", 
-                    "Coral", 
-                    "BigRock", 
-                    "SmallRock", 
-                    "SeaRock", 
-                    "RockPile", 
-                    "Cliff"
-                }
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}
                 
 
                 for _, v in pairs(workspace:GetChildren()) do
@@ -8407,7 +8377,7 @@ M:AddToggle("Auto Finish Zone 5 (fix bug)",_G.dao,function(state)
             end
         end)
 ]]
-SNt:AddToggle("Speed Boat",true ,_G.IncreaseBoatSpeed,function(value) -- state
+SNt:AddToggle("Speed Boat",false ,_G.IncreaseBoatSpeed,function(value) -- state
     _G.IncreaseBoatSpeed = value
 end)
 
@@ -8635,22 +8605,7 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-                local batuLaut = {
-                    "SmallGroup", 
-                    "SmallCluster", 
-                    "MediumGroup", 
-                    "MediumFlat", 
-                    "Large", 
-                    "Largest", 
-                    "RockPart", 
-                    "RockGroup", 
-                    "Coral", 
-                    "BigRock", 
-                    "SmallRock", 
-                    "SeaRock", 
-                    "RockPile", 
-                    "Cliff"
-                }                
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}                
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
