@@ -14677,7 +14677,101 @@ end)
 	end)
 
     Mh:AddSeperator("Auto Hop Server")
-    Mh:AddLabel("Click And Wait 5 Second")
+    Mh:AddLabel("Click And Wait...")
+
+    Mh:AddToggle("God's Chalice & FOD Notify", false, _G.NotifItemChestcheck, function(value)
+        _G.NotifItemChestcheck = value
+    end)
+    
+    spawn(function()
+        while wait(1) do 
+            if _G.NotifItemChestcheck then
+                -- Deteksi item di Character LocalPlayer
+                local godsChaliceInCharacter = game:GetService("Players").LocalPlayer.Character:FindFirstChild("God's Chalice")
+                local fishOfDarknessInCharacter = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Fish of Darkness")
+    
+                -- Deteksi item di chest
+                local chest = game:GetService("Workspace"):FindFirstChild("Chest")
+                local godsChaliceInChest = nil
+                local fishOfDarknessInChest = nil
+        
+                if chest then
+                    godsChaliceInChest = chest:FindFirstChild("God's Chalice")
+                    fishOfDarknessInChest = chest:FindFirstChild("Fish of Darkness")
+                end
+    
+                -- Deteksi item di Character pemain lain
+                local godsChaliceFound = false
+                local fishOfDarknessFound = false
+                for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+                    if player.Character:FindFirstChild("God's Chalice") then
+                        godsChaliceFound = true
+                    end
+                    if player.Character:FindFirstChild("Fish of Darkness") then
+                        fishOfDarknessFound = true
+                    end
+                end
+    
+                -- Notifikasi jika God's Chalice ditemukan
+                if godsChaliceInCharacter or godsChaliceInChest or godsChaliceFound then
+                    local notification = require(game:GetService("ReplicatedStorage").Notification).new("God's Chalice detected in the server!")
+                    notification:Display()
+    
+                    -- Hilangkan notifikasi setelah 10 detik
+                    wait(10)
+                    notification:Destroy()
+                end
+    
+                -- Notifikasi jika Fish of Darkness ditemukan
+                if fishOfDarknessInCharacter or fishOfDarknessInChest or fishOfDarknessFound then
+                    local notification = require(game:GetService("ReplicatedStorage").Notification).new("Fish of Darkness detected in the server!")
+                    notification:Display()
+    
+                    -- Hilangkan notifikasi setelah 10 detik
+                    wait(10)
+                    notification:Destroy()
+                end
+            end
+        end
+    end)
+    
+    
+    
+    Mh:AddToggle("Mirage Island Notify",false ,_G.NotifMirragecheck,function(value)
+        _G.NotifMirragecheck = value
+        end)
+        
+        spawn(function()
+                while wait(.1) do
+                    if _G.NotifMirragecheck then
+                        for i,v in pairs(game.Workspace._WorldOrigin.Locations:FindFirstChild('Mirage Island')) do
+                            if string.find(v.Name, "Mirage Island") then
+                                require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
+                                wait()
+                                setthreadcontext(5)
+                            end
+                        end
+                    end
+                  end
+                 end)
+
+    Mh:AddToggle("Elite Hunter Notification",false ,_G.EliteCheck,function(value)
+_G.EliteCheck = value
+end)
+        
+spawn(function()
+while wait(.1) do
+if _G.EliteCheck then
+for i,v in pairs(game:GetService("ReplicatedStorage"):FindFirstChild("Diablo") or game:GetService("ReplicatedStorage"):FindFirstChild("Deandre") or game:GetService("ReplicatedStorage"):FindFirstChild("Urban") or game:GetService("Workspace").Enemies:FindFirstChild("Diablo") or game:GetService("Workspace").Enemies:FindFirstChild("Deandre") or game:GetService("Workspace").Enemies:FindFirstChild("Urban")) do
+if string.find(v.Name, "Diablo", "Deandre", "Urban") then
+require(game:GetService("ReplicatedStorage").Notification).new("Notification Elite Hunter Spawn"):Display();
+wait()
+setthreadcontext(5)
+end
+end
+end
+end
+end)
 
     Mh:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
         _G.Hopfinddao = value
