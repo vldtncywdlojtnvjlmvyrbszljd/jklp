@@ -8285,34 +8285,40 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-                wait(0.1)  -- Interval lebih cepat untuk pergerakan
-                local targetModelName = "PirateBrigade"  -- Nama perahu
-                local targetModel = workspace.Boats:FindFirstChild(targetModelName)
+                wait(0.8) 
+                local targetModelNames = {"PirateBrigade"}
+                local models = workspace.Boats:GetChildren()
 
-                if targetModel and targetModel.PrimaryPart then
-                    -- Atur kecepatan tinggi seperti Rocket Boat
-                    local speed = 1000 -- Kecepatan super tinggi
-                    -- Atur ketinggian perahu untuk efek melayang
-                    local altitude = 350 -- Ketinggian perahu
+                for _, targetModelName in ipairs(targetModelNames) do
+                    local targetModel = workspace:FindFirstChild(targetModelName)
 
-                    -- Pergerakan ke depan dan ketinggian kapal
-                    while _G.BiirTrax do
+                    if targetModel and targetModel:FindFirstChild("PrimaryPart") then
+                        local speed = 350
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
-                        local newPosition = targetModel.PrimaryPart.Position + (forwardDirection * speed)
-                        -- Menambahkan ketinggian ke posisi baru
-                        newPosition = Vector3.new(newPosition.X, newPosition.Y + altitude, newPosition.Z)
+                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
+                        local hoverHeight = 3
+                        local hoverSpeed = 0.05
 
-                        -- Menggerakkan kapal ke posisi baru dengan ketinggian dan kecepatan tinggi
-                        targetModel:SetPrimaryPartCFrame(CFrame.new(newPosition))
+                        while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
+                            -- Pergerakan maju
+                            targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
 
-                        task.wait(0.01) -- Menunggu sedikit sebelum update selanjutnya
+                            -- Pergerakan melayang
+                            local currentCFrame = targetModel.PrimaryPart.CFrame
+                            local newY = math.sin(tick() * hoverSpeed) * hoverHeight
+                            targetModel:SetPrimaryPartCFrame(currentCFrame + Vector3.new(0, newY, 0))
+
+                            task.wait()
+                            if not _G.BiirTrax then
+                                break
+                            end
+                        end
                     end
                 end
             end
         end)
     end
 end)
-
 
 
 
