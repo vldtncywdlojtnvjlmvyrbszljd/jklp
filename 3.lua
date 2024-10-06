@@ -8210,9 +8210,9 @@ spawn(function()
 
                 if targetModel and targetModel.PrimaryPart then
                     -- Atur kecepatan pergerakan ke depan
-                    local speed = 5 -- Kecepatan maju
+                    local speed = 150 -- Kecepatan maju
                     -- Atur ketinggian perahu untuk efek melayang
-                    local hoverHeight = 30 -- Ketinggian melayang
+                    local hoverHeight = 50 -- Ketinggian melayang
                     local hoverSpeed = 2 -- Kecepatan melayang naik turun
 
                     while _G.BiirTrax do
