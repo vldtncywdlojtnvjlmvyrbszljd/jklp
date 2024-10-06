@@ -8449,7 +8449,7 @@ spawn(function()
 end)
 
 
-
+--[[
 PosYBoatInWater = 0
 SNt:AddSlider("Position Y Boat On Water",true, 0, 80, 200, function(value)
     PosYBoatInWater = value
@@ -8471,54 +8471,60 @@ spawn(function()
         end)
     end
 end)
+]]
 
-
-SNt:AddToggle("Auto Sail Rough Sea", _G.BiirTrax, function(state)
+SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
     if state then
         _G.BiirTrax = true
     else
         _G.BiirTrax = false
     end
 
-    if _G.BiirTrax then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-16921.853515625, 9.0863618850708, 433.9601135253906)
-        wait(0.5)
 
-        local args = {
-            [1] = "BuyBoat",
-            [2] = "PirateBrigade"
-        }
+if _G.BiirTrax then
 
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-16921.853515625, 9.0863618850708, 433.9601135253906) 
+wait(0.5) 
 
-        function two(gotoCFrame) -- Tween
-            pcall(function()
-                game.Players.LocalPlayer.Character.Humanoid.Sit = false
-                game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-            end)
-            if (game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - gotoCFrame.Position).Magnitude <= 200 then
-                pcall(function() 
-                    tweenz:Cancel()
-                end)
-                game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.CFrame = gotoCFrame
-            else
-                local tween_s = game:service("TweenService")
-                local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - gotoCFrame.Position).Magnitude/325, Enum.EasingStyle.Linear)
-                tween, err = pcall(function()
-                    tweenz = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = gotoCFrame})
-                    tweenz:Play()
-                end)
-                if not tween then return err end
-            end
-        end
-        two(CFrame.new(-30939.830078125, 3.729933261871338, 9256.4208984375))
+local args = {
+    [1] = "BuyBoat",
+    [2] = "PirateBrigade"
+}
 
-        for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-            if v.Name:find("VehicleSeat") then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
-            end
-        end
+game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+
+function two(gotoCFrame) --- Tween
+      pcall(function()
+          game.Players.LocalPlayer.Character.Humanoid.Sit = false
+          game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+      end)
+      if (game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - gotoCFrame.Position).Magnitude <= 200 then
+          pcall(function() 
+              tweenz:Cancel()
+          end)
+          game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.CFrame = gotoCFrame
+      else
+          local tween_s = game:service"TweenService"
+          local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - gotoCFrame.Position).Magnitude/325, Enum.EasingStyle.Linear)
+           tween, err = pcall(function()
+              tweenz = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = gotoCFrame})
+              tweenz:Play()
+          end)
+          if not tween then return err end
+      end
+      function _TweenCanCle()
+          tweenz:Cancel()
+      end
+  
+end
+two(CFrame.new(-30939.830078125, 3.729933261871338, 9256.4208984375))
+
+for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
+    if v.Name:find("VehicleSeat") then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
     end
+end
+end
 end)
 
 spawn(function()
@@ -8527,7 +8533,7 @@ spawn(function()
             if _G.BiirTrax then
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
                     if v.Name:find("VehicleSeat") then
-                        wait(5)
+                        wait(5) 
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
                         break
                     end
@@ -8538,13 +8544,13 @@ spawn(function()
                     {name = "Terrorshark", variable = "Terrorshark"},
                     {name = "Shark", variable = "Shark"},
                     {name = "Piranha", variable = "Piranha"},
-                    {name = "FishBoat", variable = "FishBoat"}
+                    {name = "FishBoat", variable = "FishBoat"}, 
                 }
 
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
                     if v.Name:find("VehicleSeat") then
                         vehicleSeat = v
-                        wait(0.2)
+                        wait(0.2) 
 
                         for _, enemyType in pairs(enemyTypes) do
                             local enemyName = enemyType.name
@@ -8552,12 +8558,12 @@ spawn(function()
 
                             if game:GetService("Workspace").Enemies:FindFirstChild(enemyName) then
                                 game.Players.LocalPlayer.Character.Humanoid.Sit = false
-                                wait(0.1)
+                                wait(0.1) 
                                 _G[enemyVariable] = true
 
                                 -- Menunggu musuh mati
                                 while game:GetService("Workspace").Enemies:FindFirstChild(enemyName) do
-                                    wait(0.2)
+                                    wait(0.2) 
                                 end
 
                                 _G[enemyVariable] = false
@@ -8583,21 +8589,38 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-                wait(0.8)
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
+
+                for _, v in pairs(workspace:GetChildren()) do
+                    if table.find(batuLaut, v.Name) and v:IsA("Model") then
+                        for _, part in pairs(v:GetDescendants()) do
+                            if part:IsA("BasePart") then
+                                part.CanCollide = false
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while wait() do
+        pcall(function()
+            if _G.BiirTrax then
+                wait(0.8) 
                 local targetModelNames = "PirateBrigade"
                 local models = workspace.Boats:GetChildren()
 
-                for _, targetModelName in pairs(targetModelNames) do
+                for _, targetModelName in pairs(targetModelNames) do --ipairs
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 150 -- Kecepatan perahu
+                        local speed = 150 --speed perahu
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
                         local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
-
-                        -- Ubah Posisi Y berdasarkan slider
-                        targetPosition = Vector3.new(targetPosition.X, PosYBoatInWater, targetPosition.Z)
-
+                        
                         while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
                             targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
                             task.wait()
