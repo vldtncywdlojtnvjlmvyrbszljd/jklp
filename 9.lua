@@ -8420,9 +8420,9 @@ M:AddToggle("Auto Finish Zone 5 (fix bug)",_G.dao,function(state)
             end
         end)
 ]]
-SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,_G.BiirTrax,function(v) -- state
-    _G.IncreaseBoatSpeed = v
-    _G.BiirTrax = v
+SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,_G.BiirTrax,function(value) -- state
+    _G.IncreaseBoatSpeed = value
+    _G.BiirTrax = value
 end)
 
 spawn(function()
