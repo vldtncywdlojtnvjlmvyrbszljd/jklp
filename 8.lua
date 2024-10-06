@@ -6464,7 +6464,7 @@ two(CFrame.new(-5100.7085, 29.968586, -6792.45459, -0.33648631, -0.0396691673, 0
 
 wait(13)
 for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-    if v.Name:find("VehicleSeat") then
+    if v.Name:find("VehicleSeats") then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
      if game:GetService("Workspace").Map:FindFirstChild("MysticIsland") then
                            HyperCahaya(game:GetService("Workspace").Map:FindFirstChild("MysticIsland").HumanoidRootPart.CFrame * CFrame.new(0,500,-100))
@@ -8235,7 +8235,7 @@ end
 two(CFrame.new(-30939.830078125, 3.729933261871338, 9256.4208984375))
 
 for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-    if v.Name:find("VehicleSeat") then
+    if v.Name:find("VehicleSeats") then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
     end
 end
@@ -8247,14 +8247,14 @@ spawn(function()
         pcall(function()
             if _G.Anchor then
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-                    if v.Name:find("VehicleSeat") then
+                    if v.Name:find("VehicleSeats") then
                         wait(5) 
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
                         break  -- Menambahkan break untuk keluar dari loop setelah teleportasi pertama
                     end
                 end
 
-                local vehicleSeat = nil
+                local vehicleSeats = nil
                 local enemyTypes = {
                     {name = "Terrorshark", variable = "Terrorshark"},
                     {name = "Shark", variable = "Shark"},
@@ -8264,8 +8264,8 @@ spawn(function()
 
 
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-                    if v.Name:find("VehicleSeat") then
-                        vehicleSeat = v
+                    if v.Name:find("VehicleSeats") then
+                        vehicleSeats = v
                         wait(0.2) 
 
                         for _, enemyType in pairs(enemyTypes) do
@@ -8283,7 +8283,7 @@ spawn(function()
                                 end
 
                                 _G[enemyVariable] = false
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = vehicleSeat.CFrame
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = vehicleSeats.CFrame
                             end
                         end
 
@@ -8331,7 +8331,7 @@ spawn(function()
 
                 for _, model in pairs(models) do
                     if model.Name == targetModelName then
-                        local speed = 10.5
+                        local speed = 350
                         local forwardDirection = model.PrimaryPart.CFrame.lookVector
                         local targetPosition = model.PrimaryPart.Position + forwardDirection * 10
                         
@@ -8375,7 +8375,7 @@ M:AddToggle("Auto Finish Zone 5 (fix bug)",_G.dao,function(state)
             end
         end)
 ]]
-SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,function(value) -- state
+SNt:AddToggle("Speed Boat",true ,_G.IncreaseBoatSpeed,function(value) -- state
     _G.IncreaseBoatSpeed = value
 end)
 
@@ -8384,7 +8384,7 @@ spawn(function()
         pcall(function()
             local vehicleSeats = {}
             for i, v in pairs(game.Workspace.Boats:GetDescendants()) do
-                if v:IsA("VehicleSeat") then
+                if v:IsA("VehicleSeats") then
                     table.insert(vehicleSeats, v)
                 end
             end
@@ -8524,7 +8524,7 @@ end
 two(CFrame.new(-30939.830078125, 3.729933261871338, 9256.4208984375))
 
 for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-    if v.Name:find("VehicleSeat") then
+    if v.Name:find("VehicleSeats") then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
     end
 end
@@ -8536,14 +8536,14 @@ spawn(function()
         pcall(function()
             if _G.BiirTrax then
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-                    if v.Name:find("VehicleSeat") then
+                    if v.Name:find("VehicleSeats") then
                         wait(5) 
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
                         break
                     end
                 end
 
-                local vehicleSeat = nil
+                local vehicleSeats = nil
                 local enemyTypes = {
                     {name = "Terrorshark", variable = "Terrorshark"},
                     {name = "Shark", variable = "Shark"},
@@ -8552,8 +8552,8 @@ spawn(function()
                 }
 
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-                    if v.Name:find("VehicleSeat") then
-                        vehicleSeat = v
+                    if v.Name:find("VehicleSeats") then
+                        vehicleSeats = v
                         wait(0.2) 
 
                         for _, enemyType in pairs(enemyTypes) do
@@ -8571,7 +8571,7 @@ spawn(function()
                                 end
 
                                 _G[enemyVariable] = false
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = vehicleSeat.CFrame
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = vehicleSeats.CFrame
                             end
                         end
 
@@ -8621,10 +8621,10 @@ spawn(function()
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 250
+                        local speed = 350
                         
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
-                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 350 --10
+                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
                         while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
                             targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
