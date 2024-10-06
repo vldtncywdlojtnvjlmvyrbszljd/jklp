@@ -4042,7 +4042,7 @@ local R = Library:AddTab("Auto Raid","18491947999")
 local T = Library:AddTab("Teleport","18477347703")
 local S = Library:AddTab("Shop Dealer","18477410455")
 local D = Library:AddTab("Devil Fruit","18477363100")
-local Mh = Library:AddTab("Mod Hack","104397992902189")
+local Mh = Library:AddTab("Priority","104397992902189")
 local STg = Library:AddTab("Setting","134210609072137")
 local Misc = Library:AddTab("MISC","18477908150")
 
@@ -8251,9 +8251,9 @@ spawn(function()
     end
 end)
 
-SNt:AddSeperator("Frozen & Kitsune")
+SNt:AddSeperator("Frozen Dimension")
 
-SNt:AddToggle('Kill Leviathan', false, function(value)
+SNt:AddToggle('Auto Kill Leviathan', false, function(value)
     _G.AutoKillLeviathan = value
     _G.SafeMode = value -- Safe mode aktif bersamaan dengan Kill Leviathan
     StopTween(_G.AutoKillLeviathan)
@@ -8277,7 +8277,7 @@ local function DetectLeviathanAttack(leviathan)
         "FreezingDeath",
         "Seabed Roar",
         "Sub-ZeroAnnihilation",
-        "Frosty Dive"
+        "FrostyDive"
     }
     
     for _, attackName in ipairs(dangerousAttacks) do
@@ -8420,6 +8420,8 @@ end)
     _G.AutoFrozenDimension = value
     StopTween(_G.AutoFrozenDimension)
     end)
+
+    SNt:AddSeperator("Kitsune Island")
     
     SNt:AddToggle("Teleport Kitsune Island",_G.TeleportKitsune,function(value)
      _G.TeleportKitsune = value
