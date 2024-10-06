@@ -5630,6 +5630,14 @@ end)
 
     STg:AddSeperator("Setting Skill Gun")
 
+    STg:AddToggle("Gun Skill Z",true,function(value)
+        _G.GunSkillZ = value
+    end)
+
+    STg:AddToggle("Skill Gun X",true,function(value)
+        _G.GunSkillX = value
+    end)
+
     STg:AddLabel("Wait Update")
     STg:AddSeperator("Buso Haki State")
     
@@ -8757,99 +8765,85 @@ end)
         end)
     end)
     
-    M:AddToggle("Auto Gun Mastery (manual skill)",_G.AutoFarmGunMastery,function(value)
+    M:AddToggle("Gun Mastery", _G.AutoFarmGunMastery, function(value)
         _G.AutoFarmGunMastery = value
-        _G.AutoClick = value
         StopTween(_G.AutoFarmGunMastery)
+        if _G.AutoFarmGunMastery == false then
+            UseSkillGun = false 
+        end
     end)
-    
-    spawn(function()
-        pcall(function()
-            while wait() do
-                if _G.AutoFarmGunMastery then
-                    local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
-                    if not string.find(QuestTitle, NameMon) then
-                        Magnet = false                                      
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-                    end
-                    if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
-                        StartMasteryGunMagnet = false
-                        CheckQuest()
-                            if BypassTP then
-                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude > 1500 then
-                                    BTP(CFrameQuest)
-                                elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 1500 then
-                                    TP1(CFrameQuest)
-                                else
-                                    TP1(CFrameQuest)
-                                end
+
+spawn(function()
+    while wait() do
+        if _G.AutoFarmGunMastery then
+            pcall(function()
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        HealthThreshold = v.Humanoid.MaxHealth * _G.Kill_At / 100
+
+                        repeat
+                            wait()
+                            if v.Humanoid.Health <= HealthThreshold then
+                                -- Gun skill spam Z and X
+                                AutoHaki()
+                                EquipWeapon(_G.SelectGun)
+                                TP1(v.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0))
+                                v.HumanoidRootPart.CanCollide = false
+                                PosMonGunMastery = v.HumanoidRootPart.CFrame
+                                v.Humanoid.WalkSpeed = 2
+                                v.Head.CanCollide = false
+                                UseSkillGun = true
                             else
-                                TP1(CFrameQuest)
+                                -- Melee attack until HealthThreshold is met
+                                UseSkillGun = false
+                                AutoHaki()
+                                EquipWeapon(_G.SelectWeapon)
+                                TP1(v.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0))
+                                v.HumanoidRootPart.CanCollide = false
+                                v.HumanoidRootPart.Size = Vector3.new(50, 50, 50)
+                                PosMonGunMastery = v.HumanoidRootPart.CFrame
+                                v.Humanoid.WalkSpeed = 2
+                                v.Head.CanCollide = false
                             end
-                        if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 10 then
-                            wait(1.2)
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
-                        end
-                    elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
-                        CheckQuest()
-                        if game:GetService("Workspace").Enemies:FindFirstChild(Mon) then
-                            pcall(function()
-                                for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                                    if v.Name == Mon then
-                                        repeat task.wait()
-                                            if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
-                                                HealthMin = v.Humanoid.MaxHealth * _G.Kill_At/100
-                                                if v.Humanoid.Health <= HealthMin then                                                
-                                                    EquipWeapon(SelectWeaponGun)
-                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
-                                                    v.Humanoid.WalkSpeed = 2
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    v.HumanoidRootPart.Size = Vector3.new(2,2,1)
-                                                    v.Head.CanCollide = false                                 
-                                                    local args = {
-                                                        [1] = v.HumanoidRootPart.Position,
-                                                        [2] = v.HumanoidRootPart
-                                                    }
-                                                    game:GetService("Players").LocalPlayer.Character[SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
-                                                else
-                                                    AutoHaki()
-                                                    EquipWeapon(_G.SelectWeapon)
-                                                    v.Humanoid.WalkSpeed = 2
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    v.Head.CanCollide = false               
-                                                    v.HumanoidRootPart.Size = Vector3.new(60,60,60)
-                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX,PosY,PosZ))
-                                                end
-                                                StartMasteryGunMagnet = true 
-                                                PosMonMasteryGun = v.HumanoidRootPart.CFrame
-                                            else
-                                                StartMasteryGunMagnet = false
-                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-                                            end
-                                        until v.Humanoid.Health <= 0 or not _G.AutoFarmGunMastery or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                        StartMasteryGunMagnet = false
-                                    end
-                                end
-                            end)
-                        else
-                           TP1(CFrameMon)
-                            StartMasteryGunMagnet = false
-                            local Mob = game:GetService("ReplicatedStorage"):FindFirstChild(Mon) 
-                            if Mob then
-                                TP1(Mob.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
-                            else
-                                if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame.Y <= 1 then
-                                    game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = true
-                                    task.wait()
-                                    game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = false
-                                end
-                            end
-                        end 
+
+                            game:GetService('VirtualUser'):CaptureController()
+                            game:GetService('VirtualUser'):Button1Down(Vector2.new(1280, 672))
+                        until not _G.AutoFarmGunMastery or v.Humanoid.Health <= 0 or not v.Parent
                     end
                 end
-            end
-        end)
-    end)
+            end)
+        end
+    end
+end)
+
+-- Function to handle skill Z and X spam
+spawn(function()
+    while wait() do
+        if UseSkillGun then
+            pcall(function()
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        if _G.GunSkillZ then
+                            local args = { [1] = PosMonGunMastery.Position }
+                            game:GetService("Players").LocalPlayer.Character[_G.SelectGun].RemoteEvent:FireServer(unpack(args))
+                            game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
+                            game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
+                        end
+
+                        if _G.GunSkillX then
+                            local args = { [1] = PosMonGunMastery.Position }
+                            game:GetService("Players").LocalPlayer.Character[_G.SelectGun].RemoteEvent:FireServer(unpack(args))
+                            game:GetService("VirtualInputManager"):SendKeyEvent(true, "X", false, game)
+                            game:GetService("VirtualInputManager"):SendKeyEvent(false, "X", false, game)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+    
     
 
     
@@ -14777,12 +14771,9 @@ end)
                     local npcInWorkspace = enemies:FindFirstChild(npcName)
     
                     if npcInReplicated or npcInWorkspace then
-                        local notification = require(game:GetService("ReplicatedStorage").Notification).new("Elite Hunter " .. npcName .. " has spawned")
-                        notification:Display()
-    
-                        -- Menunggu selama 10 detik sebelum menghilangkan notifikasi
-                        wait(10)
-                        notification:Hide()  -- Jika `Hide` atau `Remove` tersedia
+                        local notification = require(game:GetService("ReplicatedStorage").Notification).new("Elite Hunter " .. npcName .. " has spawned"):Display()
+                            wait()
+                            setthreadcontext(5)
                         break
                     end
                 end
