@@ -8912,7 +8912,7 @@ end)
                                 local gunLevel = equippedGun.Level.Value  -- Ambil level dari gun yang sedang digunakan
                                 print("Gun sedang digunakan: " .. equippedGun.Name .. ", Level: " .. gunLevel)
     
-                                -- Logika penggunaan skill berdasarkan gun
+                                -- Gunakan skill Z dan X secara otomatis jika gun sedang dilengkapi
                                 if _G.SkillZ then
                                     local args = {
                                         [1] = PosMonMasteryFruit.Position
@@ -8920,31 +8920,16 @@ end)
                                     equippedGun.RemoteEvent:FireServer(unpack(args))
                                     game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
                                     game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
+                                    wait(0.5) -- Tunggu sejenak sebelum melanjutkan skill berikutnya
                                 end
                                 if _G.SkillX then          
                                     local args = {
-                                        [1] = PosMonMasteryGun.Position
+                                        [1] = PosMonMasteryFruit.Position
                                     }
                                     equippedGun.RemoteEvent:FireServer(unpack(args))
                                     game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
                                     game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-                                end
-                                if _G.SkillC then
-                                    local args = {
-                                        [1] = PosMonMasteryGun.Position
-                                    }
-                                    equippedGun.RemoteEvent:FireServer(unpack(args))
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(true,"C",false,game)
-                                    wait(2)
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(false,"C",false,game)
-                                end
-                                if _G.SkillV then
-                                    local args = {
-                                        [1] = PosMonMasteryGun.Position
-                                    }
-                                    equippedGun.RemoteEvent:FireServer(unpack(args))
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(true,"V",false,game)
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(false,"V",false,game)
+                                    wait(0.5)
                                 end
                             end
                         end
@@ -8952,7 +8937,9 @@ end)
                 end)
             end
         end
-    end) -- belum dicoba
+    end)
+    
+     -- belum dicoba
     
     spawn(function()
         game:GetService("RunService").RenderStepped:Connect(function()
