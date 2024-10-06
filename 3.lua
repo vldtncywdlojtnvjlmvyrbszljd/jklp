@@ -8802,7 +8802,7 @@ end)
         end)
     end)
     
-    M:AddToggle("Blox Fruit Mastery",_G.AutoFarmGunMastery,function(value)
+    M:AddToggle("Gun Mastery",_G.AutoFarmGunMastery,function(value)
         _G.AutoFarmGunMastery = value
         StopTween(_G.AutoFarmGunMastery)
         if _G.AutoFarmGunMastery == false then
@@ -8843,7 +8843,7 @@ end)
                                             repeat task.wait()
                                                 if v.Humanoid.Health <= HealthMs then
                                                     AutoHaki()
-                                                    EquipWeapon(game:GetService("Players").LocalPlayer.Data.Weapons.Gun.Value)
+                                                    EquipWeapon(SelectWeaponGun)
                                                     TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,10,0))
                                                     v.HumanoidRootPart.CanCollide = false
                                                     PosMonMasteryGun = v.HumanoidRootPart.CFrame
@@ -8892,7 +8892,7 @@ end)
                 end)
             end
         end
-    end)
+    end) --logika ini udah bener tinggal auto spam skill
     
 
     
