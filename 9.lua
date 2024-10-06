@@ -6464,7 +6464,7 @@ two(CFrame.new(-5100.7085, 29.968586, -6792.45459, -0.33648631, -0.0396691673, 0
 
 wait(13)
 for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-    if v.Name:find("VehicleSeats") then
+    if v.Name:find("VehicleSeat") then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
      if game:GetService("Workspace").Map:FindFirstChild("MysticIsland") then
                            HyperCahaya(game:GetService("Workspace").Map:FindFirstChild("MysticIsland").HumanoidRootPart.CFrame * CFrame.new(0,500,-100))
@@ -6479,7 +6479,23 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.dao then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
+                local batuLaut = {
+                    "SmallGroup", 
+                    "SmallCluster", 
+                    "MediumGroup", 
+                    "MediumFlat", 
+                    "Large", 
+                    "Largest", 
+                    "RockPart", 
+                    "RockGroup", 
+                    "Coral", 
+                    "BigRock", 
+                    "SmallRock", 
+                    "SeaRock", 
+                    "RockPile", 
+                    "Cliff"
+                }
+                
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
@@ -8235,7 +8251,7 @@ end
 two(CFrame.new(-30939.830078125, 3.729933261871338, 9256.4208984375))
 
 for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-    if v.Name:find("VehicleSeats") then
+    if v.Name:find("VehicleSeat") then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
     end
 end
@@ -8247,14 +8263,14 @@ spawn(function()
         pcall(function()
             if _G.Anchor then
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-                    if v.Name:find("VehicleSeats") then
+                    if v.Name:find("VehicleSeat") then
                         wait(5) 
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
                         break  -- Menambahkan break untuk keluar dari loop setelah teleportasi pertama
                     end
                 end
 
-                local vehicleSeats = nil
+                local vehicleSeat = nil
                 local enemyTypes = {
                     {name = "Terrorshark", variable = "Terrorshark"},
                     {name = "Shark", variable = "Shark"},
@@ -8264,8 +8280,8 @@ spawn(function()
 
 
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-                    if v.Name:find("VehicleSeats") then
-                        vehicleSeats = v
+                    if v.Name:find("VehicleSeat") then
+                        vehicleSeat = v
                         wait(0.2) 
 
                         for _, enemyType in pairs(enemyTypes) do
@@ -8283,7 +8299,7 @@ spawn(function()
                                 end
 
                                 _G[enemyVariable] = false
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = vehicleSeats.CFrame
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = vehicleSeat.CFrame
                             end
                         end
 
@@ -8305,7 +8321,23 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.Anchor then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
+                local batuLaut = {
+                    "SmallGroup", 
+                    "SmallCluster", 
+                    "MediumGroup", 
+                    "MediumFlat", 
+                    "Large", 
+                    "Largest", 
+                    "RockPart", 
+                    "RockGroup", 
+                    "Coral", 
+                    "BigRock", 
+                    "SmallRock", 
+                    "SeaRock", 
+                    "RockPile", 
+                    "Cliff"
+                }
+                
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
@@ -8382,18 +8414,18 @@ end)
 spawn(function()
     while wait() do 
         pcall(function()
-            local vehicleSeats = {}
+            local vehicleSeat = {}
             for i, v in pairs(game.Workspace.Boats:GetDescendants()) do
-                if v:IsA("VehicleSeats") then
-                    table.insert(vehicleSeats, v)
+                if v:IsA("VehicleSeat") then
+                    table.insert(vehicleSeat, v)
                 end
             end
             if _G.IncreaseBoatSpeed then
-                for _, v in pairs(vehicleSeats) do
+                for _, v in pairs(vehicleSeat) do
                     v.MaxSpeed = 350
                 end
             else
-                for _, v in pairs(vehicleSeats) do
+                for _, v in pairs(vehicleSeat) do
                     v.MaxSpeed = 150
                 end
             end
@@ -8450,28 +8482,38 @@ spawn(function()
     while task.wait() do
         pcall(function()
             if _G.WalkWaterBoat then
-                -- Mengatur ukuran tinggi air menjadi lebih tinggi
-                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 80, 1000)
-                
-                -- Mengatur posisi boat agar mengambang lebih tinggi di atas air
+                -- Mengatur posisi boat yang sedang digunakan oleh player agar melayang
                 for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
                     if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
-                        -- Menyimpan posisi boat saat ini
-                        local boatPosition = boat.PrimaryPart.Position
-                        -- Mengatur boat agar mengambang di atas air pada posisi yang lebih tinggi
-                        boat:SetPrimaryPartCFrame(CFrame.new(boatPosition.X, 350, boatPosition.Z))
+                        for _, part in pairs(boat:GetChildren()) do
+                            if part:IsA("VehicleSeat") and part.Occupant then
+                                -- Jika ada pemain yang menggunakan boat, buat terbang
+                                local boatPosition = boat.PrimaryPart.Position
+                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, boatPosition.Y + 50, boatPosition.Z)
+                                break
+                            end
+                        end
                     end
                 end
             else
-                -- Mengembalikan ukuran air ke posisi semula (lebih rendah)
-                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 0, 1000)
-                
-                -- Boat tetap berada di posisi terakhir saat fitur dinonaktifkan
-                -- Tidak mengatur ulang posisi boat
+                -- Mengembalikan posisi boat yang sedang digunakan oleh player ke ketinggian normal
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        for _, part in pairs(boat:GetChildren()) do
+                            if part:IsA("VehicleSeat") and part.Occupant then
+                                -- Jika ada pemain yang menggunakan boat, kembalikan ke posisi normal
+                                local boatPosition = boat.PrimaryPart.Position
+                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 5, boatPosition.Z)
+                                break
+                            end
+                        end
+                    end
+                end
             end
         end)
     end
 end)
+
 
 
 
@@ -8524,7 +8566,7 @@ end
 two(CFrame.new(-30939.830078125, 3.729933261871338, 9256.4208984375))
 
 for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-    if v.Name:find("VehicleSeats") then
+    if v.Name:find("VehicleSeat") then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
     end
 end
@@ -8536,14 +8578,14 @@ spawn(function()
         pcall(function()
             if _G.BiirTrax then
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-                    if v.Name:find("VehicleSeats") then
+                    if v.Name:find("VehicleSeat") then
                         wait(5) 
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
                         break
                     end
                 end
 
-                local vehicleSeats = nil
+                local vehicleSeat = nil
                 local enemyTypes = {
                     {name = "Terrorshark", variable = "Terrorshark"},
                     {name = "Shark", variable = "Shark"},
@@ -8552,8 +8594,8 @@ spawn(function()
                 }
 
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-                    if v.Name:find("VehicleSeats") then
-                        vehicleSeats = v
+                    if v.Name:find("VehicleSeat") then
+                        vehicleSeat = v
                         wait(0.2) 
 
                         for _, enemyType in pairs(enemyTypes) do
@@ -8571,7 +8613,7 @@ spawn(function()
                                 end
 
                                 _G[enemyVariable] = false
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = vehicleSeats.CFrame
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = vehicleSeat.CFrame
                             end
                         end
 
@@ -8593,7 +8635,22 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
+                local batuLaut = {
+                    "SmallGroup", 
+                    "SmallCluster", 
+                    "MediumGroup", 
+                    "MediumFlat", 
+                    "Large", 
+                    "Largest", 
+                    "RockPart", 
+                    "RockGroup", 
+                    "Coral", 
+                    "BigRock", 
+                    "SmallRock", 
+                    "SeaRock", 
+                    "RockPile", 
+                    "Cliff"
+                }                
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
