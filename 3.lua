@@ -8253,6 +8253,169 @@ end)
 
 SNt:AddSeperator("Frozen & Kitsune")
 
+SNt:AddToggle('Kill Leviathan', false, function(value)
+    _G.AutoKillLeviathan = value
+    _G.SafeMode = value -- Safe mode aktif bersamaan dengan Kill Leviathan
+    StopTween(_G.AutoKillLeviathan)
+end)
+
+   -- Konfigurasi Safe Mode
+local SafeModeConfig = {
+    AttackDetectionRange = 100, -- Jarak deteksi serangan
+    SafeDistance = 300,        -- Jarak aman dari Leviathan
+    SafeHeight = 400,          -- Ketinggian aman
+    DodgeDelay = 1,            -- Delay setelah menghindar
+    ReturnDelay = 2            -- Delay sebelum kembali menyerang
+}
+
+-- Fungsi untuk mendeteksi serangan Leviathan
+local function DetectLeviathanAttack(leviathan)
+    local dangerousAttacks = {
+        "TentacleSlam", -- Ganti dengan nama serangan sebenarnya
+        "WaterBeam",
+        "Roar",
+        "FreezingDeath",
+        "Seabed Roar",
+        "Sub-ZeroAnnihilation",
+        "Frosty Dive"
+    }
+    
+    for _, attackName in ipairs(dangerousAttacks) do
+        local attack = leviathan:FindFirstChild(attackName)
+        if attack and attack:IsA("BasePart") then
+            -- Deteksi berdasarkan perubahan ukuran atau posisi
+            if (attack.Size.Magnitude > attack:GetAttribute("NormalSize" or 0)) then
+                return true, attack
+            end
+        end
+    end
+    
+    -- Deteksi berdasarkan animasi
+    local humanoid = leviathan:FindFirstChild("Humanoid")
+    if humanoid and humanoid:FindFirstChild("Animator") then
+        local animator = humanoid.Animator
+        for _, track in pairs(animator:GetPlayingAnimationTracks()) do
+            if track.Name:find("Attack") or track.Name:find("Skill") then
+                return true, track
+            end
+        end
+    end
+    
+    return false, nil
+end
+
+-- Fungsi untuk mendapatkan posisi aman
+local function GetSafePosition(leviathan, detectedAttack)
+    local leviathanPos = leviathan.HumanoidRootPart.Position
+    local playerPos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+    
+    -- Vektor menjauh dari Leviathan
+    local awayVector = (playerPos - leviathanPos).Unit
+    
+    -- Posisi aman: menjauh dan ke atas
+    return leviathanPos + (awayVector * SafeModeConfig.SafeDistance) + Vector3.new(0, SafeModeConfig.SafeHeight, 0)
+end
+
+
+-- Fungsi untuk kembali ke posisi menyerang
+local function ReturnToAttackPosition(targetPos)
+    HyperCahaya(CFrame.new(targetPos))
+end
+
+spawn(function()
+    while wait() do
+        if _G.AutoKillLeviathan and _G.SafeMode then
+            pcall(function()
+                local leviathan = workspace.SeaBeasts:FindFirstChild("Leviathan")
+                if leviathan and leviathan:FindFirstChild("HumanoidRootPart") then
+                    local isAttacking, detectedAttack = DetectLeviathanAttack(leviathan)
+                    
+                    if isAttacking then
+                        --print("Leviathan attack detected! Moving to safe position...")
+                        local safePos = GetSafePosition(leviathan, detectedAttack)
+                        HyperCahaya(CFrame.new(safePos))
+                        
+                        -- Tunggu sampai serangan selesai
+                        wait(SafeModeConfig.DodgeDelay)
+                        
+                        -- Cek lagi apakah masih ada serangan
+                        local stillAttacking, _ = DetectLeviathanAttack(leviathan)
+                        if not stillAttacking then
+                            wait(SafeModeConfig.ReturnDelay)
+                            -- Kembali ke posisi menyerang
+                            local targetPos = GetTargetPosition(leviathan, 0)
+                            ReturnToAttackPosition(targetPos)
+                        end
+                    else
+                        -- Lanjutkan serangan normal
+                        local currentPhase = 1
+                        if leviathan:FindFirstChild("Humanoid") then
+                            local healthPercent = leviathan.Humanoid.Health / leviathan.Humanoid.MaxHealth
+                            if healthPercent <= 0.33 then
+                                currentPhase = 3
+                            elseif healthPercent <= 0.66 then
+                                currentPhase = 2
+                            end
+                        end
+                        
+                        -- Kode serangan yang sudah ada
+                        local targetPos = GetTargetPosition(leviathan, currentPhase * 10)
+                        if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - targetPos).Magnitude > 10 then
+                            HyperCahaya(CFrame.new(targetPos))
+                        end
+                        
+                        local weapons = {"Melee", "Blox Fruit", "Sword", "Gun"}
+                        for _, weaponType in ipairs(weapons) do
+                            useWeaponWithAimbot(weaponType, leviathan.HumanoidRootPart.Position)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- Fungsi untuk visualisasi safe zone (untuk debugging)
+local function visualizeSafeZone(safePos)
+    local sphere = Instance.new("Part")
+    sphere.Shape = Enum.PartType.Ball
+    sphere.Size = Vector3.new(5, 5, 5)
+    sphere.Transparency = 0.5
+    sphere.Anchored = true
+    sphere.CanCollide = false
+    sphere.Position = safePos
+    sphere.Parent = game.Workspace
+    game:GetService("Debris"):AddItem(sphere, 1)
+end
+
+-- Tambahan untuk monitoring health Leviathan
+spawn(function()
+    while wait(1) do
+        if _G.AutoKillLeviathan then
+            pcall(function()
+                local leviathan = workspace.SeaBeasts:FindFirstChild("Leviathan")
+                if leviathan and leviathan:FindFirstChild("Humanoid") then
+                    local health = leviathan.Humanoid.Health
+                    local maxHealth = leviathan.Humanoid.MaxHealth
+                    local healthPercentage = (health / maxHealth) * 100
+                    
+                    -- Update fase dan strategi berdasarkan health
+                    if healthPercentage > 66 then
+                        --print("Leviathan Phase 1 - Health: " .. math.floor(healthPercentage) .. "%")
+                    elseif healthPercentage > 33 then
+                        --print("Leviathan Phase 2 - Health: " .. math.floor(healthPercentage) .. "%")
+                        SafeModeConfig.SafeDistance = 350 -- Meningkatkan jarak aman
+                    else
+                        --print("Leviathan Final Phase - Health: " .. math.floor(healthPercentage) .. "%")
+                        SafeModeConfig.SafeDistance = 400 -- Meningkatkan jarak aman lagi
+                        SafeModeConfig.SafeHeight = 450 -- Meningkatkan ketinggian aman
+                    end
+                end
+            end)
+        end
+    end
+end)
+
    SNt:AddToggle("Teleport Frozen Dimension",_G.AutoFrozenDimension,function(value)
     _G.AutoFrozenDimension = value
     StopTween(_G.AutoFrozenDimension)
@@ -8592,207 +8755,99 @@ SNt:AddSeperator("Frozen & Kitsune")
         end)
     end)
     
-    M:AddToggle("Auto Gun Mastery (manual skill)",_G.Auto_Farm_Mastery_Gun,function(value)
-        _G.Auto_Farm_Mastery_Gun = value
-        StopTween(_G.Auto_Farm_Mastery_Gun)
+    M:AddToggle("Auto Gun Mastery (manual skill)",_G.AutoFarmGunMastery,function(value)
+        _G.AutoFarmGunMastery = value
+        _G.AutoClick = value
+        StopTween(_G.AutoFarmGunMastery)
     end)
     
-    _G.Auto_Farm_Mastery_Gun = value
-			_G.Settings.Auto_Farm_Mastery_Gun = value
-			StopTween(_G.Auto_Farm_Mastery_Gun)
-			if value == false then
-				toTarget(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
-				getgenv().ToTarget(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
-			end
-			SaveSettings()
-		end
-	})
-
-	spawn(function()
-		local gt = getrawmetatable(game)
-		local old = gt.__namecall
-		setreadonly(gt,false)
-		gt.__namecall = newcclosure(function(...)
-			local args = {...}
-			if getnamecallmethod() == "InvokeServer" then 
-				if _G.SelectWeaponGun then
-					if _G.SelectWeaponGun == "Soul Guitar" then
-						if tostring(args[2]) == "TAP" then
-							if  _G.Auto_Farm_Mastery_Gun and _G.UseSkill then
-								args[3] = PositionSkillMasteryGun
-							end
-						end
-					end
-				end
-			end
-			return old(unpack(args))
-		end)
-		setreadonly(gt,true)
-	end)
-	spawn(function()
-		while wait() do
-			for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do  
-				if v:IsA("Tool") then
-					if v.ToolTip == "Gun" then
-						_G.SelectWeaponGun = v.Name
-					end
-				end
-			end
-			for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do  
-				if v:IsA("Tool") then
-					if v.ToolTip == "Gun" then
-						_G.SelectWeaponGun = v.Name
-					end
-				end
-			end
-		end
-	end)
-	spawn(function()
-		while wait() do
-			local MyLevel = game.Players.LocalPlayer.Data.Level.Value
-			local QuestC = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest
-			pcall(function()
-				if _G.Auto_Farm_Mastery_Gun then
-					if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, QuestCheck()[6]) then
-						game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-					end
-					if QuestC.Visible == true then
-						if game:GetService("Workspace").Enemies:FindFirstChild(QuestCheck()[3]) then
-							for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-								if v.Name == QuestCheck()[3] then
-									if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-										PosMon = v.HumanoidRootPart.CFrame
-										MonHumanoidRootPart = v.HumanoidRootPart
-										PositionSkillMasteryGun = v.HumanoidRootPart.Position
-										repeat task.wait()
-											v.HumanoidRootPart.CFrame = PosMon
-											if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.HealthMs/100 then 
-												_G.UseSkill = true
-												getgenv().ToTarget(v.HumanoidRootPart.CFrame * CFrame.new(0,_G.Settings.Distance,_G.Settings.DistanceY))
-												v.HumanoidRootPart.Size = Vector3.new(120,120,120)
-												v.HumanoidRootPart.CanCollide = false
-												v.Head.CanCollide = false
-												BringMobFarm = true
-												v.HumanoidRootPart.Transparency = 1
-												EquipWeapon(_G.SelectWeaponGun)
-												local args = {
-													[1] = v.HumanoidRootPart.Position,
-													[2] = v.HumanoidRootPart
-												}
-												game:GetService("Players").LocalPlayer.Character[_G.SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
-											else
-												_G.UseSkill = false
-												v.HumanoidRootPart.Size = Vector3.new(120,120,120)
-												v.HumanoidRootPart.CanCollide = false
-												v.Head.CanCollide = false
-												BringMobFarm = true
-												EquipWeapon(_G.Select_Weapon)
-												v.HumanoidRootPart.Transparency = 1
-												getgenv().ToTarget(v.HumanoidRootPart.CFrame * CFrame.new(0,_G.Settings.Distance,_G.Settings.DistanceY))
-												AutoHaki()
-												if (v.HumanoidRootPart.CFrame.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 50 then
-													_G.FastAttack = true
-												end
-											end
-										until not _G.Auto_Farm_Mastery_Gun or not v.Parent or v.Humanoid.Health <= 0 or QuestC.Visible == false or not v:FindFirstChild("HumanoidRootPart")
-									end
-								end
-							end
-						else
-							_G.UseSkill = false
-							if _G.Auto_CFrame then
-								getgenv().ToTarget(QuestCheck()[7][SetCFarme] * MethodFarm)
-								if (QuestCheck()[7][SetCFarme].Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 50 then
-									if SetCFarme == nil or SetCFarme == '' then
-										SetCFarme = 1
-										print(SetCFarme)
-									elseif SetCFarme >= #QuestCheck()[7] then
-										SetCFarme = 1
-										print(SetCFarme)
-									end
-									SetCFarme =  SetCFarme + 1
-
-									print(SetCFarme)
-									wait(0.5)
-								end
-							else
-								if AttackRandomType_MonCFrame == 1 then
-									getgenv().ToTarget(QuestCheck()[7][1] * CFrame.new(0,30,20))
-								elseif AttackRandomType_MonCFrame == 2 then
-									getgenv().ToTarget(QuestCheck()[7][1] * CFrame.new(0,30,-20))
-								elseif AttackRandomType_MonCFrame == 3 then
-									getgenv().ToTarget(QuestCheck()[7][1] * CFrame.new(20,30,0))
-								elseif AttackRandomType_MonCFrame == 4 then
-									getgenv().ToTarget(QuestCheck()[7][1] * CFrame.new(0,30,-20))
-								elseif AttackRandomType_MonCFrame == 5 then
-									getgenv().ToTarget(QuestCheck()[7][1] * CFrame.new(-20,30,0))
-								else
-									getgenv().ToTarget(QuestCheck()[7][1] * CFrame.new(0,30,20))
-								end
-							end
-						end
-					else
-						getgenv().ToTarget(QuestCheck()[2])
-						if (QuestCheck()[2].Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 1 then
-							BringMobFarm = false
-							wait(0.2)
-							game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer("StartQuest", QuestCheck()[4], QuestCheck()[1]) wait(0.5)
-							getgenv().ToTarget(QuestCheck()[7][1] * MethodFarm)
-						end
-					end
-				end
-			end)
-		end
-	end)
-	local Cam = workspace.CurrentCamera
-	local hotkey = true
-	function lookAt(target, eye)
-		Cam.CFrame = CFrame.new(target, eye)
-	end
-	function CheckMonFF(trg_part)
-		local nearest = nil
-		local last = math.huge
-		for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-			if v.Name == QuestCheck()[3] then
-				local ePos, vissss = workspace.CurrentCamera:WorldToViewportPoint(v[trg_part].Position)
-				local AccPos = Vector2.new(ePos.x, ePos.y)
-				local mousePos = Vector2.new(workspace.CurrentCamera.ViewportSize.x / 2, workspace.CurrentCamera.ViewportSize.y / 2)
-				local distance = (AccPos - mousePos).magnitude
-				if distance < last and vissss and hotkey == true and distance < 1500 then
-					last = distance
-					nearest = v
-				end
-			end
-		end
-		return nearest
-	end
-	spawn(function()
-		while wait() do
-			if _G.Auto_Farm_Mastery_Gun and _G.UseSkill == true then
-				local closest = CheckMonFF("HumanoidRootPart")
-				lookAt(Cam.CFrame.p, closest:FindFirstChild("HumanoidRootPart").Position)
-				local args = {
-					[1] = PositionSkillMasteryGun
-				}
-				
-				game:GetService("Players").LocalPlayer.Character[_G.SelectWeaponGun].RemoteEvent:FireServer(unpack(args))
-				if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, QuestCheck()[6]) then
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-				end
-			end
-		end
-	end)
-	spawn(function()
-		while wait() do
-			if _G.Auto_Farm_Mastery_Gun and _G.UseSkill == true then
-				local args = {
-					[1] = PositionSkillMasteryGun,
-					[2] = MonHumanoidRootPart
-				}
-				game:GetService("Players").LocalPlayer.Character[_G.SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
-			end
-		end
-	end)
+    spawn(function()
+        pcall(function()
+            while wait() do
+                if _G.AutoFarmGunMastery then
+                    local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
+                    if not string.find(QuestTitle, NameMon) then
+                        Magnet = false                                      
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                    end
+                    if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+                        StartMasteryGunMagnet = false
+                        CheckQuest()
+                            if BypassTP then
+                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude > 1500 then
+                                    BTP(CFrameQuest)
+                                elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 1500 then
+                                    TP1(CFrameQuest)
+                                else
+                                    TP1(CFrameQuest)
+                                end
+                            else
+                                TP1(CFrameQuest)
+                            end
+                        if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+                            wait(1.2)
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
+                        end
+                    elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+                        CheckQuest()
+                        if game:GetService("Workspace").Enemies:FindFirstChild(Mon) then
+                            pcall(function()
+                                for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                                    if v.Name == Mon then
+                                        repeat task.wait()
+                                            if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
+                                                HealthMin = v.Humanoid.MaxHealth * _G.Kill_At/100
+                                                if v.Humanoid.Health <= HealthMin then                                                
+                                                    EquipWeapon(SelectWeaponGun)
+                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
+                                                    v.Humanoid.WalkSpeed = 2
+                                                    v.HumanoidRootPart.CanCollide = false
+                                                    v.HumanoidRootPart.Size = Vector3.new(2,2,1)
+                                                    v.Head.CanCollide = false                                 
+                                                    local args = {
+                                                        [1] = v.HumanoidRootPart.Position,
+                                                        [2] = v.HumanoidRootPart
+                                                    }
+                                                    game:GetService("Players").LocalPlayer.Character[SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
+                                                else
+                                                    AutoHaki()
+                                                    EquipWeapon(_G.SelectWeapon)
+                                                    v.Humanoid.WalkSpeed = 2
+                                                    v.HumanoidRootPart.CanCollide = false
+                                                    v.Head.CanCollide = false               
+                                                    v.HumanoidRootPart.Size = Vector3.new(60,60,60)
+                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX,PosY,PosZ))
+                                                end
+                                                StartMasteryGunMagnet = true 
+                                                PosMonMasteryGun = v.HumanoidRootPart.CFrame
+                                            else
+                                                StartMasteryGunMagnet = false
+                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                                            end
+                                        until v.Humanoid.Health <= 0 or not _G.AutoFarmGunMastery or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                        StartMasteryGunMagnet = false
+                                    end
+                                end
+                            end)
+                        else
+                           TP1(CFrameMon)
+                            StartMasteryGunMagnet = false
+                            local Mob = game:GetService("ReplicatedStorage"):FindFirstChild(Mon) 
+                            if Mob then
+                                TP1(Mob.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
+                            else
+                                if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame.Y <= 1 then
+                                    game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = true
+                                    task.wait()
+                                    game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = false
+                                end
+                            end
+                        end 
+                    end
+                end
+            end
+        end)
+    end)
     
 
     
