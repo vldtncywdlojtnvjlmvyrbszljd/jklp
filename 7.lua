@@ -8451,7 +8451,7 @@ spawn(function()
         pcall(function()
             if _G.WalkWaterBoat then
                 -- Mengatur ukuran tinggi air menjadi lebih tinggi
-                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 0, 1000)
+                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 80, 1000)
                 
                 -- Mengatur posisi boat agar mengambang lebih tinggi di atas air
                 for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
@@ -8622,8 +8622,9 @@ spawn(function()
 
                     if targetModel then
                         local speed = 250
+                        
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
-                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
+                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 350 --10
                         
                         while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
                             targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
