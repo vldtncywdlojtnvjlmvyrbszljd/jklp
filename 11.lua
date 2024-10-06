@@ -8605,8 +8605,10 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
+                --[[
                 local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}                
-
+                ]]
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
                         for _, part in pairs(v:GetDescendants()) do
