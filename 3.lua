@@ -8293,7 +8293,7 @@ spawn(function()
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 10.5
+                        local speed = 350
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
                         local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
@@ -8311,46 +8311,7 @@ spawn(function()
     end
 end)
 
-SNt:AddToggle("Boat Fly", false,_G.WalkWaterBoat, function(value)
-    _G.WalkWaterBoat = value
-end)
 
--- Loop utama
-spawn(function()
-    while task.wait() do
-        pcall(function()
-            if _G.WalkWaterBoat then
-                -- Mengatur posisi boat yang sedang digunakan oleh player agar melayang
-                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
-                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
-                        for _, part in pairs(boat:GetChildren()) do
-                            if part:IsA("VehicleSeat") and part.Occupant then
-                                -- Jika ada pemain yang menggunakan boat, buat terbang
-                                local boatPosition = boat.PrimaryPart.Position
-                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, boatPosition.Y + 50, boatPosition.Z)
-                                break
-                            end
-                        end
-                    end
-                end
-            else
-                -- Mengembalikan posisi boat yang sedang digunakan oleh player ke ketinggian normal
-                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
-                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
-                        for _, part in pairs(boat:GetChildren()) do
-                            if part:IsA("VehicleSeat") and part.Occupant then
-                                -- Jika ada pemain yang menggunakan boat, kembalikan ke posisi normal
-                                local boatPosition = boat.PrimaryPart.Position
-                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 5, boatPosition.Z)
-                                break
-                            end
-                        end
-                    end
-                end
-            end
-        end)
-    end
-end)
 
 SNt:AddSeperator("Frozen & Kitsune")
 
