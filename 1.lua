@@ -4277,6 +4277,8 @@ getgenv().HyperCahayas = function(p)
         wait(1)
         game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
     end)
+
+
 local Library = Update:Window("Brutality Hub V4","WAIT UPDATE | IS UNDER CONSTRUCTION",Enum.KeyCode.RightControl);
 
 local NguyenTien = Library:AddTab("Home","18797343654")
@@ -4952,7 +4954,7 @@ elseif World2 then
 elseif World3 then
  tableMon = {"Pirate Millionaire","Dragon Crew Warrior","Dragon Crew Archer","Female Islander","Giant Islander","Marine Commodore","Marine Rear Admiral","Fishman Raider","Fishman Captain","Forest Pirate","Mythological Pirate","Jungle Pirate","Musketeer Pirate","Reborn Skeleton","Living Zombie","Demonic Soul","Posessed Mummy","Peanut Scout","Peanut President","Ice Cream Chef","Ice Cream Commander","Cookie Crafter","Cake Guard","Baking Staff","Head Baker","Cocoa Warrior","Chocolate Bar Battler","Sweet Thief","Candy Rebel","Candy Pirate","Snow Demon","Isle Outlaw","Island Boy","Sun-kissed Warrior","Isle Champion"}
 end
-
+   
     Main:AddToggle("Auto Farm Level",_G.AutoFarm,function(value)
         _G.AutoFarm = value
         StopTween(_G.AutoFarm)
@@ -5057,8 +5059,6 @@ end
         end
     end)
 
-
-
    Main:AddToggle("Auto Farm Nearest ",_G.AutoFarmNearest,function(value)
    _G.AutoFarmNearest = value
    StopTween(_G.AutoFarmNearest)
@@ -5106,61 +5106,15 @@ end)
         while wait() do
             pcall(function()
                 if _G.StopItemsChest or not AutoFarmChest then
-                    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fish of Darkness") then
+                    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fist of Darkness") then
                         _G.ChestBypass = false
                         AutoFarmChest = false
                         topos(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
-                        break --tambahan break untuk menghentikan pergerakan jika sudah menemukan item
                     end
                 end
             end)
         end
     end)
-
-Main:AddToggle("Auto Get FOD or God's Chalice (beta)", false, function(value)
-    AutoFarmChest2 = value
-    _G.StopItemsChest = value
-    StopTween(AutoFarmChest2 or _G.StopItemsChest)
-end)
-    
-    _G.MagnitudeAdd = 0
-    
-    spawn(function()
-        while wait() do 
-            if AutoFarmChest2 then
-                local chestWithLegendaryItemFound = false
-
-                for i, v in pairs(game:GetService("Workspace"):GetChildren()) do 
-                    if v.Name:find("Chest") then
-                        if game:GetService("Workspace"):FindFirstChild(v.Name) then
-                            local godsChalice = v:FindFirstChild("God's Chalice")
-                            local fishOfDarkness = v:FindFirstChild("Fish of Darkness")
-    
-                            if godsChalice or fishOfDarkness then
-                                chestWithLegendaryItemFound = true
-
-                                repeat wait()
-                                    if game:GetService("Workspace"):FindFirstChild(v.Name) then
-                                        HyperCahaya(v.CFrame)
-                                    end
-                                until AutoFarmChest2 == false or not v.Parent
-
-                                HyperCahaya(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
-
-                                AutoFarmChest2 = false
-                                _G.StopItemsChest = false
-                                break
-                            end
-                        end
-                    end
-                end
-                if not chestWithLegendaryItemFound then
-                end
-                _G.MagnitudeAdd = _G.MagnitudeAdd + 1500
-            end
-        end
-    end)
----farm chest khusus untuk fod atau god chalice    
     
 Main:AddToggle("Auto Farm Chest | Safe ",false,function(value)
  AutoFarmChest = value
@@ -5434,11 +5388,11 @@ for i, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
 end
 
 local bossCheck = {}
-local bossName = { "The Gorilla King", "Bobby", "The Saw", "Yeti", "Mob Leader", "Vice Admiral", "Warden", "Chief Warden", "Swan", "Saber Expert", "Magma Admiral", "Fishman Lord", "Wysper", "Thunder God", "Cyborg", "Greybeard", "Diamond", "Jeremy", "Fajita", "Don Swan", "Smoke Admiral", "Awakened Ice Admiral", "Tide Keeper", "Order", "Darkbeard", "Cursed Captain", "Stone", "Island Empress", "Kilo Admiral", "Captain Elephant", "Beautiful Pirate", "Longma", "Cake Queen", "Soul Reaper", "Rip_Indra", "Cake Prince", "Dough King" }
+local bossNames = { "The Gorilla King", "Bobby", "The Saw", "Yeti", "Mob Leader", "Vice Admiral", "Warden", "Chief Warden", "Swan", "Saber Expert", "Magma Admiral", "Fishman Lord", "Wysper", "Thunder God", "Cyborg", "Greybeard", "Diamond", "Jeremy", "Fajita", "Don Swan", "Smoke Admiral", "Awakened Ice Admiral", "Tide Keeper", "Order", "Darkbeard", "Cursed Captain", "Stone", "Island Empress", "Kilo Admiral", "Captain Elephant", "Beautiful Pirate", "Longma", "Cake Queen", "Soul Reaper", "Rip_Indra", "Cake Prince", "Dough King" }
 
 
 if World1 or World2 or World3 then
-    for _, bossName in pairs(bossName) do
+    for _, bossName in pairs(bossNames) do
         if game:GetService("ReplicatedStorage"):FindFirstChild(bossName) then
             table.insert(bossCheck, bossName)
         end
@@ -5651,7 +5605,7 @@ spawn(function()
                 pcall(function()
                     CameraShaker:Stop()
                     y.activeController.timeToNextAttack = (math.huge^math.huge^math.huge)
-                    y.activeController.timeToNextAttack = 3 --0
+                    y.activeController.timeToNextAttack = 0
                     y.activeController.hitboxMagnitude = 60
                     y.activeController.active = false
                     y.activeController.timeToNextBlock = 0
@@ -5673,18 +5627,18 @@ spawn(function()
         end
     end)
 end)
-
+    
 spawn(function()
-    while wait(.1) do
-        if _G.HyperSonic then
-            pcall(function()
-                repeat task.wait(_G.AttackDelay) -- use this intead of random numbers
-                    AttackHit()
-                until not _G.HyperSonic
-            end)
-        end
+while wait(.1) do
+    if _G.HyperSonic then
+        pcall(function()
+            repeat task.wait(0,09)
+                AttackHit()
+            until not _G.HyperSonic
+        end)
     end
-    end) 
+end
+end)    
     
 Main:AddToggle("Auto Click",false,function(value)
 _G.AutoClick = value
@@ -6525,7 +6479,8 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.dao then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}
+                
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
@@ -8351,7 +8306,8 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.Anchor then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}
+                
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
@@ -8377,7 +8333,7 @@ spawn(function()
 
                 for _, model in pairs(models) do
                     if model.Name == targetModelName then
-                        local speed = 10.5
+                        local speed = 350
                         local forwardDirection = model.PrimaryPart.CFrame.lookVector
                         local targetPosition = model.PrimaryPart.Position + forwardDirection * 10
                         
@@ -8421,59 +8377,119 @@ M:AddToggle("Auto Finish Zone 5 (fix bug)",_G.dao,function(state)
             end
         end)
 ]]
-SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,_G.BiirTrax,function(value) -- state
+SNt:AddToggle("Speed Boat",false ,_G.IncreaseBoatSpeed,function(value) -- state
     _G.IncreaseBoatSpeed = value
-    _G.BiirTrax = value
 end)
 
 spawn(function()
     while wait() do 
         pcall(function()
-            local vehicleSeats = {}
+            local vehicleSeat = {}
             for i, v in pairs(game.Workspace.Boats:GetDescendants()) do
                 if v:IsA("VehicleSeat") then
-                    table.insert(vehicleSeats, v)
+                    table.insert(vehicleSeat, v)
                 end
             end
             if _G.IncreaseBoatSpeed then
-                for _, v in pairs(vehicleSeats) do
+                for _, v in pairs(vehicleSeat) do
                     v.MaxSpeed = 350
                 end
             else
-                for _, v in pairs(vehicleSeats) do
+                for _, v in pairs(vehicleSeat) do
                     v.MaxSpeed = 150
                 end
             end
         end)
     end
 end)
-
-
 --[[
-PosYBoatInWater = 0
-SNt:AddSlider("Position Y Boat On Water",true, 0, 80, 200, function(value)
-    PosYBoatInWater = value
+-- Menambahkan fungsi untuk toggle
+SNt:AddToggle("Boat Fly", false, function(value)
+    _G.WalkWaterBoat = value
 end)
 
-
+-- Loop utama
 spawn(function()
     while task.wait() do
         pcall(function()
-
-            local boat = workspace:FindFirstChild("targetModelName") 
-            if boat and boat.PrimaryPart then
-
-                local currentPosition = boat.PrimaryPart.Position
-                local newYPosition = PosYBoatInWater
+            if _G.WalkWaterBoat then
+                -- Mengatur ukuran tinggi air menjadi lebih tinggi
+                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 352, 1000)
                 
-                boat:SetPrimaryPartCFrame(CFrame.new(currentPosition.X, newYPosition, currentPosition.Z))
+                -- Mengatur posisi boat agar mengambang lebih tinggi di atas air
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        local boatPosition = boat.PrimaryPart.Position
+                        -- Tinggi boat ketika air berada di posisi tinggi
+                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 350, boatPosition.Z) --117
+                    end
+                end
+            else
+                -- Mengembalikan ukuran air ke posisi semula (lebih rendah)
+                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 0, 1000)
+                
+                -- Mengembalikan posisi boat ke posisi rendah sesuai dengan ketinggian air rendah
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        local boatPosition = boat.PrimaryPart.Position
+                        -- Posisi boat ketika air di posisi rendah
+                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 5, boatPosition.Z)
+                    end
+                end
             end
         end)
     end
 end)
 ]]
 
-SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
+-- Menambahkan fungsi untuk toggle
+SNt:AddToggle("Boat Fly", false, function(value)
+    _G.WalkWaterBoat = value
+end)
+
+-- Loop utama
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.WalkWaterBoat then
+                -- Mengatur posisi boat yang sedang digunakan oleh player agar melayang
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        for _, part in pairs(boat:GetChildren()) do
+                            if part:IsA("VehicleSeat") and part.Occupant then
+                                -- Jika ada pemain yang menggunakan boat, buat terbang
+                                local boatPosition = boat.PrimaryPart.Position
+                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, boatPosition.Y + 50, boatPosition.Z)
+                                break
+                            end
+                        end
+                    end
+                end
+            else
+                -- Mengembalikan posisi boat yang sedang digunakan oleh player ke ketinggian normal
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        for _, part in pairs(boat:GetChildren()) do
+                            if part:IsA("VehicleSeat") and part.Occupant then
+                                -- Jika ada pemain yang menggunakan boat, kembalikan ke posisi normal
+                                local boatPosition = boat.PrimaryPart.Position
+                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 5, boatPosition.Z)
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+
+
+
+
+
+    SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
     if state then
         _G.BiirTrax = true
     else
@@ -8589,7 +8605,8 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
+
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}                
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
@@ -8617,7 +8634,8 @@ spawn(function()
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 350
+                        local speed = 200
+                        
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
                         local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
@@ -8634,7 +8652,6 @@ spawn(function()
         end)
     end
 end)
-
 
 SNt:AddSeperator("Frozen & Kitsune")
 
@@ -14130,9 +14147,7 @@ end)
         "Control-Control",
         "Soul-Soul",
         "Dragon-Dragon",
-        "Leopard-Leopard",
-        "T-Rex-T-Rex",
-        "Kitsune-Kitsune"
+        "Leopard-Leopard"
     }
     
     local Remote_GetFruits = game.ReplicatedStorage:FindFirstChild("Remotes").CommF_:InvokeServer("GetFruits");
@@ -14429,7 +14444,7 @@ closeButton.MouseButton1Click:Connect(closeGUI)
                     if _G.FruitCheck then
                         for i,v in pairs(game.Workspace:GetChildren()) do
                             if string.find(v.Name, "Fruit") then
-                                require(game:GetService("ReplicatedStorage").Notification).new("Notification Fruit Spawn"):Display();
+                                require(game:GetService("ReplicatedStorage").Notification).new("Fruit Spawn"):Display();
                                 wait()
                                 setthreadcontext(5)
                             end
@@ -14899,9 +14914,9 @@ end)
 	end)
 
     Mh:AddSeperator("Auto Hop Server")
-    Mh:AddLabel("Click And Wait For Loading")
+    Mh:AddLabel("Click And Wait 5 Second")
 
-    Mh:AddToggle("God's Chalice & FOD Notify", false, _G.NotifItemChestcheck, function(value)
+Mh:AddToggle("God's Chalice & FOD Notify", false, _G.NotifItemChestcheck, function(value)
         _G.NotifItemChestcheck = value
     end)
     
@@ -14967,7 +14982,6 @@ end
 end
 end
 end)
-
 
     Mh:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
         _G.Hopfinddao = value
