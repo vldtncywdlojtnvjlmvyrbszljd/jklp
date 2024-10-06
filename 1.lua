@@ -8804,7 +8804,6 @@ end)
     
     M:AddToggle("Auto Gun Mastery",_G.AutoFarmGunMastery,function(value)
         _G.AutoFarmGunMastery = value
-        UseSkillGun = value
         StopTween(_G.AutoFarmGunMastery)
     end)
     
