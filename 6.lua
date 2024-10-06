@@ -8460,7 +8460,7 @@ end)
 
 
 SNt:AddSeperator("Frozen & Kitsune")
-
+--[[
 -- Modifikasi script utama
 SNt:AddToggle('Kill Leviathan', false, function(value)
     _G.AutoKillLeviathan = value
@@ -8624,7 +8624,7 @@ spawn(function()
         end
     end
 end)
-
+]]
    SNt:AddToggle("Teleport Frozen Dimension",_G.AutoFrozenDimension,function(value)
     _G.AutoFrozenDimension = value
     StopTween(_G.AutoFrozenDimension)
