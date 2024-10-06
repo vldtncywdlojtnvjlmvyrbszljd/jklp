@@ -8294,16 +8294,54 @@ spawn(function()
 
                     if targetModel then
                         local speed = 10.5
-                        local hoverHeight = 50 -- Atur ketinggian terbang di sini
-                        
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
-                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10 + Vector3.new(0, hoverHeight, 0) -- Tambah ketinggian pada sumbu Y
+                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
                         while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
-                            -- Tambahkan logika ketinggian (hoverHeight) dan kecepatan (speed)
-                            targetModel:SetPrimaryPartCFrame(CFrame.new(targetModel.PrimaryPart.Position + forwardDirection * speed + Vector3.new(0, hoverHeight, 0)))
+                            targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
                             task.wait()
                             if not _G.BiirTrax then
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+SNt:AddToggle("Boat Fly", false,_G.WalkWaterBoat, function(value)
+    _G.WalkWaterBoat = value
+end)
+
+-- Loop utama
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.WalkWaterBoat then
+                -- Mengatur posisi boat yang sedang digunakan oleh player agar melayang
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        for _, part in pairs(boat:GetChildren()) do
+                            if part:IsA("VehicleSeat") and part.Occupant then
+                                -- Jika ada pemain yang menggunakan boat, buat terbang
+                                local boatPosition = boat.PrimaryPart.Position
+                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, boatPosition.Y + 50, boatPosition.Z)
+                                break
+                            end
+                        end
+                    end
+                end
+            else
+                -- Mengembalikan posisi boat yang sedang digunakan oleh player ke ketinggian normal
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        for _, part in pairs(boat:GetChildren()) do
+                            if part:IsA("VehicleSeat") and part.Occupant then
+                                -- Jika ada pemain yang menggunakan boat, kembalikan ke posisi normal
+                                local boatPosition = boat.PrimaryPart.Position
+                                boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 5, boatPosition.Z)
                                 break
                             end
                         end
