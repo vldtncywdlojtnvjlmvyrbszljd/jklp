@@ -8765,14 +8765,11 @@ end)
         end)
     end)
     
-    M:AddToggle("Auto Gun Mastery (manual skill)",_G.AutoFarmGunMastery,_G.GunSkillZ,_G.GunSkillX,function(value)
+    M:AddToggle("Auto Gun Mastery (manual skill)",function(value)
         _G.AutoFarmGunMastery = value
         _G.GunSkillZ = value
         _G.GunSkillX = value
         StopTween(_G.AutoFarmGunMastery)
-        if _G.AutoFarmGunMastery == false then
-            UseSkillGun = false 
-        end
     end)
     
     spawn(function()
@@ -8817,15 +8814,13 @@ end)
                                                     v.Humanoid.WalkSpeed = 2
                                                     v.HumanoidRootPart.CanCollide = false
                                                     v.HumanoidRootPart.Size = Vector3.new(2,2,1)
-                                                    v.Head.CanCollide = false           
-                                                    UseSkillGun = true                 
+                                                    v.Head.CanCollide = false                                 
                                                     local args = {
                                                         [1] = v.HumanoidRootPart.Position,
                                                         [2] = v.HumanoidRootPart
                                                     }
                                                     game:GetService("Players").LocalPlayer.Character[SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
                                                 else
-                                                    UseSkillGun = false
                                                     AutoHaki()
                                                     EquipWeapon(_G.SelectWeapon)
                                                     v.Humanoid.WalkSpeed = 2
@@ -8840,8 +8835,7 @@ end)
                                                 StartMasteryGunMagnet = false
                                                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
                                             end
-                                        until not _G.AutoFarmGunMastery or v.Humanoid.Health <= 0 or not v.Parent or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                        UseSkillGun = false
+                                        until v.Humanoid.Health <= 0 or not _G.AutoFarmGunMastery or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
                                         StartMasteryGunMagnet = false
                                     end
                                 end
@@ -8849,7 +8843,6 @@ end)
                         else
                            TP1(CFrameMon)
                             StartMasteryGunMagnet = false
-                            UseSkillGun = false
                             local Mob = game:GetService("ReplicatedStorage"):FindFirstChild(Mon) 
                             if Mob then
                                 TP1(Mob.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
