@@ -8210,10 +8210,10 @@ spawn(function()
 
                 if targetModel and targetModel.PrimaryPart then
                     -- Atur kecepatan pergerakan ke depan
-                    local speed = 50 -- Kecepatan maju
+                    local speed = 100 -- Kecepatan maju
                     -- Atur ketinggian perahu untuk efek melayang
                     local hoverHeight = 50 -- Ketinggian melayang
-                    local hoverSpeed = 2 -- Kecepatan melayang naik turun
+                    local hoverSpeed = 0 -- Kecepatan melayang naik turun
 
                     while _G.BiirTrax do
                         -- Mengambil arah orientasi dari PrimaryPart
@@ -8233,7 +8233,7 @@ spawn(function()
                         -- Mengatur posisi dan orientasi model
                         targetModel:SetPrimaryPartCFrame(newCFrame)
 
-                        task.wait(0.01) -- Menunggu sedikit sebelum update selanjutnya
+                        task.wait() --0.01 -- Menunggu sedikit sebelum update selanjutnya
                     end
                 end
             end
