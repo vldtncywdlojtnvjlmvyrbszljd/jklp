@@ -8613,11 +8613,11 @@ spawn(function()
                 local targetModelNames = "PirateBrigade"
                 local models = workspace.Boats:GetChildren()
 
-                for _, targetModelName in pairs(targetModelNames) do --ipairs
+                for _, targetModelName in ipairs(targetModelNames) do
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 150 --speed perahu
+                        local speed = 150
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
                         local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
