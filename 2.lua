@@ -8626,7 +8626,7 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-                wait(0.8) 
+
                 local targetModelNames = "PirateBrigade"
                 local models = workspace.Boats:GetChildren()
 
@@ -8634,13 +8634,17 @@ spawn(function()
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 150
+                        local speed = 20
+                        local hoverHeight = 50 -- Atur ketinggian terbang di sini
                         
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
-                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
+                        -- Tambahkan ketinggian pada posisi tujuan (targetPosition)
+                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10 + Vector3.new(0, hoverHeight, 0)
                         
+                        -- Pergerakan boat
                         while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
-                            targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
+                            -- Perbarui CFrame boat dengan menambah ketinggian (hoverHeight) dan kecepatan (speed)
+                            targetModel:SetPrimaryPartCFrame(CFrame.new(targetModel.PrimaryPart.Position + forwardDirection * speed + Vector3.new(0, hoverHeight, 0)))
                             task.wait()
                             if not _G.BiirTrax then
                                 break
@@ -8652,6 +8656,7 @@ spawn(function()
         end)
     end
 end)
+
 
 SNt:AddSeperator("Frozen & Kitsune")
 
