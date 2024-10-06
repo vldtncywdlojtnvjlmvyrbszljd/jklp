@@ -8401,6 +8401,47 @@ spawn(function()
     end
 end)
 
+-- Menambahkan fungsi untuk toggle
+SNt:AddToggle("Boat Fly", false, function(value)
+    _G.WalkWaterBoat = value
+end)
+
+-- Loop utama
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.WalkWaterBoat then
+                -- Mengatur ukuran tinggi air menjadi lebih tinggi
+                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 112, 1000)
+                
+                -- Mengatur posisi boat agar mengambang lebih tinggi di atas air
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        local boatPosition = boat.PrimaryPart.Position
+                        -- Tinggi boat ketika air berada di posisi tinggi
+                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 200, boatPosition.Z) --117
+                    end
+                end
+            else
+                -- Mengembalikan ukuran air ke posisi semula (lebih rendah)
+                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 0, 1000)
+                
+                -- Mengembalikan posisi boat ke posisi rendah sesuai dengan ketinggian air rendah
+                for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                    if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
+                        local boatPosition = boat.PrimaryPart.Position
+                        -- Posisi boat ketika air di posisi rendah
+                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 5, boatPosition.Z)
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+
+
+
     SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
     if state then
         _G.BiirTrax = true
@@ -8545,7 +8586,7 @@ spawn(function()
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 150
+                        local speed = 250
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
                         local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
