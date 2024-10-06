@@ -8292,26 +8292,22 @@ spawn(function()
                 for _, targetModelName in ipairs(targetModelNames) do
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
-                    if targetModel and targetModel:FindFirstChild("PrimaryPart") then
-                        local speed = 350
-                        local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
-                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
-                        local hoverHeight = 3
-                        local hoverSpeed = 0.05
+                    if targetModel and targetModel.PrimaryPart then
+                        local speed = 350 -- Mengatur kecepatan gerakan maju (lebih rendah agar lebih stabil)
+                        local hoverHeight = 50
+                        local hoverSpeed = 10 -- Kecepatan melayang naik turun
 
-                        while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
-                            -- Pergerakan maju
+                        while _G.BiirTrax do
+                            -- Gerakan maju
+                            local forwardDirection = targetModel.PrimaryPart.CFrame.LookVector
                             targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
 
-                            -- Pergerakan melayang
+                            -- Gerakan melayang
                             local currentCFrame = targetModel.PrimaryPart.CFrame
-                            local newY = math.sin(tick() * hoverSpeed) * hoverHeight
-                            targetModel:SetPrimaryPartCFrame(currentCFrame + Vector3.new(0, newY, 0))
+                            local hoverOffset = math.sin(tick() * hoverSpeed) * 0.1 -- Amplitudo kecil untuk stabilitas
+                            targetModel:SetPrimaryPartCFrame(currentCFrame + Vector3.new(0, hoverOffset, 0))
 
-                            task.wait()
-                            if not _G.BiirTrax then
-                                break
-                            end
+                            task.wait(0.1)
                         end
                     end
                 end
@@ -8319,6 +8315,7 @@ spawn(function()
         end)
     end
 end)
+
 
 
 
