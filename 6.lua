@@ -14737,41 +14737,59 @@ end)
     
     
     
-    Mh:AddToggle("Mirage Island Notify",false ,_G.NotifMirragecheck,function(value)
-        _G.NotifMirragecheck = value
-        end)
-        
-        spawn(function()
-                while wait(.1) do
-                    if _G.NotifMirragecheck then
-                        for i,v in pairs(game.Workspace._WorldOrigin.Locations:FindFirstChild('Mirage Island')) do
-                            if string.find(v.Name, "Mirage Island") then
-                                require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
-                                wait()
-                                setthreadcontext(5)
-                            end
-                        end
-                    end
-                  end
-                 end)
+    Mh:AddToggle("Mirage Island Notify", false, _G.NotifMirageIslandCheck, function(value)
+        _G.NotifMirageIslandCheck = value
+    end)
+    
+    spawn(function()
+        while wait(1) do 
+            if _G.NotifMirageIslandCheck then
+                -- Coba cari objek dengan nama "Mirage Island" di Workspace
+                local mirageIsland = game:GetService("Workspace"):FindFirstChild("Mirage Island")
+                
+                if mirageIsland then
+                    -- Notifikasi jika Mirage Island terdeteksi
+                    require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island detected in the server!"):Display()
+    
+                    -- Notifikasi hilang setelah 10 detik
+                    wait(10)
+                    -- Kamu bisa menggunakan perintah ini untuk menghentikan notifikasi
+                    -- atau menambahkan efek lain setelah notifikasi muncul
+                end
+            end
+        end
+    end)
+    
 
-    Mh:AddToggle("Elite Hunter Notification",false ,_G.EliteCheck,function(value)
-_G.EliteCheck = value
-end)
-        
-spawn(function()
-while wait(.1) do
-if _G.EliteCheck then
-for i,v in pairs(game:GetService("ReplicatedStorage"):FindFirstChild("Diablo") or game:GetService("ReplicatedStorage"):FindFirstChild("Deandre") or game:GetService("ReplicatedStorage"):FindFirstChild("Urban") or game:GetService("Workspace").Enemies:FindFirstChild("Diablo") or game:GetService("Workspace").Enemies:FindFirstChild("Deandre") or game:GetService("Workspace").Enemies:FindFirstChild("Urban")) do
-if string.find(v.Name, "Diablo", "Deandre", "Urban") then
-require(game:GetService("ReplicatedStorage").Notification).new("Notification Elite Hunter Spawn"):Display();
-wait()
-setthreadcontext(5)
-end
-end
-end
-end
-end)
+    Mh:AddToggle("Elite Hunter Notification", false, _G.EliteCheck, function(value)
+        _G.EliteCheck = value
+    end)
+    
+    spawn(function()
+        while wait(0.1) do
+            if _G.EliteCheck then
+                local enemies = game:GetService("Workspace").Enemies
+                local eliteNPCs = {"Diablo", "Deandre", "Urban"}
+    
+                -- Cek di Workspace dan ReplicatedStorage
+                for _, npcName in pairs(eliteNPCs) do
+                    local npcInReplicated = game:GetService("ReplicatedStorage"):FindFirstChild(npcName)
+                    local npcInWorkspace = enemies:FindFirstChild(npcName)
+    
+                    if npcInReplicated or npcInWorkspace then
+                        local notification = require(game:GetService("ReplicatedStorage").Notification).new("Elite Hunter " .. npcName .. " has spawned")
+                        notification:Display()
+    
+                        -- Menunggu selama 10 detik sebelum menghilangkan notifikasi
+                        wait(10)
+                        notification:Hide()  -- Jika `Hide` atau `Remove` tersedia
+                        break
+                    end
+                end
+            end
+        end
+    end)
+    
 
     Mh:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
         _G.Hopfinddao = value
