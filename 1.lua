@@ -8774,72 +8774,76 @@ end)
     end)
 
     spawn(function()
-        while wait() do
-            if _G.AutoFarmGunMastery then
-                pcall(function()
+        pcall(function()
+            while wait() do
+                if _G.AutoFarmGunMastery then
                     local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
                     if not string.find(QuestTitle, NameMon) then
-                        Magnet = false
-                        UseSkillGun = false
+                        Magnet = false                                      
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
                     end
                     if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
                         StartMasteryGunMagnet = false
-                        UseSkillGun = false
                         CheckQuest()
-                        repeat wait()
-                            TP1(CFrameQuest)
-                        until (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 3 or not _G.AutoFarmGunMastery
-                        if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 then
-                            wait(0.1)
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest",NameQuest,LevelQuest)
-                            wait(0.1)
+                            if BypassTP then
+                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude > 1500 then
+                                    BTP(CFrameQuest)
+                                elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 1500 then
+                                    TP1(CFrameQuest)
+                                else
+                                    TP1(CFrameQuest)
+                                end
+                            else
+                                TP1(CFrameQuest)
+                            end
+                        if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+                            wait(1.2)
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
                         end
                     elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
                         CheckQuest()
                         if game:GetService("Workspace").Enemies:FindFirstChild(Mon) then
-                            for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                                if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                            pcall(function()
+                                for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                     if v.Name == Mon then
-                                        if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
-                                            HealthMs = v.Humanoid.MaxHealth * _G.Kill_At/100
-                                            repeat task.wait()
-                                                if v.Humanoid.Health <= HealthMs then
-                                                    AutoHaki()
-                                                    EquipWeapon(game:GetService("Players").LocalPlayer.Data.Weapons.Gun.Value)
-                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,10,0))
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    PosMonMasteryGun = v.HumanoidRootPart.CFrame
+                                        repeat task.wait()
+                                            if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
+                                                HealthMin = v.Humanoid.MaxHealth * _G.Kill_At/100
+                                                if v.Humanoid.Health <= HealthMin then                                                
+                                                    EquipWeapon(SelectWeaponGun)
+                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
                                                     v.Humanoid.WalkSpeed = 2
-                                                    v.Head.CanCollide = false
-                                                    UseSkillGun = true
-                                                else           
-                                                    UseSkillGun = false 
+                                                    v.HumanoidRootPart.CanCollide = false
+                                                    v.HumanoidRootPart.Size = Vector3.new(2,2,1)
+                                                    v.Head.CanCollide = false                                 
+                                                    local args = {
+                                                        [1] = v.HumanoidRootPart.Position,
+                                                        [2] = v.HumanoidRootPart
+                                                    }
+                                                    game:GetService("Players").LocalPlayer.Character[SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
+                                                else
                                                     AutoHaki()
                                                     EquipWeapon(_G.SelectWeapon)
-                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX,PosY,PosZ))
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    v.HumanoidRootPart.Size = Vector3.new(50,50,50)
-                                                    PosMonMasteryGun = v.HumanoidRootPart.CFrame
                                                     v.Humanoid.WalkSpeed = 2
-                                                    v.Head.CanCollide = false
+                                                    v.HumanoidRootPart.CanCollide = false
+                                                    v.Head.CanCollide = false               
+                                                    v.HumanoidRootPart.Size = Vector3.new(60,60,60)
+                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX,PosY,PosZ))
                                                 end
-                                                StartMasteryGunMagnet = true
-                                                game:GetService'VirtualUser':CaptureController()
-                                                game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
-                                            until not _G.AutoFarmGunMastery or v.Humanoid.Health <= 0 or not v.Parent or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                        else
-                                            UseSkillGun = false
-                                            StartMasteryGunMagnet = false
-                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-                                        end
+                                                StartMasteryGunMagnet = true 
+                                                PosMonMasteryGun = v.HumanoidRootPart.CFrame
+                                            else
+                                                StartMasteryGunMagnet = false
+                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                                            end
+                                        until v.Humanoid.Health <= 0 or not _G.AutoFarmGunMastery or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                        StartMasteryGunMagnet = false
                                     end
                                 end
-                            end
+                            end)
                         else
-                            TP1(CFrameMon)
-                            StartMasteryGunMagnet = false   
-                            UseSkillGun = false 
+                           TP1(CFrameMon)
+                            StartMasteryGunMagnet = false
                             local Mob = game:GetService("ReplicatedStorage"):FindFirstChild(Mon) 
                             if Mob then
                                 TP1(Mob.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
@@ -8850,306 +8854,11 @@ end)
                                     game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = false
                                 end
                             end
-                        end
+                        end 
                     end
-                end)
+                end
             end
-        end
-    end)
-    
-    spawn(function()
-        while wait() do
-            if UseSkillGun then
-                pcall(function()
-                    CheckQuest()
-                    for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if game:GetService("Players").LocalPlayer.Character:FindFirstChild(game:GetService("Players").LocalPlayer.Data.Weapons.Gun.Value) then
-                            MasGun = game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Data.Weapons.Gun.Value].Level.Value
-                        elseif game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(game:GetService("Players").LocalPlayer.Data.Weapons.Gun.Value) then
-                            MasGun = game:GetService("Players").LocalPlayer.Backpack[game:GetService("Players").LocalPlayer.Data.Weapons.Gun.Value].Level.Value
-                        end
-                        -- Slingshot
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Slingshot") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Flintlock
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Flintlock") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Musket
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Musket") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Acidum Rifle
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Acidum Rifle") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Bizarre Rifle
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Bizarre Rifle") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Cannon
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Cannon") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Refined Flintlock
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Refined Flintlock") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Refined Musket
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Refined Musket") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Refined Slingshot
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Refined Slingshot") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Bazooka
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Bazooka") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Kabucha
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Kabucha") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Serpent Bow
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Serpent Bow") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
--- Soul Guitar
-if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Soul Guitar") then                      
-    if _G.SkillGunZ then
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-    end
-    if _G.SkillGunX then          
-        local args = {
-            [1] = PosMonMasteryGun.Position
-        }
-        game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-    end
-end
-
-                        elseif game:GetService("Players").LocalPlayer.Character:FindFirstChild(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value) then
-                            if _G.SkillZ then 
-                                local args = {
-                                    [1] = PosMonMasteryGun.Position
-                                }
-                                game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                         
-                                game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-                            end
-                            if _G.SkillX then
-                                local args = {
-                                    [1] = PosMonMasteryGun.Position
-                                }
-                                game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                           
-                                game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-                            end
-                        end
-                    end
-                end)
-            end
-        end
+        end)
     end)
     
     spawn(function()
