@@ -8802,9 +8802,9 @@ end)
         end)
     end)
     
-    M:AddToggle("Auto Gun Mastery (manual skill)",_G.AutoFarmGunMastery,function(value)
+    M:AddToggle("Auto Gun Mastery",_G.AutoFarmGunMastery,function(value)
         _G.AutoFarmGunMastery = value
-        _G.AutoClick = value
+        UseSkillGun = value
         StopTween(_G.AutoFarmGunMastery)
     end)
     
@@ -8814,7 +8814,8 @@ end)
                 if _G.AutoFarmGunMastery then
                     local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
                     if not string.find(QuestTitle, NameMon) then
-                        Magnet = false                                      
+                        Magnet = false      
+                        UseSkillGun                                
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
                     end
                     if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
@@ -8850,13 +8851,15 @@ end)
                                                     v.Humanoid.WalkSpeed = 2
                                                     v.HumanoidRootPart.CanCollide = false
                                                     v.HumanoidRootPart.Size = Vector3.new(2,2,1)
-                                                    v.Head.CanCollide = false                                 
+                                                    v.Head.CanCollide = false      
+                                                    UseSkillGun = true                           
                                                     local args = {
                                                         [1] = v.HumanoidRootPart.Position,
                                                         [2] = v.HumanoidRootPart
                                                     }
                                                     game:GetService("Players").LocalPlayer.Character[SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
                                                 else
+                                                    UseSkillGun = false
                                                     AutoHaki()
                                                     EquipWeapon(_G.SelectWeapon)
                                                     v.Humanoid.WalkSpeed = 2
@@ -8868,6 +8871,7 @@ end)
                                                 StartMasteryGunMagnet = true 
                                                 PosMonMasteryGun = v.HumanoidRootPart.CFrame
                                             else
+                                                UseSkillGun = false
                                                 StartMasteryGunMagnet = false
                                                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
                                             end
