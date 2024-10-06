@@ -8412,14 +8412,14 @@ spawn(function()
         pcall(function()
             if _G.WalkWaterBoat then
                 -- Mengatur ukuran tinggi air menjadi lebih tinggi
-                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 500, 1000)
+                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 352, 1000)
                 
                 -- Mengatur posisi boat agar mengambang lebih tinggi di atas air
                 for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
                     if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
                         local boatPosition = boat.PrimaryPart.Position
                         -- Tinggi boat ketika air berada di posisi tinggi
-                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 500, boatPosition.Z) --117
+                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 350, boatPosition.Z) --117
                     end
                 end
             else
@@ -8451,26 +8451,28 @@ spawn(function()
         pcall(function()
             if _G.WalkWaterBoat then
                 -- Mengatur ukuran tinggi air menjadi lebih tinggi
-                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 500, 1000)
+                game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 0, 1000)
                 
                 -- Mengatur posisi boat agar mengambang lebih tinggi di atas air
                 for _, boat in pairs(game:GetService("Workspace").Boats:GetChildren()) do
                     if boat:IsA("Model") and boat:FindFirstChild("PrimaryPart") then
-                        -- Hanya mengatur posisi boat sekali ketika `Boat Fly` diaktifkan
+                        -- Menyimpan posisi boat saat ini
                         local boatPosition = boat.PrimaryPart.Position
-                        boat.PrimaryPart.Position = Vector3.new(boatPosition.X, 505, boatPosition.Z) -- Menyesuaikan di atas air
+                        -- Mengatur boat agar mengambang di atas air pada posisi yang lebih tinggi
+                        boat:SetPrimaryPartCFrame(CFrame.new(boatPosition.X, 350, boatPosition.Z))
                     end
                 end
             else
                 -- Mengembalikan ukuran air ke posisi semula (lebih rendah)
                 game:GetService("Workspace").Map["WaterBase-Plane"].Size = Vector3.new(1000, 0, 1000)
                 
-                -- Tidak mengatur posisi boat saat fitur dinonaktifkan
-                -- Boat tetap berada di posisi terakhir
+                -- Boat tetap berada di posisi terakhir saat fitur dinonaktifkan
+                -- Tidak mengatur ulang posisi boat
             end
         end)
     end
 end)
+
 
 
 
