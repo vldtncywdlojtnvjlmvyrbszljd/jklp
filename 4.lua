@@ -8293,10 +8293,14 @@ spawn(function()
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 350
+                        local speed = 350 -- Kecepatan tinggi seperti Rocket Boat
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
                         local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
+                        -- Menambahkan efek melayang (tinggi perahu)
+                        local altitude = 50 -- Tinggi perahu saat melayang
+                        targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + Vector3.new(0, altitude, 0))
+
                         while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
                             targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
                             task.wait()
@@ -8310,6 +8314,7 @@ spawn(function()
         end)
     end
 end)
+
 
 
 
