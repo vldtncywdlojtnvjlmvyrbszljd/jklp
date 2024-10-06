@@ -8281,29 +8281,31 @@ spawn(function()
     end
 end)
 
+
 spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-                wait(0.1)  -- Interval lebih cepat untuk pergerakan
-                local targetModelName = "PirateBrigade"  -- Nama perahu
+                wait(0.1) -- Interval lebih cepat untuk pergerakan
+                local targetModelName = "PirateBrigade" -- Nama perahu
                 local targetModel = workspace.Boats:FindFirstChild(targetModelName)
 
                 if targetModel and targetModel.PrimaryPart then
                     -- Atur kecepatan tinggi seperti Rocket Boat
-                    local speed = 350 -- Kecepatan super tinggi
+                    local speed = 5 -- Mengatur kecepatan lebih rendah agar pergerakan lebih stabil
                     -- Atur ketinggian perahu untuk efek melayang
                     local altitude = 30 -- Ketinggian perahu
 
                     -- Pergerakan ke depan dan ketinggian kapal
                     while _G.BiirTrax do
-                        local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
+                        local forwardDirection = targetModel.PrimaryPart.CFrame.LookVector
                         local newPosition = targetModel.PrimaryPart.Position + (forwardDirection * speed)
                         -- Menambahkan ketinggian ke posisi baru
-                        newPosition = Vector3.new(newPosition.X, newPosition.Y + altitude, newPosition.Z)
+                        newPosition = Vector3.new(newPosition.X, altitude, newPosition.Z)
 
-                        -- Menggerakkan kapal ke posisi baru dengan ketinggian dan kecepatan tinggi
-                        targetModel:SetPrimaryPartCFrame(CFrame.new(newPosition))
+                        -- Menggerakkan kapal ke posisi baru dengan mempertahankan orientasi
+                        local newCFrame = CFrame.new(newPosition) * CFrame.fromMatrix(Vector3.new(0, 0, 0), targetModel.PrimaryPart.CFrame.RightVector, targetModel.PrimaryPart.CFrame.UpVector, targetModel.PrimaryPart.CFrame.LookVector)
+                        targetModel:SetPrimaryPartCFrame(newCFrame)
 
                         task.wait(0.01) -- Menunggu sedikit sebelum update selanjutnya
                     end
@@ -8312,6 +8314,7 @@ spawn(function()
         end)
     end
 end)
+
 
 
 
