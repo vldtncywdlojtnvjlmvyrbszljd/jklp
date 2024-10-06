@@ -6353,73 +6353,6 @@ spawn(function()
     end)
     end)
 
-SNt:AddToggle("God's Chalice & FOD Notify", false, _G.NotifItemChestcheck, function(value)
-        _G.NotifItemChestcheck = value
-    end)
-    
-    spawn(function()
-        while wait(1) do 
-            if _G.NotifItemChestcheck then
-                local godsChaliceInBackpack = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice")
-                local fishOfDarknessInBackpack = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fish of Darkness")
-
-                local chest = game:GetService("Workspace"):FindFirstChild("Chest")
-                local godsChaliceInChest = nil
-                local fishOfDarknessInChest = nil
-    
-                if chest then
-                    godsChaliceInChest = chest:FindFirstChild("God's Chalice")
-                    fishOfDarknessInChest = chest:FindFirstChild("Fish of Darkness")
-                end
-                if godsChaliceInBackpack or godsChaliceInChest then
-                    require(game:GetService("ReplicatedStorage").Notification).new("God's Chalice detected in backpack or chest!"):Display()
-                    wait(1)
-                end
-
-                if fishOfDarknessInBackpack or fishOfDarknessInChest then
-                    require(game:GetService("ReplicatedStorage").Notification).new("FOD detected in backpack or chest!"):Display()
-                    wait(1)
-                end
-            end
-        end
-    end)
-    
-    Snt:AddToggle("Mirage Island Notify",false ,_G.NotifMirragecheck,function(value)
-        _G.NotifMirragecheck = value
-        end)
-        
-        spawn(function()
-                while wait(.1) do
-                    if _G.NotifMirragecheck then
-                        for i,v in pairs(game.Workspace._WorldOrigin.Locations:FindFirstChild('Mirage Island')) do
-                            if string.find(v.Name, "Mirage Island") then
-                                require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
-                                wait()
-                                setthreadcontext(5)
-                            end
-                        end
-                    end
-                  end
-                 end)
-
-    SNt:AddToggle("Elite Hunter Notification",false ,_G.EliteCheck,function(value)
-_G.EliteCheck = value
-end)
-        
-spawn(function()
-while wait(.1) do
-if _G.EliteCheck then
-for i,v in pairs(game:GetService("ReplicatedStorage"):FindFirstChild("Diablo") or game:GetService("ReplicatedStorage"):FindFirstChild("Deandre") or game:GetService("ReplicatedStorage"):FindFirstChild("Urban") or game:GetService("Workspace").Enemies:FindFirstChild("Diablo") or game:GetService("Workspace").Enemies:FindFirstChild("Deandre") or game:GetService("Workspace").Enemies:FindFirstChild("Urban")) do
-if string.find(v.Name, "Diablo", "Deandre", "Urban") then
-require(game:GetService("ReplicatedStorage").Notification).new("Notification Elite Hunter Spawn"):Display();
-wait()
-setthreadcontext(5)
-end
-end
-end
-end
-end)
-
     SNt:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
         _G.Hopfinddao = value
        end)
@@ -14640,6 +14573,73 @@ end)
 
     Mh:AddSeperator("Auto Hop Server")
     Mh:AddLabel("Click And Wait 5 Second")
+
+Mh:AddToggle("God's Chalice & FOD Notify", false, _G.NotifItemChestcheck, function(value)
+        _G.NotifItemChestcheck = value
+    end)
+    
+    spawn(function()
+        while wait(1) do 
+            if _G.NotifItemChestcheck then
+                local godsChaliceInBackpack = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice")
+                local fishOfDarknessInBackpack = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fish of Darkness")
+
+                local chest = game:GetService("Workspace"):FindFirstChild("Chest")
+                local godsChaliceInChest = nil
+                local fishOfDarknessInChest = nil
+    
+                if chest then
+                    godsChaliceInChest = chest:FindFirstChild("God's Chalice")
+                    fishOfDarknessInChest = chest:FindFirstChild("Fish of Darkness")
+                end
+                if godsChaliceInBackpack or godsChaliceInChest then
+                    require(game:GetService("ReplicatedStorage").Notification).new("God's Chalice detected in backpack or chest!"):Display()
+                    wait(1)
+                end
+
+                if fishOfDarknessInBackpack or fishOfDarknessInChest then
+                    require(game:GetService("ReplicatedStorage").Notification).new("FOD detected in backpack or chest!"):Display()
+                    wait(1)
+                end
+            end
+        end
+    end)
+    
+    Mh:AddToggle("Mirage Island Notify",false ,_G.NotifMirragecheck,function(value)
+        _G.NotifMirragecheck = value
+        end)
+        
+        spawn(function()
+                while wait(.1) do
+                    if _G.NotifMirragecheck then
+                        for i,v in pairs(game.Workspace._WorldOrigin.Locations:FindFirstChild('Mirage Island')) do
+                            if string.find(v.Name, "Mirage Island") then
+                                require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
+                                wait()
+                                setthreadcontext(5)
+                            end
+                        end
+                    end
+                  end
+                 end)
+
+    Mh:AddToggle("Elite Hunter Notification",false ,_G.EliteCheck,function(value)
+_G.EliteCheck = value
+end)
+        
+spawn(function()
+while wait(.1) do
+if _G.EliteCheck then
+for i,v in pairs(game:GetService("ReplicatedStorage"):FindFirstChild("Diablo") or game:GetService("ReplicatedStorage"):FindFirstChild("Deandre") or game:GetService("ReplicatedStorage"):FindFirstChild("Urban") or game:GetService("Workspace").Enemies:FindFirstChild("Diablo") or game:GetService("Workspace").Enemies:FindFirstChild("Deandre") or game:GetService("Workspace").Enemies:FindFirstChild("Urban")) do
+if string.find(v.Name, "Diablo", "Deandre", "Urban") then
+require(game:GetService("ReplicatedStorage").Notification).new("Notification Elite Hunter Spawn"):Display();
+wait()
+setthreadcontext(5)
+end
+end
+end
+end
+end)
 
     Mh:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
         _G.Hopfinddao = value
