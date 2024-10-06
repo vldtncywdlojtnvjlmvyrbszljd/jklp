@@ -8779,7 +8779,6 @@ end)
                         Magnet = false
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
                     end
-                    
                     if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
                         StartMasteryGunMagnet = false
                         CheckQuest()
@@ -8799,55 +8798,48 @@ end)
                     elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
                         CheckQuest()
                         if game:GetService("Workspace").Enemies:FindFirstChild(Mon) then
-                            pcall(function()
-                                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                                    if v.Name == Mon then
-                                        repeat
-                                            task.wait()
-                                            if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
-                                                HealthMin = v.Humanoid.MaxHealth * _G.Kill_At/100
-                                                if v.Humanoid.Health <= HealthMin then
-                                                    EquipWeapon(SelectWeaponGun)
-                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
-                                                    
-                                                    v.Humanoid.WalkSpeed = 2
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    v.HumanoidRootPart.Size = Vector3.new(2,2,1)
-                                                    v.Head.CanCollide = false
-                                                    
-                                                    -- Spam skill Z
-                                                    if _G.GunSkillZ and CanUseSkill("Z") then
-                                                        UseSkill("Z", v.HumanoidRootPart)
-                                                        task.wait(1) -- Jeda skill Z
-                                                    end
-                                                    
-                                                    -- Spam skill X
-                                                    if _G.GunSkillX and CanUseSkill("X") then
-                                                        UseSkill("X", v.HumanoidRootPart)
-                                                        task.wait(1) -- Jeda skill X
-                                                    end
-                                                
-                                                    
-                                                    StartMasteryGunMagnet = true 
-                                                    PosMonMasteryGun = v.HumanoidRootPart.CFrame
-                                                else
-                                                    AutoHaki()
-                                                    EquipWeapon(_G.SelectWeapon)
-                                                    v.Humanoid.WalkSpeed = 2
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    v.Head.CanCollide = false               
-                                                    v.HumanoidRootPart.Size = Vector3.new(60,60,60)
-                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX,PosY,PosZ))
-                                                end
-                                            else
-                                                StartMasteryGunMagnet = false
-                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                            for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                                if enemy.Name == Mon then
+                                    repeat wait()
+                                        if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
+                                            HealthMin = enemy.Humanoid.MaxHealth * _G.Kill_At / 100
+                                            
+                                            -- Dekati NPC untuk serangan
+                                            TP1(enemy.HumanoidRootPart.CFrame * CFrame.new(0, 0, 10))
+                                            EquipWeapon(SelectWeaponGun)
+                                            
+                                            -- Gunakan skill Z jika aktif
+                                            if _G.GunSkillZ and CanUseSkill("Z") then
+                                                UseSkill("Z", enemy.HumanoidRootPart)
+                                                wait(0.5)
                                             end
-                                        until v.Humanoid.Health <= 0 or not _G.AutoFarmGunMastery or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                        StartMasteryGunMagnet = false
-                                    end
+                                            
+                                            -- Gunakan skill X jika aktif
+                                            if _G.GunSkillX and CanUseSkill("X") then
+                                                UseSkill("X", enemy.HumanoidRootPart)
+                                                wait(0.5)
+                                            end
+                                            
+                                            -- Hit NPC menggunakan fungsi RemoteFunctionShoot agar hit tepat
+                                            local args = {
+                                                [1] = enemy.HumanoidRootPart.Position,
+                                                [2] = enemy.HumanoidRootPart
+                                            }
+                                            game:GetService("Players").LocalPlayer.Character[SelectWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
+                                            
+                                            -- Mengatur ulang NPC agar karakter dapat terus menyerang
+                                            enemy.Humanoid.WalkSpeed = 2
+                                            enemy.HumanoidRootPart.CanCollide = false
+                                            enemy.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                                            enemy.Head.CanCollide = false
+                                        else
+                                            StartMasteryGunMagnet = false
+                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                                        end
+                                    until enemy.Humanoid.Health <= 0 or not _G.AutoFarmGunMastery or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                    StartMasteryGunMagnet = false
                                 end
-                            end)
+                            end
                         else
                             TP1(CFrameMon)
                             StartMasteryGunMagnet = false
@@ -8857,36 +8849,6 @@ end)
             end
         end)
     end)
-    
-    -- Fungsi tambahan untuk cek cooldown dan gunakan skill
-    function CanUseSkill(skill)
-        return true  -- Sesuaikan logika cooldown di sini sesuai kebutuhan
-    end
-    
-    function UseSkill(skill, target)
-        local args = {
-            [1] = target.Position,
-            [2] = target
-        }
-        local success, errorMessage = pcall(function()
-            game:GetService("Players").LocalPlayer.Character[SelectWeaponGun]["RemoteFunction" .. skill]:InvokeServer(unpack(args))
-        end)
-        if not success and errorMessage and string.find(errorMessage, "Skill locked!") then
-            -- Menghapus notifikasi "Skill locked!" jika muncul
-            RemoveSkillLockedNotification()
-        end
-    end
-    
-    -- Fungsi untuk menghapus notifikasi "Skill locked!"
-    function RemoveSkillLockedNotification()
-        spawn(function()
-            for i, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Notifications:GetChildren()) do
-                if v.Name == "NotificationTemplate" and string.find(v.Text, "Skill locked!") then
-                    v:Destroy()
-                end
-            end
-        end)
-    end
     
 
     
