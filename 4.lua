@@ -8489,7 +8489,7 @@ end)
 
 
 
-    SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
+SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
     if state then
         _G.BiirTrax = true
     else
@@ -8605,8 +8605,7 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest", "RockPart", "RockGroup", "Coral", "BigRock", "SmallRock", "SeaRock", "RockPile", "Cliff"}                
+                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
 
                 for _, v in pairs(workspace:GetChildren()) do
                     if table.find(batuLaut, v.Name) and v:IsA("Model") then
@@ -8626,7 +8625,7 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-
+                wait(0.8) 
                 local targetModelNames = "PirateBrigade"
                 local models = workspace.Boats:GetChildren()
 
@@ -8634,17 +8633,12 @@ spawn(function()
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 20
-                        local hoverHeight = 50 -- Atur ketinggian terbang di sini
-                        
+                        local speed = 10.5
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
-                        -- Tambahkan ketinggian pada posisi tujuan (targetPosition)
-                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10 + Vector3.new(0, hoverHeight, 0)
+                        local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
-                        -- Pergerakan boat
                         while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
-                            -- Perbarui CFrame boat dengan menambah ketinggian (hoverHeight) dan kecepatan (speed)
-                            targetModel:SetPrimaryPartCFrame(CFrame.new(targetModel.PrimaryPart.Position + forwardDirection * speed + Vector3.new(0, hoverHeight, 0)))
+                            targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
                             task.wait()
                             if not _G.BiirTrax then
                                 break
