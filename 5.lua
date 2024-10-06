@@ -8150,11 +8150,7 @@ spawn(function()
 end)
 
 SNt:AddToggle("Auto Sail Rough Sea", _G.BiirTrax, function(state)
-    if state then
-        _G.BiirTrax = true
-    else
-        _G.BiirTrax = false
-    end
+    _G.BiirTrax = state
 
     if _G.BiirTrax then
         -- Teleport pemain ke posisi tertentu dan membeli perahu
@@ -8168,7 +8164,7 @@ SNt:AddToggle("Auto Sail Rough Sea", _G.BiirTrax, function(state)
 
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 
-        function two(gotoCFrame) -- Tween function
+        function two(gotoCFrame)
             pcall(function()
                 game.Players.LocalPlayer.Character.Humanoid.Sit = false
                 game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
@@ -8200,8 +8196,11 @@ SNt:AddToggle("Auto Sail Rough Sea", _G.BiirTrax, function(state)
     end
 end)
 
--- Fungsi untuk membuat perahu melayang
+-- Fungsi untuk membuat perahu melayang dan bergerak maju
 spawn(function()
+    local startTime = tick()
+    local initialPosition = nil
+
     while wait() do
         pcall(function()
             if _G.BiirTrax then
@@ -8209,33 +8208,39 @@ spawn(function()
                 local targetModel = workspace.Boats:FindFirstChild(targetModelName)
 
                 if targetModel and targetModel.PrimaryPart then
-                    -- Atur kecepatan pergerakan ke depan
-                    local speed = 100 -- Kecepatan maju
-                    -- Atur ketinggian perahu untuk efek melayang
-                    local hoverHeight = 50 -- Ketinggian melayang
-                    local hoverSpeed = 0 -- Kecepatan melayang naik turun
-
-                    while _G.BiirTrax do
-                        -- Mengambil arah orientasi dari PrimaryPart
-                        local forwardDirection = targetModel.PrimaryPart.CFrame.LookVector
-
-                        -- Menghitung posisi baru ke arah depan
-                        local newPosition = targetModel.PrimaryPart.Position + (forwardDirection * speed)
-
-                        -- Menambahkan efek melayang dengan perhitungan sinus untuk naik turun
-                        local hoverOffset = math.sin(tick() * hoverSpeed) * 0.5 -- Amplitudo kecil untuk stabilitas
-                        newPosition = Vector3.new(newPosition.X, hoverHeight + hoverOffset, newPosition.Z)
-
-                        -- Membuat CFrame baru untuk posisi baru dengan mempertahankan rotasi asli
-                        local currentRotation = targetModel.PrimaryPart.CFrame - targetModel.PrimaryPart.Position
-                        local newCFrame = CFrame.new(newPosition) * currentRotation
-
-                        -- Mengatur posisi dan orientasi model
-                        targetModel:SetPrimaryPartCFrame(newCFrame)
-
-                        task.wait() --0.01 -- Menunggu sedikit sebelum update selanjutnya
+                    if not initialPosition then
+                        initialPosition = targetModel.PrimaryPart.Position
                     end
+
+                    -- Atur parameter pergerakan
+                    local speed = 100 -- Kecepatan maju
+                    local hoverHeight = 50 -- Ketinggian melayang
+                    local hoverSpeed = 2 -- Kecepatan melayang naik turun
+
+                    -- Mengambil arah orientasi dari PrimaryPart
+                    local forwardDirection = targetModel.PrimaryPart.CFrame.LookVector
+
+                    -- Hitung waktu yang telah berlalu
+                    local elapsedTime = tick() - startTime
+
+                    -- Menghitung posisi baru berdasarkan waktu, bukan posisi saat ini
+                    local distanceTraveled = elapsedTime * speed
+                    local newPosition = initialPosition + (forwardDirection * distanceTraveled)
+
+                    -- Menambahkan efek melayang
+                    local hoverOffset = math.sin(tick() * hoverSpeed) * 0.5
+                    newPosition = Vector3.new(newPosition.X, hoverHeight + hoverOffset, newPosition.Z)
+
+                    -- Membuat CFrame baru
+                    local currentRotation = targetModel.PrimaryPart.CFrame - targetModel.PrimaryPart.Position
+                    local newCFrame = CFrame.new(newPosition) * currentRotation
+
+                    -- Mengatur posisi dan orientasi model
+                    targetModel:SetPrimaryPartCFrame(newCFrame)
                 end
+            else
+                initialPosition = nil
+                startTime = tick()
             end
         end)
     end
