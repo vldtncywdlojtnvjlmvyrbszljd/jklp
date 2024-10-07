@@ -11,7 +11,7 @@ local Metadata = {
         Name = (shared.LoaderTitle or 'A Loader'),
         Colors = shared.LoaderColors or {
             Main = Color3.fromRGB(0, 0, 0),
-            Topic = Color3.fromRGB(200, 200, 200),
+            Topic = Color3.fromRGB(255, 0, 0),
             Title = Color3.fromRGB(255, 255, 255),
             LoaderBackground = Color3.fromRGB(40, 40, 40),
             LoaderSplash = Color3.fromRGB(147, 112, 219)
@@ -21,7 +21,7 @@ local Metadata = {
         [1] = {1, 10},
         [2] = {2, 30},
         [3] = {3, 60},
-        [4] = {2, 100}
+        [4] = {2, 100},
     }
 }
 
