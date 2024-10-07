@@ -105,7 +105,6 @@ local function optimizePerformance()
 end
 
 optimizePerformance()
-console.log(optimizePerformance())
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 shared.LoaderTitle = 'Botuna.INC X Medusa Script'
