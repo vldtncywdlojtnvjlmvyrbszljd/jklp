@@ -9202,13 +9202,9 @@ end)
             if UseSkill then
                 pcall(function()
                     CheckQuest()
-                    local player = game:GetService("Players").LocalPlayer
-                    local character = player.Character
-                    local rootPart = character and character:FindFirstChild("HumanoidRootPart")
-    
-                    -- Mengecek apakah karakter pemain menggunakan senjata
-                    if character and rootPart and character:FindFirstChildOfClass("Tool") then
-                        local equippedGun = character:FindFirstChildOfClass("Tool")
+                    -- Mengecek apakah ada gun yang sedang dilengkapi oleh karakter pemain
+                    if game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool") then
+                        local equippedGun = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool")
                         if equippedGun:IsA("Tool") and (equippedGun.ToolTip == "Gun" or equippedGun.Name == "Slingshot" or 
                             equippedGun.Name == "Flintlock" or equippedGun.Name == "Musket" or 
                             equippedGun.Name == "Acidum Rifle" or equippedGun.Name == "Bizarre Rifle" or 
@@ -9217,47 +9213,39 @@ end)
                             equippedGun.Name == "Bazooka" or equippedGun.Name == "Kabucha" or 
                             equippedGun.Name == "Serpent Bow" or equippedGun.Name == "Soul Guitar") then
     
-                            -- Cari NPC terdekat
-                            local closestNPC = nil
-                            local closestDistance = math.huge
-    
-                            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                            -- Pastikan ada target yang valid
+                            for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                 if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and 
                                    v.Humanoid.Health > 0 and v.Name == Mon then
-                                    local distance = (v.HumanoidRootPart.Position - rootPart.Position).Magnitude
-                                    if distance < closestDistance then
-                                        closestDistance = distance
-                                        closestNPC = v
+                                    
+                                    -- Gunakan variabel PosMonMasteryGun yang sudah ada di kode sebelumnya
+                                    if _G.GunSkillZ then
+                                        local args = {
+                                            [1] = PosMonMasteryGun.Position
+                                        }
+                                        equippedGun.RemoteEvent:FireServer(unpack(args))
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
+                                        game:GetService'VirtualUser':CaptureController()
+                                        game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
                                     end
+                                    
+                                    wait(0.1)
+                                    
+                                    if _G.GunSkillX then          
+                                        local args = {
+                                            [1] = PosMonMasteryGun.Position
+                                        }
+                                        equippedGun.RemoteEvent:FireServer(unpack(args))
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
+                                        game:GetService'VirtualUser':CaptureController()
+                                        game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
+                                    end
+                                    
+                                    wait(0.1)
+                                    break -- Keluar dari loop setelah menggunakan skill pada satu target
                                 end
-                            end
-    
-                            -- Gunakan skill pada NPC terdekat
-                            if closestNPC then
-                                PosMonMasteryGun = closestNPC.HumanoidRootPart -- Perbarui posisi target
-                                
-                                if _G.GunSkillZ then
-                                    local args = {
-                                        [1] = PosMonMasteryGun.Position
-                                    }
-                                    equippedGun.RemoteEvent:FireServer(unpack(args))
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
-                                end
-    
-                                wait(0.1)
-    
-                                if _G.GunSkillX then
-                                    local args = {
-                                        [1] = PosMonMasteryGun.Position
-                                    }
-                                    equippedGun.RemoteEvent:FireServer(unpack(args))
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-                                    game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
-                                end
-    
-                                wait(0.1)
-                                break
                             end
                         end
                     end
@@ -9265,8 +9253,7 @@ end)
             end
         end
     end)
-    
-     -- belum dicoba
+
     
     spawn(function()
         game:GetService("RunService").RenderStepped:Connect(function()
