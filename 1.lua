@@ -31,19 +31,6 @@ local function AntiBan()
     end
 end
 
--- Anti AFK
-local function AntiAFK()
-    local VirtualUser = game:GetService("VirtualUser")
-    local Players = game:GetService("Players")
-    local LocalPlayer = Players.LocalPlayer
-    
-    LocalPlayer.Idled:Connect(function()
-        VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-        wait(RandomDelay(0.5, 1.5))
-        VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-    end)
-end
-
 -- Anti Cheat Detector
 local function AntiCheatDetector()
     local mt = getrawmetatable(game)
@@ -90,6 +77,226 @@ end
 
 -- Jalankan proteksi
 InitializeProtection()
+----------------------------------------------------------------------------
+-- Blox Fruits Optimizer System
+local BloxFruitsOptimizer = {
+    ErrorHandlers = {},
+    OptimizationTasks = {},
+    OriginalSettings = {}
+}
+
+-- Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local VirtualUser = game:GetService("VirtualUser")
+
+-- Constants
+local CHECK_INTERVAL = 1
+local Player = Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+
+-- Utility Functions
+local function SafeCall(func, ...)
+    local success, result = pcall(func, ...)
+    if not success then
+        warn("SafeCall failed:", result)
+    end
+    return success, result
+end
+
+-- Save original settings
+function BloxFruitsOptimizer:SaveOriginalSettings()
+    self.OriginalSettings = {
+        EffectEnabled = true,
+        RenderDistance = Player.CameraMaxZoomDistance
+    }
+end
+
+-- Initialize Error Handlers
+function BloxFruitsOptimizer:InitializeErrorHandlers()
+    -- Handler for Devil Fruit skill effects
+    self.ErrorHandlers["SkillEffects"] = function()
+        local EffectFolder = ReplicatedStorage:FindFirstChild("Effect") or Instance.new("Folder")
+        if not ReplicatedStorage:FindFirstChild("Effect") then
+            EffectFolder.Name = "Effect"
+            EffectFolder.Parent = ReplicatedStorage
+        end
+        
+        -- Monitor and optimize skill effects
+        EffectFolder.ChildAdded:Connect(function(effect)
+            SafeCall(function()
+                if effect:IsA("ParticleEmitter") then
+                    effect.Rate = math.min(effect.Rate, 50)
+                    effect.Lifetime = NumberRange.new(0, math.min(effect.Lifetime.Max, 1))
+                elseif effect:IsA("Trail") then
+                    effect.Lifetime = math.min(effect.Lifetime, 0.5)
+                end
+            end)
+        end)
+    end
+
+    -- Handler for NPC spawning optimization
+    self.ErrorHandlers["NPCOptimization"] = function()
+        workspace.ChildAdded:Connect(function(child)
+            if child:IsA("Model") and child:FindFirstChild("Humanoid") then
+                SafeCall(function()
+                    local humanoid = child:FindFirstChild("Humanoid")
+                    if humanoid then
+                        humanoid.NameDisplayDistance = 50
+                        humanoid.HealthDisplayDistance = 50
+                    end
+                    
+                    -- Optimize NPC parts
+                    for _, part in pairs(child:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CastShadow = false
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+
+    -- Handler for quest system optimization
+    self.ErrorHandlers["QuestSystem"] = function()
+        local questRemotes = {}
+        for _, remote in pairs(ReplicatedStorage:GetDescendants()) do
+            if remote:IsA("RemoteEvent") and remote.Name:find("Quest") then
+                table.insert(questRemotes, remote)
+            end
+        end
+        
+        -- Optimize quest remotes
+        for _, remote in pairs(questRemotes) do
+            local oldFireServer = remote.FireServer
+            remote.FireServer = function(self, ...)
+                local args = {...}
+                -- Prevent spam clicking on quests
+                if self._lastFired and tick() - self._lastFired < 1 then
+                    return
+                end
+                self._lastFired = tick()
+                return oldFireServer(self, unpack(args))
+            end
+        end
+    end
+end
+
+-- Initialize Optimization Tasks
+function BloxFruitsOptimizer:InitializeOptimizationTasks()
+    -- Optimize combat
+    self.OptimizationTasks["CombatOptimization"] = function()
+        local combatRemotes = {}
+        for _, remote in pairs(ReplicatedStorage:GetDescendants()) do
+            if remote:IsA("RemoteEvent") and (remote.Name:find("Combat") or remote.Name:find("Attack")) then
+                table.insert(combatRemotes, remote)
+            end
+        end
+        
+        -- Optimize combat remotes
+        for _, remote in pairs(combatRemotes) do
+            local oldFireServer = remote.FireServer
+            remote.FireServer = function(self, ...)
+                local args = {...}
+                -- Prevent excessive combat events
+                if self._lastCombatFired and tick() - self._lastCombatFired < 0.1 then
+                    return
+                end
+                self._lastCombatFired = tick()
+                return oldFireServer(self, unpack(args))
+            end
+        end
+    end
+
+    -- Optimize fruits and items
+    self.OptimizationTasks["ItemsOptimization"] = function()
+        workspace.ChildAdded:Connect(function(child)
+            if child:IsA("Tool") or child:IsA("Model") then
+                SafeCall(function()
+                    -- Optimize dropped items
+                    for _, part in pairs(child:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CastShadow = false
+                        elseif part:IsA("ParticleEmitter") then
+                            part.Rate = math.min(part.Rate, 25)
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+
+    -- Anti-AFK
+    self.OptimizationTasks["AntiAFK"] = function()
+        Player.Idled:Connect(function()
+            VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+            wait(1)
+            VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        end)
+    end
+end
+
+-- Main optimization function
+function BloxFruitsOptimizer:StartOptimization()
+    self:SaveOriginalSettings()
+    self:InitializeErrorHandlers()
+    self:InitializeOptimizationTasks()
+    
+    -- Run error handlers
+    for name, handler in pairs(self.ErrorHandlers) do
+        SafeCall(handler)
+    end
+    
+    -- Run optimization tasks
+    for name, task in pairs(self.OptimizationTasks) do
+        SafeCall(task)
+    end
+    
+    -- Continuous monitoring
+    RunService.Heartbeat:Connect(function()
+        SafeCall(function()
+            -- Check for lag spikes and optimize if necessary
+            if game:GetService("Stats").DataReceiveKbps > 1000 then
+                for _, v in pairs(workspace:GetDescendants()) do
+                    if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                        v.Enabled = false
+                        wait()
+                        v.Enabled = true
+                    end
+                end
+            end
+        end)
+    end)
+end
+
+-- Export the optimizer
+local function InitializeBloxFruitsOptimizer()
+    local optimizer = BloxFruitsOptimizer
+    optimizer:StartOptimization()
+    
+    return {
+        -- Public API
+        DisableEffects = function()
+            for _, v in pairs(ReplicatedStorage.Effect:GetDescendants()) do
+                if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                    v.Enabled = false
+                end
+            end
+        end,
+        
+        EnableEffects = function()
+            for _, v in pairs(ReplicatedStorage.Effect:GetDescendants()) do
+                if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                    v.Enabled = true
+                end
+            end
+        end
+    }
+end
+
+return InitializeBloxFruitsOptimizer()
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 local Notif = {}
 
