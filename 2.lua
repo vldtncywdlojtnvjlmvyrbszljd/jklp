@@ -8494,7 +8494,7 @@ local boatList = {
     "Sleigh"
 }
 
-SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,function(value) -- state
+SNt:AddToggle("Auto Speed Boat",_G.IncreaseBoatSpeed,function(value) -- state
     _G.IncreaseBoatSpeed = value
 end)
 
@@ -8509,7 +8509,7 @@ spawn(function()
             end
             if _G.IncreaseBoatSpeed then
                 for _, v in pairs(vehicleSeats) do
-                    v.MaxSpeed = 350
+                    v.MaxSpeed = 500
                 end
             else
                 for _, v in pairs(vehicleSeats) do
@@ -8665,7 +8665,7 @@ spawn(function()
                     local targetModel = workspace:FindFirstChild(targetModelName)
 
                     if targetModel then
-                        local speed = 50
+                        local speed = 350
                         local forwardDirection = targetModel.PrimaryPart.CFrame.lookVector
                         local targetPosition = targetModel.PrimaryPart.Position + forwardDirection * 10
                         
