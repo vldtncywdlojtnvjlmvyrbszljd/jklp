@@ -60,7 +60,7 @@ local function InitializeProtection()
             pcall(function()
                 for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
                     if v:IsA("LocalScript") and v.Enabled then
-                        local suspicious = {"Detector", "Anti", "Check", "Detection", "Scurity Kick", "Kick System"}
+                        local suspicious = {"Detector", "Anti", "Check", "Detection", "Scurity Kick", "Kick System", "Report Player"}
                         for _, sus in pairs(suspicious) do
                             if string.find(v.Name, sus) then
                                 v.Enabled = false
@@ -73,19 +73,7 @@ local function InitializeProtection()
     end)
 end
 
--- Simpan fungsi asli InitializeProtection
-local originalInitializeProtection = InitializeProtection
-
--- Override InitializeProtection dengan versi baru yang menambahkan log
-InitializeProtection = function(...)
-    -- Panggil fungsi aslinya
-    originalInitializeProtection(...)
-    
-    -- Tambahkan log ke console setelah InitializeProtection dijalankan
-    print("Install Protection Successfully)
-end
-
-
+InitializeProtection()
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 shared.LoaderTitle = 'Botuna.INC X Medusa Script'
