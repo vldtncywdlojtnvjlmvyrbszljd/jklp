@@ -8501,18 +8501,18 @@ end)
 spawn(function()
     while wait() do 
         pcall(function()
-            local vehicleSeats = {}
+            local vehicleSeat = {}
             for i, v in pairs(game.Workspace.Boats:GetDescendants()) do
                 if v:IsA("VehicleSeat") and table.find(boatList, v.Parent.Name) then
-                    table.insert(vehicleSeats, v)
+                    table.insert(vehicleSeat, v)
                 end
             end
             if _G.IncreaseBoatSpeed then
-                for _, v in pairs(vehicleSeats) do
+                for _, v in pairs(vehicleSeat) do
                     v.MaxSpeed = 500
                 end
             else
-                for _, v in pairs(vehicleSeats) do
+                for _, v in pairs(vehicleSeat) do
                     v.MaxSpeed = 150
                 end
             end
