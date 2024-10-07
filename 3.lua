@@ -136,7 +136,7 @@ local savedKey = nil
 
 -- Daftar key dan username yang tersimpan langsung dalam kode Lua
 local keysWithUsernames = {
-    {key = "key1", username = "Memek28222"},
+    {key = "key1", username = "Memek28222a"},
     {key = "key2", username = "username2"},
     {key = "key3", username = "username3"},
     -- Tambahkan pasangan key dan username lainnya di sini
@@ -222,7 +222,7 @@ end)
 -- Tombol Check Key
 checkKeyButton.MouseButton1Click:Connect(function()
     local key = textBox.Text
-    local username = "Memek28222"  -- Ganti dengan username yang diinput pengguna melalui GUI
+    local username = "Memek28222j"  -- Ganti dengan username yang diinput pengguna melalui GUI
 
     -- Cek apakah key dan username ada di dalam kode Lua
     if isKeyAndUsernameInLua(key, username) then
