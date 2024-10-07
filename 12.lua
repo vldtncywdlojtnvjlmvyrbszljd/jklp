@@ -79,9 +79,9 @@ end
 InitializeProtection()
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local message = "Subs Medusa Script Bro"
+local message = "Brutality Hub V4 ON TOP!!"
 
--- Mengirim pesan menggunakan RemoteEvent
+-- Mengirim pesan ke tab chat tanpa di atas karakter
 ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
