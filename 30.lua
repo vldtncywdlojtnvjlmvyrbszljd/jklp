@@ -14,7 +14,7 @@ local Metadata = {
             Topic = Color3.fromRGB(255, 255, 255),
             Title = Color3.fromRGB(255, 255, 255),
             LoaderBackground = Color3.fromRGB(40, 40, 40),
-            LoaderSplash = Color3.fromRGB(255, 0, 0,)
+            LoaderSplash = Color3.fromRGB(255, 0, 0)
         }
     },
     Keyframes = shared.LoaderKeyFrames or {
