@@ -78,21 +78,11 @@ end
 -- Jalankan proteksi
 InitializeProtection()
 
-local chatService = game:GetService("Chat")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local message = "Subs Medusa Script Bro"
 
-local function sendChatMessage(message)
-    local players = game:GetService("Players")
-    for _, player in pairs(players:GetPlayers()) do
-        chatService:Chat(player.Character, message, Enum.ChatColor.White)
-    end
-end
-
--- Kirim pesan otomatis setiap 10 detik
-while true do
-    sendChatMessage("Subs Medusa Script!")
-    wait(10)
-end
-
+-- Mengirim pesan menggunakan RemoteEvent
+ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 shared.LoaderTitle = 'Botuna.INC X Medusa Script'
