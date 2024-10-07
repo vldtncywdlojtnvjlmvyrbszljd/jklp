@@ -57,7 +57,7 @@ label.Parent = frame
 
 local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1, 0, 0, 50)
-label.Position = UDim2.new(0, 0, 0, 35) 
+label.Position = UDim2.new(0, 0, 0, 55) 
 label.Text = "".. game.Players.LocalPlayer.Name
 label.Font = Enum.Font.SourceSansBold
 label.TextSize = 20
@@ -69,7 +69,7 @@ label.Parent = frame
 local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1, 0, 0, 50)
 label.Position = UDim2.new(0, 0, 0, 55) 
-label.Text = "".. identifyexecutor()
+label.Text = "" --.. identifyexecutor()
 label.Font = Enum.Font.SourceSansBold
 label.TextSize = 20
 label.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -128,7 +128,7 @@ validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 validationLabel.BackgroundTransparency = 1
 validationLabel.Parent = frame
 
-local keyFileUrl = "https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/28s92hs/main/key.txt"
+local keyFileUrl = "https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/28s92hs/main/keqy.txt"
 local allowPassThrough = false
 local rateLimit = false
 local rateLimitCountdown = 0
