@@ -265,7 +265,7 @@ function onMessage(msg)
     print(msg)
 end
 
--- Fungsi untuk menyimpan key tanpa timestamp
+-- Fungsi untuk menyimpan key
 function saveKey(key)
     writefile("savedKey.txt", key)
     savedKey = key
@@ -278,40 +278,40 @@ function loadKey()
     end
 end
 
--- Fungsi untuk memverifikasi key sederhana (contoh: B-Team_79723)
-function verifySimpleKey(key, content)
-    return string.find(content, key)
-end
-
--- Fungsi untuk memverifikasi key premium dan username (contoh: {key = "Premium1", username = "Me28222"})
-function verifyPremiumKey(premiumKey, username, content)
-    local pattern = '{key = "' .. premiumKey .. '", username = "' .. username .. '"}'
+-- Fungsi untuk memverifikasi key normal
+function verifyNormalKey(key, content)
+    local pattern = '{NormalKey = "' .. key .. '"}'
     return string.find(content, pattern) ~= nil
 end
 
--- Fungsi untuk memverifikasi key
+-- Fungsi untuk memverifikasi key premium
+function verifyPremiumKey(key, content)
+    local pattern = '{PremiumKey = "' .. key .. '"}'
+    return string.find(content, pattern) ~= nil
+end
+
+-- Fungsi utama untuk memverifikasi key
 function verify(key)
-    local username = game.Players.LocalPlayer.Name
     local status, content = pcall(function()
         return game:HttpGetAsync(keyFileUrl)
     end)
 
     if status then
-        -- Cek jika key adalah key sederhana (B-Team_*)
-        if verifySimpleKey(key, content) then
-            onMessage("Key is valid!")
+        -- Cek apakah key adalah NormalKey
+        if verifyNormalKey(key, content) then
+            onMessage("Normal key is valid!")
             saveKey(key)
             return true
         end
 
-        -- Cek jika key adalah key premium dengan pasangan username
-        if verifyPremiumKey(key, username, content) then
-            onMessage("Premium key and username match!")
+        -- Cek apakah key adalah PremiumKey
+        if verifyPremiumKey(key, content) then
+            onMessage("Premium key is valid!")
             saveKey(key)
             return true
         end
 
-        onMessage("Key or username is invalid!")
+        onMessage("Key is invalid!")
         return false
     else
         onMessage("An error occurred while contacting the server!")
@@ -353,3 +353,4 @@ if savedKey and verify(savedKey) then
 else
     onMessage("No saved key found or key is invalid, please enter a new key.")
 end
+
