@@ -133,7 +133,7 @@ local savedKey = nil
 
 -- Daftar pasangan key dan username (langsung dari kode Lua)
 local keysWithUsernames = {
-    {key = "key1", username = "Memek2822a2"},
+    {key = "key1", username = "Memek28222"},
     {key = "key2", username = "username2"},
     {key = "key3", username = "username3"},
     -- Tambahkan pasangan key dan username lainnya di sini
