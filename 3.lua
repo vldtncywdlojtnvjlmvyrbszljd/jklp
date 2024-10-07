@@ -10,6 +10,7 @@ frame.Size = UDim2.new(0, 300, 0, 250)
 frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Titik acuan di tengah frame
 frame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Posisi di tengah layar
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 3
 frame.BorderSizePixel = 2
 frame.BorderColor3 = Color3.fromRGB(255, 0, 0)
 frame.Active = true
