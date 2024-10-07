@@ -131,43 +131,35 @@ validationLabel.Parent = frame
 local keyFileUrl = "https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/28s92hs/main/keqy.txt"
 local allowPassThrough = false
 local rateLimit = false
-local rateLimitCountdown = 0
 local errorWait = false
-local useDataModel = true 
 local savedKey = nil
-local savedUserName = nil
+
+-- Daftar key dan username yang tersimpan langsung dalam kode Lua
+local keysWithUsernames = {
+    {key = "key1", username = "Memek28222"},
+    {key = "key2", username = "username2"},
+    {key = "key3", username = "username3"},
+    -- Tambahkan pasangan key dan username lainnya di sini
+}
 
 -- Fungsi untuk menampilkan pesan
 function onMessage(msg)
     print(msg)
 end
 
--- Fungsi untuk menunggu
-function fWait(seconds)
-    wait(seconds)
-end
-
--- Fungsi untuk menjalankan fungsi lain secara asynchronous
-function fSpawn(func)
-    spawn(func)
-end
-
--- Fungsi untuk menyimpan key dan username
-function saveKey(key, username)
+-- Fungsi untuk menyimpan key yang diverifikasi dari GitHub ke file
+function saveKey(key)
     writefile("savedKey.txt", key)
-    writefile("savedUserName.txt", username)
     savedKey = key
-    savedUserName = username
 end
 
--- Fungsi untuk memuat key dan username yang tersimpan
-function loadSavedKeyAndUser()
-    if isfile("savedKey.txt") and isfile("savedUserName.txt") then
+-- Fungsi untuk memuat key yang tersimpan dari file
+function loadSavedKey()
+    if isfile("savedKey.txt") then
         savedKey = readfile("savedKey.txt")
-        savedUserName = readfile("savedUserName.txt")
-        return savedKey, savedUserName
+        return savedKey
     end
-    return nil, nil
+    return nil
 end
 
 -- Fungsi untuk memverifikasi key dari GitHub
@@ -185,7 +177,7 @@ function verifyKeyFromGitHub(key)
     if status then
         if string.find(result, key) then
             onMessage("Key is valid from GitHub!")
-            saveKey(key, "GitHub") -- Simpan key dengan penanda username "GitHub"
+            saveKey(key) -- Simpan key ke file setelah diverifikasi dari GitHub
             return true
         else
             onMessage("Key is invalid from GitHub!")
@@ -197,96 +189,44 @@ function verifyKeyFromGitHub(key)
     end
 end
 
--- Fungsi untuk memverifikasi key berdasarkan username
-function verifyKeyWithUsername(key, username)
-    if errorWait or rateLimit then 
-        return false
-    end
-
-    local savedKey, savedUserName = loadSavedKeyAndUser()
-
-    onMessage("Checking key with username...")
-
-    if savedKey == key and savedUserName == username then
-        onMessage("Key and username match!")
-        return true
-    else
-        onMessage("Key and username do not match!")
-        return false
-    end
-end
-
--- Fungsi utama untuk memverifikasi key
-function verify(key, username, method)
-    if method == "GitHub" then
-        return verifyKeyFromGitHub(key)
-    elseif method == "Username" then
-        return verifyKeyWithUsername(key, username)
-    else
-        onMessage("Invalid method provided!")
-        return false
-    end
-end
-
--- Fungsi untuk memverifikasi banyak key dan username
-function verifyMultipleKeys(keysWithUsernames, method)
+-- Fungsi untuk memeriksa apakah key dan username ada di dalam daftar keysWithUsernames
+function isKeyAndUsernameInLua(key, username)
     for _, pair in ipairs(keysWithUsernames) do
-        local key = pair.key
-        local username = pair.username
-        onMessage("Verifying key for user: " .. (username or "GitHub"))
-
-        -- Verifikasi menggunakan GitHub atau username
-        local isValid = verify(key, username, method)
-        if isValid then
-            onMessage("Key for " .. (username or "GitHub") .. " is valid!")
-        else
-            onMessage("Key for " .. (username or "GitHub") .. " is invalid!")
+        if pair.key == key and pair.username == username then
+            return true
         end
     end
+    return false
 end
 
--- Contoh daftar key dan username
-local keysWithUsernames = {
-    {key = "key1", username = "Memek28222"},
-    {key = "key2", username = "username2"},
-    {key = "key3", username = "username3"},
-    -- Tambahkan pasangan key dan username lainnya di sini
-}
+-- Fungsi untuk menjalankan skrip jika key valid
+function runScript()
+    onMessage("Running script...")
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/natsu023/RBXM/main/jj"))()
+end
 
--- Verifikasi semua key dan username dengan metode 'Username'
-verifyMultipleKeys(keysWithUsernames, "Username")
-
--- Atau verifikasi menggunakan GitHub
-verifyMultipleKeys({{key = "key_from_github"}}, "GitHub")
-
-
+-- Tombol Get Key
 getKeyButton.MouseButton1Click:Connect(function()
     setclipboard('https://medusastore.tech/halaman/postingan/point-key.html')
     validationLabel.Text = "Link Get Key Copied!"
     validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 end)
 
+-- Tombol Discord
 DiscordButton.MouseButton1Click:Connect(function()
     setclipboard('https://discord.com/invite/brutality-hub-1182005198206545941')
     validationLabel.Text = "Link Discord Copied!"
     validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 end)
 
+-- Tombol Check Key
 checkKeyButton.MouseButton1Click:Connect(function()
     local key = textBox.Text
+    local username = "Memek28222"  -- Ganti dengan username yang diinput pengguna melalui GUI
 
-    -- Verifikasi key menggunakan GitHub atau username
-    local isValidGitHub = verify(key, nil, "GitHub")  -- Verifikasi via GitHub
-    local isValidUsername = false
-    local username = "Memek28222"  -- Ganti dengan username yang diinginkan, atau ambil dari input pengguna
-    
-    -- Coba verifikasi dengan username jika GitHub gagal
-    if not isValidGitHub then
-        isValidUsername = verify(key, username, "Username")  -- Verifikasi via Username
-    end
-
-    if isValidGitHub or isValidUsername then
-        validationLabel.Text = "Key Is Valid!"
+    -- Cek apakah key dan username ada di dalam kode Lua
+    if isKeyAndUsernameInLua(key, username) then
+        validationLabel.Text = "Key and Username Matched!"
         validationLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
         wait(2)
         validationLabel.Text = "Thanks For Using"
@@ -297,42 +237,52 @@ checkKeyButton.MouseButton1Click:Connect(function()
         tween.Completed:Connect(function()
             screenGui:Destroy()
         end)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/natsu023/RBXM/main/jj"))()
+        runScript() -- Langsung menjalankan skrip jika key dan username cocok
     else
-        validationLabel.Text = "Invalid Key!"
-        validationLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-        wait(2)
-        validationLabel.Text = "Please Get Key"
-        validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        -- Verifikasi key menggunakan GitHub jika tidak ada di daftar Lua
+        local isValidGitHub = verifyKeyFromGitHub(key)  -- Verifikasi via GitHub
+
+        if isValidGitHub then
+            validationLabel.Text = "Key Is Valid!"
+            validationLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+            wait(2)
+            validationLabel.Text = "Thanks For Using"
+            validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            wait(2)
+            local tween = TweenService:Create(frame, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -150, -0.5, -100)})
+            tween:Play()
+            tween.Completed:Connect(function()
+                screenGui:Destroy()
+            end)
+            runScript() -- Jalankan skrip jika key dari GitHub valid
+        else
+            validationLabel.Text = "Invalid Key!"
+            validationLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+            wait(2)
+            validationLabel.Text = "Please Get Key"
+            validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        end
     end
 end)
 
--- Load key yang tersimpan dan coba verifikasi
+-- Jika ada key yang tersimpan di file, langsung jalankan tanpa validasi ulang
 if loadSavedKey() then
-    local savedKey, savedUserName = loadSavedKeyAndUser()
-
-    -- Verifikasi key yang tersimpan
-    local isValidGitHub = verify(savedKey, nil, "GitHub")  -- Verifikasi via GitHub
-    local isValidUsername = verify(savedKey, savedUserName, "Username")  -- Verifikasi via Username
-
-    if isValidGitHub or isValidUsername then
-        validationLabel.Text = "Key Is Valid!"
-        validationLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-        wait(2)
-        validationLabel.Text = "Thanks For Using"
-        validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        wait(2)
-        local tween = TweenService:Create(frame, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -150, -0.5, -100)})
-        tween:Play()
-        tween.Completed:Connect(function()
-            screenGui:Destroy()
-        end)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/natsu023/RBXM/main/jj"))()
-    else
-        validationLabel.Text = "Invalid Key!"
-        validationLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-        wait(2)
-        validationLabel.Text = "Please Get Key"
-        validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    end
+    validationLabel.Text = "Saved Key Found!"
+    validationLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+    wait(2)
+    validationLabel.Text = "Thanks For Using"
+    validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    wait(2)
+    local tween = TweenService:Create(frame, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -150, -0.5, -100)})
+    tween:Play()
+    tween.Completed:Connect(function()
+        screenGui:Destroy()
+    end)
+    runScript() -- Langsung jalankan jika ada key yang tersimpan di file
+else
+    -- Jika tidak ada key tersimpan, tampilkan form input key
+    validationLabel.Text = "Please Enter Key"
+    validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 end
+
+
