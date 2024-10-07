@@ -247,7 +247,7 @@ end
 
 -- Contoh daftar key dan username
 local keysWithUsernames = {
-    {key = "key1", username = "username1"},
+    {key = "key1", username = "Memek28222"},
     {key = "key2", username = "username2"},
     {key = "key3", username = "username3"},
     -- Tambahkan pasangan key dan username lainnya di sini
@@ -278,7 +278,7 @@ checkKeyButton.MouseButton1Click:Connect(function()
     -- Verifikasi key menggunakan GitHub atau username
     local isValidGitHub = verify(key, nil, "GitHub")  -- Verifikasi via GitHub
     local isValidUsername = false
-    local username = "your_username"  -- Ganti dengan username yang diinginkan, atau ambil dari input pengguna
+    local username = "Memek28222"  -- Ganti dengan username yang diinginkan, atau ambil dari input pengguna
     
     -- Coba verifikasi dengan username jika GitHub gagal
     if not isValidGitHub then
