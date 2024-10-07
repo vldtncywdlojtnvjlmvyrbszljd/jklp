@@ -161,12 +161,12 @@ local StepLabel = CreateObject("TextLabel", {
     Name = "StepLabel",
     Parent = Main,
     BackgroundTransparency = 1,
-    Position = UDim2.new(0.5, 0, 1, -35),
+    Position = UDim2.new(0.5, 0, 1, -37),
     Size = UDim2.new(1, -20, 0, 20),
     Font = Enum.Font.Gotham,
     Text = "",
     TextColor3 = Metadata.LoaderData.Colors.Topic,
-    TextSize = 20,
+    TextSize = 14,
     TextXAlignment = Enum.TextXAlignment.Center,
     AnchorPoint = Vector2.new(0.5, 0.5)
 })function UpdateStepText(step)
