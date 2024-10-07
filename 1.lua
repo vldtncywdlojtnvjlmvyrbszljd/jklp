@@ -5,7 +5,7 @@ local function AntiBan()
     local scripts_to_destroy = {
         Character = {"General", "Shiftlock", "FallDamage", "4444", "CamBob", "JumpCD", "Looking", "Run"},
         PlayerScripts = {"RobloxMotor6DBugFix", "Clans", "Codes", "CustomForceField", "MenuBloodSp", "PlayerList", 
-                         "FastAttack", "BringMobs", "SpamSkill"}
+                         "FastAttack", "BringMobs", "SpamSkill", "KickSystem", "ScurityKick"}
     }
     
     local function SafeDestroy(instance)
@@ -62,7 +62,7 @@ local function InitializeProtection()
             pcall(function()
                 for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
                     if v:IsA("LocalScript") and v.Enabled then
-                        local suspicious = {"Detector", "Anti", "Check", "Detection"}
+                        local suspicious = {"Detector", "Anti", "Check", "Detection", "Scurity Kick", "Kick System"}
                         for _, sus in pairs(suspicious) do
                             if string.find(v.Name, sus) then
                                 v.Enabled = false
@@ -8472,6 +8472,28 @@ M:AddToggle("Auto Finish Zone 5 (fix bug)",_G.dao,function(state)
             end
         end)
 ]]
+local boatList = {
+    "Speedboat",
+    "Enforcer",
+    "Sloop",
+    "Brigantine",
+    "Galleon",
+    "Dinghy",
+    "PirateSloop",
+    "PirateBrigade",
+    "PirateGalleon",
+    "LuxuryBoat",
+    "MilitaryBoat",
+    "CoffinBoat",
+    "SwampBoat",
+    "Miracle",
+    "The Sentinel",
+    "Guardian",
+    "Lantern",
+    "Beast Hunter",
+    "Sleigh"
+}
+
 SNt:AddToggle("Speed Boat",_G.IncreaseBoatSpeed,function(value) -- state
     _G.IncreaseBoatSpeed = value
 end)
@@ -8481,7 +8503,7 @@ spawn(function()
         pcall(function()
             local vehicleSeats = {}
             for i, v in pairs(game.Workspace.Boats:GetDescendants()) do
-                if v:IsA("VehicleSeat") then
+                if v:IsA("VehicleSeat") and table.find(boatList, v.Parent.Name) then
                     table.insert(vehicleSeats, v)
                 end
             end
@@ -8497,6 +8519,7 @@ spawn(function()
         end)
     end
 end)
+
 
 SNt:AddToggle("Auto Sail Rough Sea",_G.BiirTrax,function(state)
     if state then
