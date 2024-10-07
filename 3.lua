@@ -129,22 +129,26 @@ validationLabel.BackgroundTransparency = 1
 validationLabel.Parent = frame
 local keyFileUrl = "https://37utf92gn8cmz.ahost.marscode.site/as/premium-key.txt"
 local savedKey = nil
+local savedUsername = nil
 
 -- Fungsi untuk menampilkan pesan
 function onMessage(msg)
     print(msg)
 end
 
--- Fungsi untuk menyimpan key
-function saveKey(key)
-    writefile("savedKey.txt", key)
+-- Fungsi untuk menyimpan key dan username
+function saveKey(key, username)
+    local keyData = key .. "|" .. (username or "")
+    writefile("savedKey.txt", keyData)
     savedKey = key
+    savedUsername = username
 end
 
--- Fungsi untuk memuat key yang tersimpan
+-- Fungsi untuk memuat key dan username yang tersimpan
 function loadKey()
     if isfile("savedKey.txt") then
-        savedKey = readfile("savedKey.txt")
+        local keyData = readfile("savedKey.txt")
+        savedKey, savedUsername = keyData:match("([^|]+)|([^|]*)")
     end
 end
 
@@ -155,13 +159,13 @@ function verifyNormalKey(key, content)
 end
 
 -- Fungsi untuk memverifikasi key premium
-function verifyPremiumKey(key, content)
-    local pattern = '{PremiumKey = "' .. key .. '"}'
+function verifyPremiumKey(key, username, content)
+    local pattern = '{PremiumKey = "' .. key .. '", Username = "' .. username .. '"}'
     return string.find(content, pattern) ~= nil
 end
 
 -- Fungsi utama untuk memverifikasi key
-function verify(key)
+function verify(key, username)
     local status, content = pcall(function()
         return game:HttpGetAsync(keyFileUrl)
     end)
@@ -170,14 +174,14 @@ function verify(key)
         -- Cek apakah key adalah NormalKey
         if verifyNormalKey(key, content) then
             onMessage("Normal key is valid!")
-            saveKey(key)
+            saveKey(key, nil)
             return true
         end
 
         -- Cek apakah key adalah PremiumKey
-        if verifyPremiumKey(key, content) then
+        if username and verifyPremiumKey(key, username, content) then
             onMessage("Premium key is valid!")
-            saveKey(key)
+            saveKey(key, username)
             return true
         end
 
@@ -192,7 +196,9 @@ end
 -- Event untuk tombol verifikasi key
 checkKeyButton.MouseButton1Click:Connect(function()
     local key = textBox.Text
-    if verify(key) then
+    local username = game.Players.LocalPlayer.Name  -- Mengambil username pemain
+
+    if verify(key, username) then
         validationLabel.Text = "Key Is Valid!"
         validationLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
         wait(2)
@@ -204,7 +210,7 @@ checkKeyButton.MouseButton1Click:Connect(function()
         tween.Completed:Connect(function()
             screenGui:Destroy()
         end)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua",true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua", true))()
     else
         validationLabel.Text = "Checking Key..."
         validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -214,13 +220,12 @@ checkKeyButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Memuat key yang tersimpan saat awal dijalankan
+-- Memuat key dan username yang tersimpan saat awal dijalankan
 loadKey()
-if savedKey and verify(savedKey) then
+if savedKey and (savedUsername == nil or verify(savedKey, savedUsername)) then
     onMessage("Saved key is valid!")
     screenGui.Enabled = false
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua",true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua", true))()
 else
     onMessage("No saved key found or key is invalid, please enter a new key.")
 end
-
