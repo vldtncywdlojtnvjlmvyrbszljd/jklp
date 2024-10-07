@@ -1,141 +1,115 @@
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Inisialisasi variabel global untuk tracking
-_G.AntiDetectInitialized = false
-
 -- Fungsi untuk mengacak delay
 local function RandomDelay(min, max)
     return min + (max - min) * math.random()
 end
 
--- Sistem Anti-Deteksi Komprehensif
-local AntiDetectionSystem = {
-    -- Daftar nama fungsi yang perlu dilindungi
-    ProtectedFunctions = {},
+-- Fungsi anti-ban yang diperbaiki
+local function AntiBan()
+    local scripts_to_destroy = {
+        Character = {"General", "Shiftlock", "FallDamage", "4444", "CamBob", "JumpCD", "Looking", "Run"},
+        PlayerScripts = {"RobloxMotor6DBugFix", "Clans", "Codes", "CustomForceField", "MenuBloodSp", "PlayerList", 
+                         "FastAttack", "BringMobs", "SpamSkill"}
+    }
     
-    -- Inisialisasi sistem
-    Initialize = function(self)
-        if _G.AntiDetectInitialized then return end
-        
-        -- Anti-Ban
-        self:SetupAntiBan()
-        
-        -- Anti-AFK
-        self:SetupAntiAFK()
-        
-        -- Anti-Lag
-        self:SetupAntiLag()
-        
-        -- Anti-Cheat Detector
-        self:SetupAntiCheatDetector()
-        
-        -- Setup Monitoring System
-        self:SetupMonitoring()
-        
-        _G.AntiDetectInitialized = true
-    end,
-    
-    -- Setup Anti-Ban
-    SetupAntiBan = function(self)
-        local scripts_to_destroy = {
-            Character = {"General", "Shiftlock", "FallDamage", "4444", "CamBob", "JumpCD", "Looking", "Run"},
-            PlayerScripts = {"RobloxMotor6DBugFix", "Clans", "Codes", "CustomForceField", "MenuBloodSp", 
-                            "PlayerList", "FastAttack", "BringMobs", "SpamSkill"}
-        }
-        
-        local function SafeDestroy(instance)
-            pcall(function()
-                if instance then
-                    instance:Destroy()
-                end
-            end)
-        end
+    local function SafeDestroy(instance)
+        pcall(function()
+            if instance then
+                instance:Destroy()
+            end
+        end)
+    end
 
-        for location, script_names in pairs(scripts_to_destroy) do
-            local target = location == "Character" and game:GetService("Players").LocalPlayer.Character or 
-                           game:GetService("Players").LocalPlayer.PlayerScripts
-            
-            if target then
-                for _, desc in pairs(target:GetDescendants()) do
-                    if desc:IsA("LocalScript") and table.find(script_names, desc.Name) then
-                        SafeDestroy(desc)
-                    end
+    -- Destroy scripts safely
+    for location, script_names in pairs(scripts_to_destroy) do
+        local target = location == "Character" and game:GetService("Players").LocalPlayer.Character or 
+                       game:GetService("Players").LocalPlayer.PlayerScripts
+        
+        if target then
+            for _, desc in pairs(target:GetDescendants()) do
+                if desc:IsA("LocalScript") and table.find(script_names, desc.Name) then
+                    SafeDestroy(desc)
                 end
             end
         end
-    end,
+    end
+end
+
+-- Anti AFK
+local function AntiAFK()
+    local VirtualUser = game:GetService("VirtualUser")
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
     
-    -- Setup Anti-AFK
-    SetupAntiAFK = function(self)
-        local VirtualUser = game:GetService("VirtualUser")
-        game:GetService("Players").LocalPlayer.Idled:Connect(function()
-            VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-            wait(RandomDelay(0.5, 1.5))
-            VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-        end)
-    end,
+    LocalPlayer.Idled:Connect(function()
+        VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        wait(RandomDelay(0.5, 1.5))
+        VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+    end)
+end
+
+-- Anti Lag
+local function AntiLag()
+    local Terrain = workspace:FindFirstChildOfClass('Terrain')
+    Terrain.WaterWaveSize = 0
+    Terrain.WaterWaveSpeed = 0
+    Terrain.WaterReflectance = 0
+    Terrain.WaterTransparency = 0
     
-    -- Setup Anti-Lag
-    SetupAntiLag = function(self)
-        local Terrain = workspace:FindFirstChildOfClass('Terrain')
-        Terrain.WaterWaveSize = 0
-        Terrain.WaterWaveSpeed = 0
-        Terrain.WaterReflectance = 0
-        Terrain.WaterTransparency = 0
-        
-        local Lighting = game:GetService("Lighting")
-        Lighting.GlobalShadows = false
-        Lighting.FogEnd = 9e9
-        
-        for _, v in pairs(game:GetDescendants()) do
-            if v:IsA("Part") or v:IsA("Union") or v:IsA("MeshPart") then
-                v.Material = "Plastic"
-                v.Reflectance = 0
-            elseif v:IsA("Decal") then
-                v.Transparency = 1
-            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-                v.Lifetime = NumberRange.new(0)
-            elseif v:IsA("Explosion") then
-                v.BlastPressure = 1
-                v.BlastRadius = 1
+    local Lighting = game:GetService("Lighting")
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("Part") or v:IsA("Union") or v:IsA("MeshPart") then
+            v.Material = "Plastic"
+            v.Reflectance = 0
+        elseif v:IsA("Decal") then
+            v.Transparency = 1
+        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+            v.Lifetime = NumberRange.new(0)
+        elseif v:IsA("Explosion") then
+            v.BlastPressure = 1
+            v.BlastRadius = 1
+        end
+    end
+end
+
+-- Anti Cheat Detector
+local function AntiCheatDetector()
+    local mt = getrawmetatable(game)
+    local old = mt.__namecall
+    setreadonly(mt, false)
+    mt.__namecall = newcclosure(function(...)
+        local args = {...}
+        local method = getnamecallmethod()
+        if method == "FireServer" or method == "InvokeServer" then
+            if tostring(args[1]):find("BanRemote") or tostring(args[1]):find("AntiCheat") then
+                return wait(9e9)
             end
         end
-    end,
-    
-    -- Setup Anti-Cheat Detector
-    SetupAntiCheatDetector = function(self)
-        local mt = getrawmetatable(game)
-        local old = mt.__namecall
-        setreadonly(mt, false)
-        mt.__namecall = newcclosure(function(...)
-            local args = {...}
-            local method = getnamecallmethod()
-            
-            -- Intercept potential anti-cheat calls
-            if method == "FireServer" or method == "InvokeServer" then
-                local remote = args[1]
-                if typeof(remote) == "Instance" then
-                    local blockedKeywords = {"Ban", "Anti", "Cheat", "Detect", "Report"}
-                    for _, keyword in pairs(blockedKeywords) do
-                        if string.find(remote.Name, keyword) then
-                            return wait(9e9)
-                        end
-                    end
-                end
-            end
-            
-            return old(...)
-        end)
-        setreadonly(mt, true)
-    end,
-    
-    -- Setup Monitoring System
-    SetupMonitoring = function(self)
+        return old(...)
+    end)
+    setreadonly(mt, true)
+end
+
+-- Fungsi utama untuk menjalankan semua proteksi
+local function InitializeProtection()
+    pcall(function()
+        AntiBan()
+        AntiAFK()
+        AntiLag()
+        AntiCheatDetector()
+        AntiReportPlayer()
+        AntiRepot()
+        
+        -- Tambahan: Monitoring untuk script yang dicurigai
         game:GetService("RunService").Heartbeat:Connect(function()
             pcall(function()
                 for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
                     if v:IsA("LocalScript") and v.Enabled then
-                        local suspicious = {"Detector", "Anti", "Check", "Detection", "Monitor", "Track"}
+                        local suspicious = {"Detector", "Anti", "Check", "Detection", "ReportPlayer", "Report"}
                         for _, sus in pairs(suspicious) do
                             if string.find(v.Name, sus) then
                                 v.Enabled = false
@@ -145,67 +119,11 @@ local AntiDetectionSystem = {
                 end
             end)
         end)
-    end,
-    
-    -- Fungsi untuk membungkus fungsi yang ada dengan proteksi
-    WrapFunction = function(self, func, name)
-        return function(...)
-            local success, result = pcall(function()
-                -- Tambahkan delay acak sebelum menjalankan fungsi
-                wait(RandomDelay(0.1, 0.3))
-                return func(...)
-            end)
-            
-            if not success then
-                warn("Protected function " .. name .. " encountered an error")
-                return nil
-            end
-            
-            return result
-        end
-    end,
-    
-    -- Fungsi untuk mendaftarkan fungsi yang perlu dilindungi
-    ProtectFunction = function(self, func, name)
-        self.ProtectedFunctions[name] = self:WrapFunction(func, name)
-        return self.ProtectedFunctions[name]
-    end
-}
-
--- Fungsi untuk menginisialisasi semua proteksi
-local function InitializeProtection()
-    AntiDetectionSystem:Initialize()
+    end)
 end
 
--- Fungsi untuk membungkus fungsi yang ada dengan proteksi
-local function ProtectFunction(func, name)
-    return AntiDetectionSystem:ProtectFunction(func, name)
-end
-
--- Contoh penggunaan untuk script yang sudah ada
-local function WrapExistingScripts()
-    -- Contoh untuk Gun Mastery
-    if _G.AutoFarmGunMastery then
-        _G.AutoFarmGunMastery = ProtectFunction(_G.AutoFarmGunMastery, "AutoFarmGunMastery")
-    end
-    
-    -- Bungkus fungsi UseSkill jika ada
-    if UseSkill then
-        UseSkill = ProtectFunction(UseSkill, "UseSkill")
-    end
-    
-    -- Tambahkan fungsi lain yang perlu dibungkus di sini
-end
-
--- Inisialisasi proteksi
+-- Jalankan proteksi
 InitializeProtection()
-WrapExistingScripts()
-
--- Return fungsi yang bisa digunakan di script lain
-return {
-    ProtectFunction = ProtectFunction,
-    RandomDelay = RandomDelay
-}
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 local Notif = {}
 
