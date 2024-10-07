@@ -113,7 +113,7 @@ local Top = CreateObject("TextLabel", {
     Position = UDim2.new(0, 30, 0, 70),
     Size = UDim2.new(0, 301, 0, 20),
     Font = Enum.Font.Gotham,
-    Text = "Loader",
+    Text = "",
     TextColor3 = Metadata.LoaderData.Colors.Topic,
     TextSize = 10,
     TextXAlignment = Enum.TextXAlignment.Left,
@@ -172,16 +172,6 @@ local StepLabel = CreateObject("TextLabel", {
 })function UpdateStepText(step)
     StepLabel.Text = StepTexts[step] or ""
 end
-local textBox = Instance.new("TextBox")
-textBox.Size = UDim2.new(0.8, 0, 0, 30)
-textBox.Position = UDim2.new(0.1, 0, 0.4, 0)
-textBox.Text = "Enter Key Here"
-textBox.Font = Enum.Font.SourceSans
-textBox.TextSize = 18
-textBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-textBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-textBox.TextWrapped = true
-textBox.Parent = frame
 function UpdatePercentage(percentage, step)
     TweenObject(Progress, 0.5, {
         Size = UDim2.new((percentage / 100), 0, 0, 24)
