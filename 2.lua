@@ -95,7 +95,7 @@ getKeyButton.Text = "Get Key"
 getKeyButton.Font = Enum.Font.SourceSansBold
 getKeyButton.TextSize = 18
 getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
+getKeyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) --0, 170, 0
 getKeyButton.Parent = frame
 
 local checkKeyButton = Instance.new("TextButton")
@@ -105,7 +105,7 @@ checkKeyButton.Text = "Check Key"
 checkKeyButton.Font = Enum.Font.SourceSansBold
 checkKeyButton.TextSize = 18
 checkKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-checkKeyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
+checkKeyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) --0, 170, 0
 checkKeyButton.Parent = frame
 
 local DiscordButton = Instance.new("TextButton")
