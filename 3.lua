@@ -46,7 +46,7 @@ end)
 
 local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1, 0, 0, 50)
-label.Position = UDim2.new(0, 0, 0, 35) 
+label.Position = UDim2.new(0, 0, 0, 25) 
 label.Text = "Nice To Meet You"
 label.Font = Enum.Font.SourceSansBold
 label.TextSize = 30
