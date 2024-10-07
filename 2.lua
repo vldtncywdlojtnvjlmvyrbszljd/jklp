@@ -46,7 +46,7 @@ end)
 
 local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1, 0, 0, 50)
-label.Position = UDim2.new(0, 0, 0, 12) 
+label.Position = UDim2.new(0, 0, 0, 35) 
 label.Text = "Nice To Meet You"
 label.Font = Enum.Font.SourceSansBold
 label.TextSize = 30
@@ -57,7 +57,7 @@ label.Parent = frame
 
 local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1, 0, 0, 50)
-label.Position = UDim2.new(0, 0, 0, 55) 
+label.Position = UDim2.new(0, 0, 0, 50) 
 label.Text = "".. game.Players.LocalPlayer.Name
 label.Font = Enum.Font.SourceSansBold
 label.TextSize = 20
