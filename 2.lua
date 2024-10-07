@@ -11,7 +11,7 @@ frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Titik acuan di tengah frame
 frame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Posisi di tengah layar
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BorderSizePixel = 2
-frame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+frame.BorderColor3 = Color3.fromRGB(255, 0, 0)
 frame.Active = true
 frame.Draggable = true
 frame.Parent = screenGui
@@ -128,7 +128,7 @@ validationLabel.TextSize = 18
 validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 validationLabel.BackgroundTransparency = 1
 validationLabel.Parent = frame
-local keyFileUrl = "https://37utf92gn8cmz.ahost.marscode.site/as/premiuma-key.txt"
+local keyFileUrl = "https://37utf92gn8cmz.ahost.marscode.site/as/preqmium-key.txt"
 local savedKey = nil
 local savedUsername = nil
 
