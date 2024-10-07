@@ -46,7 +46,7 @@ end)
 
 local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1, 0, 0, 50)
-label.Position = UDim2.new(0, 0, 0, 25) 
+label.Position = UDim2.new(0, 0, 0, 20) 
 label.Text = "Nice To Meet You"
 label.Font = Enum.Font.SourceSansBold
 label.TextSize = 30
@@ -135,38 +135,48 @@ local rateLimitCountdown = 0
 local errorWait = false
 local useDataModel = true 
 local savedKey = nil
+local savedUserName = nil
 
+-- Fungsi untuk menampilkan pesan
 function onMessage(msg)
     print(msg)
 end
 
+-- Fungsi untuk menunggu
 function fWait(seconds)
     wait(seconds)
 end
 
+-- Fungsi untuk menjalankan fungsi lain secara asynchronous
 function fSpawn(func)
     spawn(func)
 end
 
-function saveKey(key)
+-- Fungsi untuk menyimpan key dan username
+function saveKey(key, username)
     writefile("savedKey.txt", key)
+    writefile("savedUserName.txt", username)
     savedKey = key
+    savedUserName = username
 end
 
-function loadSavedKey()
-    if isfile("savedKey.txt") then
+-- Fungsi untuk memuat key dan username yang tersimpan
+function loadSavedKeyAndUser()
+    if isfile("savedKey.txt") and isfile("savedUserName.txt") then
         savedKey = readfile("savedKey.txt")
-        return savedKey
+        savedUserName = readfile("savedUserName.txt")
+        return savedKey, savedUserName
     end
-    return nil
+    return nil, nil
 end
 
-function verify(key)
+-- Fungsi untuk memverifikasi key dari GitHub
+function verifyKeyFromGitHub(key)
     if errorWait or rateLimit then 
         return false
     end
 
-    onMessage("Checking key...")
+    onMessage("Checking key from GitHub...")
 
     local status, result = pcall(function() 
         return game:HttpGetAsync(keyFileUrl)
@@ -174,18 +184,81 @@ function verify(key)
     
     if status then
         if string.find(result, key) then
-            onMessage("Key is valid!")
-            saveKey(key) 
+            onMessage("Key is valid from GitHub!")
+            saveKey(key, "GitHub") -- Simpan key dengan penanda username "GitHub"
             return true
         else
-            onMessage("Key is invalid!")
+            onMessage("Key is invalid from GitHub!")
             return false
         end
     else
-        onMessage("An error occurred while contacting the server!")
+        onMessage("An error occurred while contacting the GitHub server!")
         return allowPassThrough
     end
 end
+
+-- Fungsi untuk memverifikasi key berdasarkan username
+function verifyKeyWithUsername(key, username)
+    if errorWait or rateLimit then 
+        return false
+    end
+
+    local savedKey, savedUserName = loadSavedKeyAndUser()
+
+    onMessage("Checking key with username...")
+
+    if savedKey == key and savedUserName == username then
+        onMessage("Key and username match!")
+        return true
+    else
+        onMessage("Key and username do not match!")
+        return false
+    end
+end
+
+-- Fungsi utama untuk memverifikasi key
+function verify(key, username, method)
+    if method == "GitHub" then
+        return verifyKeyFromGitHub(key)
+    elseif method == "Username" then
+        return verifyKeyWithUsername(key, username)
+    else
+        onMessage("Invalid method provided!")
+        return false
+    end
+end
+
+-- Fungsi untuk memverifikasi banyak key dan username
+function verifyMultipleKeys(keysWithUsernames, method)
+    for _, pair in ipairs(keysWithUsernames) do
+        local key = pair.key
+        local username = pair.username
+        onMessage("Verifying key for user: " .. (username or "GitHub"))
+
+        -- Verifikasi menggunakan GitHub atau username
+        local isValid = verify(key, username, method)
+        if isValid then
+            onMessage("Key for " .. (username or "GitHub") .. " is valid!")
+        else
+            onMessage("Key for " .. (username or "GitHub") .. " is invalid!")
+        end
+    end
+end
+
+-- Contoh daftar key dan username
+local keysWithUsernames = {
+    {key = "key1", username = "username1"},
+    {key = "key2", username = "username2"},
+    {key = "key3", username = "username3"},
+    -- Tambahkan pasangan key dan username lainnya di sini
+}
+
+-- Verifikasi semua key dan username dengan metode 'Username'
+verifyMultipleKeys(keysWithUsernames, "Username")
+
+-- Atau verifikasi menggunakan GitHub
+verifyMultipleKeys({{key = "key_from_github"}}, "GitHub")
+
 
 getKeyButton.MouseButton1Click:Connect(function()
     setclipboard('https://medusastore.tech/halaman/postingan/point-key.html')
@@ -201,7 +274,18 @@ end)
 
 checkKeyButton.MouseButton1Click:Connect(function()
     local key = textBox.Text
-    if verify(key) then
+
+    -- Verifikasi key menggunakan GitHub atau username
+    local isValidGitHub = verify(key, nil, "GitHub")  -- Verifikasi via GitHub
+    local isValidUsername = false
+    local username = "your_username"  -- Ganti dengan username yang diinginkan, atau ambil dari input pengguna
+    
+    -- Coba verifikasi dengan username jika GitHub gagal
+    if not isValidGitHub then
+        isValidUsername = verify(key, username, "Username")  -- Verifikasi via Username
+    end
+
+    if isValidGitHub or isValidUsername then
         validationLabel.Text = "Key Is Valid!"
         validationLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
         wait(2)
@@ -223,8 +307,15 @@ checkKeyButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Load key yang tersimpan dan coba verifikasi
 if loadSavedKey() then
-    if verify(savedKey) then
+    local savedKey, savedUserName = loadSavedKeyAndUser()
+
+    -- Verifikasi key yang tersimpan
+    local isValidGitHub = verify(savedKey, nil, "GitHub")  -- Verifikasi via GitHub
+    local isValidUsername = verify(savedKey, savedUserName, "Username")  -- Verifikasi via Username
+
+    if isValidGitHub or isValidUsername then
         validationLabel.Text = "Key Is Valid!"
         validationLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
         wait(2)
