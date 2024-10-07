@@ -257,164 +257,69 @@ validationLabel.TextSize = 18
 validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 validationLabel.BackgroundTransparency = 1
 validationLabel.Parent = frame
-local keyFileUrl = "https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/28s92hs/main/key.txt"
-local premiumKeyFileUrl = "https://37utf92gn8cmz.ahost.marscode.site/as/premium-key.txt" -- Link kedua untuk key premium
-local allowPassThrough = false
-local rateLimit = false
-local rateLimitCountdown = 0
-local errorWait = false
-local useDataModel = true 
-local countdownActive = false
+local keyFileUrl = "https://37utf92gn8cmz.ahost.marscode.site/as/premium-key.txt"
 local savedKey = nil
-local expiryTimeInSeconds = 24 * 60 * 60 
 
+-- Fungsi untuk menampilkan pesan
 function onMessage(msg)
     print(msg)
 end
 
-function fWait(seconds)
-    wait(seconds)
-end
-
-function fSpawn(func)
-    spawn(func)
-end
-
-function saveKeyWithTimestamp(key)
-    local timestamp = os.time()
-    local keyWithTimestamp = key .. "|" .. tostring(timestamp)
-    writefile("savedKey.txt", keyWithTimestamp)
-    savedKey = keyWithTimestamp
-end
-
-function savePermanentKey(key) 
-    writefile("premiumKey.txt", key) -- Simpan key premium secara permanen
+-- Fungsi untuk menyimpan key tanpa timestamp
+function saveKey(key)
+    writefile("savedKey.txt", key)
     savedKey = key
 end
 
-function loadKeyWithTimestamp()
+-- Fungsi untuk memuat key yang tersimpan
+function loadKey()
     if isfile("savedKey.txt") then
         savedKey = readfile("savedKey.txt")
-        local key, timestamp = parseKeyAndTimestamp(savedKey)
-        if os.time() - tonumber(timestamp) >= expiryTimeInSeconds then
-            onMessage("Saved key has expired!")
-            delfile("savedKey.txt")
-            savedKey = nil
-        else
-            savedKey = key
-        end
     end
 end
 
-function loadPermanentKey()
-    if isfile("premiumKey.txt") then
-        savedKey = readfile("premiumKey.txt")
-        return savedKey
-    end
-    return nil
+-- Fungsi untuk memverifikasi key sederhana (contoh: B-Team_79723)
+function verifySimpleKey(key, content)
+    return string.find(content, key)
 end
 
-function parseKeyAndTimestamp(keyWithTimestamp)
-    local key, timestamp = keyWithTimestamp:match("([^|]+)|([^|]+)")
-    return key, timestamp
+-- Fungsi untuk memverifikasi key premium dan username (contoh: {key = "Premium1", username = "Me28222"})
+function verifyPremiumKey(premiumKey, username, content)
+    local pattern = '{key = "' .. premiumKey .. '", username = "' .. username .. '"}'
+    return string.find(content, pattern) ~= nil
 end
 
-function startCountdown(seconds)
-    countdownActive = true
-    for i = seconds, 0, -1 do
-        onMessage("Time remaining: " .. i .. " seconds")
-        fWait(1)
-    end
-    countdownActive = false
-    onMessage("Time's up! Please re-enter your key.")
-    savedKey = nil
-    if isfile("savedKey.txt") then
-        delfile("savedKey.txt")
-    end
-    screenGui.Enabled = true
-end
-
--- Fungsi untuk memverifikasi key dari GitHub
-function verifyKeyFromGitHub(key)
-    onMessage("Checking key from GitHub...")
-
-    local status, result = pcall(function() 
+-- Fungsi untuk memverifikasi key
+function verify(key)
+    local username = game.Players.LocalPlayer.Name
+    local status, content = pcall(function()
         return game:HttpGetAsync(keyFileUrl)
     end)
 
     if status then
-        if string.find(result, key) then
-            onMessage("Key is valid from GitHub!")
-            saveKeyWithTimestamp(key)
-            if not countdownActive then
-                fSpawn(function()
-                    startCountdown(expiryTimeInSeconds) 
-                end)
-            end
+        -- Cek jika key adalah key sederhana (B-Team_*)
+        if verifySimpleKey(key, content) then
+            onMessage("Key is valid!")
+            saveKey(key)
             return true
-        else
-            onMessage("Key is invalid from GitHub!")
-            return false
         end
-    else
-        onMessage("An error occurred while contacting GitHub!")
-        return false
-    end
-end
 
--- Fungsi untuk memverifikasi key premium dari file kedua
-function verifyKeyFromPremiumFile(key)
-    onMessage("Checking key from premium file...")
-
-    local playerName = game.Players.LocalPlayer.Name
-
-    local status, result = pcall(function() 
-        return game:HttpGetAsync(premiumKeyFileUrl)
-    end)
-
-    if status then
-        local premiumKeys = loadstring("return " .. result)() -- Mengambil data key premium
-        for _, pair in ipairs(premiumKeys) do
-            if pair.key == key and pair.username == playerName then
-                onMessage("Premium key and username match!")
-                savePermanentKey(key) -- Simpan key premium secara permanen
-                return true
-            end
+        -- Cek jika key adalah key premium dengan pasangan username
+        if verifyPremiumKey(key, username, content) then
+            onMessage("Premium key and username match!")
+            saveKey(key)
+            return true
         end
-        onMessage("Premium key or username is invalid!")
+
+        onMessage("Key or username is invalid!")
         return false
     else
-        onMessage("An error occurred while contacting the premium server!")
+        onMessage("An error occurred while contacting the server!")
         return false
     end
 end
 
--- Fungsi utama untuk memverifikasi key
-function verify(key)
-    if errorWait or rateLimit then 
-        return false
-    end
-
-    onMessage("Checking key...")
-
-    -- Coba verifikasi key dari GitHub terlebih dahulu
-    local isValidGitHubKey = verifyKeyFromGitHub(key)
-    if isValidGitHubKey then
-        return true
-    end
-
-    -- Jika gagal, coba verifikasi key dari premium file
-    local isValidPremiumKey = verifyKeyFromPremiumFile(key)
-    if isValidPremiumKey then
-        return true
-    end
-
-    -- Jika kedua key tidak valid
-    onMessage("Key is invalid!")
-    return false
-end
-
--- Penggunaan GUI untuk mengecek key
+-- Event untuk tombol verifikasi key
 checkKeyButton.MouseButton1Click:Connect(function()
     local key = textBox.Text
     if verify(key) then
@@ -429,7 +334,7 @@ checkKeyButton.MouseButton1Click:Connect(function()
         tween.Completed:Connect(function()
             screenGui:Destroy()
         end)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua", true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua",true))()
     else
         validationLabel.Text = "Checking Key..."
         validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -439,31 +344,12 @@ checkKeyButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Muat key yang tersimpan saat GUI terbuka
-wait(3)
-local tween = TweenService:Create(frame, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -150, 0.5, -100)})
-tween:Play()
-
-loadKeyWithTimestamp()
-if savedKey then
-    if verify(savedKey) then
-        onMessage("Saved key is valid!")
-        screenGui.Enabled = false
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua", true))()
-    else
-        onMessage("Saved key is invalid, please enter a new key.")
-    end
+-- Memuat key yang tersimpan saat awal dijalankan
+loadKey()
+if savedKey and verify(savedKey) then
+    onMessage("Saved key is valid!")
+    screenGui.Enabled = false
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua",true))()
+else
+    onMessage("No saved key found or key is invalid, please enter a new key.")
 end
-
--- Muat key premium secara permanen
-local premiumKey = loadPermanentKey()
-if premiumKey then
-    if verifyKeyFromPremiumFile(premiumKey) then
-        onMessage("Premium key is valid!")
-        screenGui.Enabled = false
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/asedesa/main/zxcv.lua", true))()
-    else
-        onMessage("Premium key is invalid, please enter a new key.")
-    end
-end
-
