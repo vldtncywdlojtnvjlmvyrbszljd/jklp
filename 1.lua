@@ -1,5 +1,212 @@
 
-loadstring(game:HttpGet("https://37utf92gn8cmz.ahost.marscode.site/as/all-string.lua"))()
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Inisialisasi variabel global untuk tracking
+_G.AntiDetectInitialized = false
+
+-- Fungsi untuk mengacak delay
+local function RandomDelay(min, max)
+    return min + (max - min) * math.random()
+end
+
+-- Sistem Anti-Deteksi Komprehensif
+local AntiDetectionSystem = {
+    -- Daftar nama fungsi yang perlu dilindungi
+    ProtectedFunctions = {},
+    
+    -- Inisialisasi sistem
+    Initialize = function(self)
+        if _G.AntiDetectInitialized then return end
+        
+        -- Anti-Ban
+        self:SetupAntiBan()
+        
+        -- Anti-AFK
+        self:SetupAntiAFK()
+        
+        -- Anti-Lag
+        self:SetupAntiLag()
+        
+        -- Anti-Cheat Detector
+        self:SetupAntiCheatDetector()
+        
+        -- Setup Monitoring System
+        self:SetupMonitoring()
+        
+        _G.AntiDetectInitialized = true
+    end,
+    
+    -- Setup Anti-Ban
+    SetupAntiBan = function(self)
+        local scripts_to_destroy = {
+            Character = {"General", "Shiftlock", "FallDamage", "4444", "CamBob", "JumpCD", "Looking", "Run"},
+            PlayerScripts = {"RobloxMotor6DBugFix", "Clans", "Codes", "CustomForceField", "MenuBloodSp", 
+                            "PlayerList", "FastAttack", "BringMobs", "SpamSkill"}
+        }
+        
+        local function SafeDestroy(instance)
+            pcall(function()
+                if instance then
+                    instance:Destroy()
+                end
+            end)
+        end
+
+        for location, script_names in pairs(scripts_to_destroy) do
+            local target = location == "Character" and game:GetService("Players").LocalPlayer.Character or 
+                           game:GetService("Players").LocalPlayer.PlayerScripts
+            
+            if target then
+                for _, desc in pairs(target:GetDescendants()) do
+                    if desc:IsA("LocalScript") and table.find(script_names, desc.Name) then
+                        SafeDestroy(desc)
+                    end
+                end
+            end
+        end
+    end,
+    
+    -- Setup Anti-AFK
+    SetupAntiAFK = function(self)
+        local VirtualUser = game:GetService("VirtualUser")
+        game:GetService("Players").LocalPlayer.Idled:Connect(function()
+            VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+            wait(RandomDelay(0.5, 1.5))
+            VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        end)
+    end,
+    
+    -- Setup Anti-Lag
+    SetupAntiLag = function(self)
+        local Terrain = workspace:FindFirstChildOfClass('Terrain')
+        Terrain.WaterWaveSize = 0
+        Terrain.WaterWaveSpeed = 0
+        Terrain.WaterReflectance = 0
+        Terrain.WaterTransparency = 0
+        
+        local Lighting = game:GetService("Lighting")
+        Lighting.GlobalShadows = false
+        Lighting.FogEnd = 9e9
+        
+        for _, v in pairs(game:GetDescendants()) do
+            if v:IsA("Part") or v:IsA("Union") or v:IsA("MeshPart") then
+                v.Material = "Plastic"
+                v.Reflectance = 0
+            elseif v:IsA("Decal") then
+                v.Transparency = 1
+            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                v.Lifetime = NumberRange.new(0)
+            elseif v:IsA("Explosion") then
+                v.BlastPressure = 1
+                v.BlastRadius = 1
+            end
+        end
+    end,
+    
+    -- Setup Anti-Cheat Detector
+    SetupAntiCheatDetector = function(self)
+        local mt = getrawmetatable(game)
+        local old = mt.__namecall
+        setreadonly(mt, false)
+        mt.__namecall = newcclosure(function(...)
+            local args = {...}
+            local method = getnamecallmethod()
+            
+            -- Intercept potential anti-cheat calls
+            if method == "FireServer" or method == "InvokeServer" then
+                local remote = args[1]
+                if typeof(remote) == "Instance" then
+                    local blockedKeywords = {"Ban", "Anti", "Cheat", "Detect", "Report"}
+                    for _, keyword in pairs(blockedKeywords) do
+                        if string.find(remote.Name, keyword) then
+                            return wait(9e9)
+                        end
+                    end
+                end
+            end
+            
+            return old(...)
+        end)
+        setreadonly(mt, true)
+    end,
+    
+    -- Setup Monitoring System
+    SetupMonitoring = function(self)
+        game:GetService("RunService").Heartbeat:Connect(function()
+            pcall(function()
+                for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+                    if v:IsA("LocalScript") and v.Enabled then
+                        local suspicious = {"Detector", "Anti", "Check", "Detection", "Monitor", "Track"}
+                        for _, sus in pairs(suspicious) do
+                            if string.find(v.Name, sus) then
+                                v.Enabled = false
+                            end
+                        end
+                    end
+                end
+            end)
+        end)
+    end,
+    
+    -- Fungsi untuk membungkus fungsi yang ada dengan proteksi
+    WrapFunction = function(self, func, name)
+        return function(...)
+            local success, result = pcall(function()
+                -- Tambahkan delay acak sebelum menjalankan fungsi
+                wait(RandomDelay(0.1, 0.3))
+                return func(...)
+            end)
+            
+            if not success then
+                warn("Protected function " .. name .. " encountered an error")
+                return nil
+            end
+            
+            return result
+        end
+    end,
+    
+    -- Fungsi untuk mendaftarkan fungsi yang perlu dilindungi
+    ProtectFunction = function(self, func, name)
+        self.ProtectedFunctions[name] = self:WrapFunction(func, name)
+        return self.ProtectedFunctions[name]
+    end
+}
+
+-- Fungsi untuk menginisialisasi semua proteksi
+local function InitializeProtection()
+    AntiDetectionSystem:Initialize()
+end
+
+-- Fungsi untuk membungkus fungsi yang ada dengan proteksi
+local function ProtectFunction(func, name)
+    return AntiDetectionSystem:ProtectFunction(func, name)
+end
+
+-- Contoh penggunaan untuk script yang sudah ada
+local function WrapExistingScripts()
+    -- Contoh untuk Gun Mastery
+    if _G.AutoFarmGunMastery then
+        _G.AutoFarmGunMastery = ProtectFunction(_G.AutoFarmGunMastery, "AutoFarmGunMastery")
+    end
+    
+    -- Bungkus fungsi UseSkill jika ada
+    if UseSkill then
+        UseSkill = ProtectFunction(UseSkill, "UseSkill")
+    end
+    
+    -- Tambahkan fungsi lain yang perlu dibungkus di sini
+end
+
+-- Inisialisasi proteksi
+InitializeProtection()
+WrapExistingScripts()
+
+-- Return fungsi yang bisa digunakan di script lain
+return {
+    ProtectFunction = ProtectFunction,
+    RandomDelay = RandomDelay
+}
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
 local Notif = {}
 
 local CoreGUI = game:GetService("CoreGui")
@@ -8806,134 +9013,152 @@ end)
         _G.AutoFarmGunMastery = value
         StopTween(_G.AutoFarmGunMastery)
         if _G.AutoFarmGunMastery == false then
-            UseSkillGun = false 
+            UseSkill = false 
         end
     end)
     
     spawn(function()
-        pcall(function()
-            while wait() do
-                if _G.AutoFarmGunMastery then
+        while wait() do
+            if _G.AutoFarmGunMastery then
+                pcall(function()
                     local QuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
                     if not string.find(QuestTitle, NameMon) then
-						UseSkillGun = false 
-                        StartMasteryGunMagnet = false
+                        Magnet = false
+                        UseSkill = false
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
                     end
                     if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
-						UseSkillGun = false 
                         StartMasteryGunMagnet = false
-                        CheckLevel()
-                        TP(CFrameQuest)
-                        if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 10 then
-                            task.wait()
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest)
+                        UseSkill = false
+                        CheckQuest()
+                        repeat wait()
+                            TP1(CFrameQuest)
+                        until (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 3 or not _G.AutoFarmGunMastery
+                        if (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 then
+                            wait(0.1)
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest",NameQuest,LevelQuest)
+                            wait(0.1)
                         end
                     elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
-                        CheckLevel()
-                        if game:GetService("Workspace").Enemies:FindFirstChild(Ms) then
-                            pcall(function()
-                                for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                                    if v.Name == Ms then
-                                        repeat task.wait()
-                                            if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
-                                                HealthMin = v.Humanoid.MaxHealth * _G.Kill_At/100
-                                                if v.Humanoid.Health <= HealthMin then         
-                                                    EquipWeapon(SelectToolWeaponGun)
-                                                    TP(v.HumanoidRootPart.CFrame * MethodFarm)
-							                        v.Humanoid.JumpPower = 0
-							                        v.Humanoid.WalkSpeed = 0                                                    
-												    v.HumanoidRootPart.CanCollide = false
-                                                    v.HumanoidRootPart.Size = Vector3.new(2,2,1)
-                                                    v.Head.CanCollide = false                                                
-                                                    local args = {
-                                                        [1] = v.HumanoidRootPart.Position,
-                                                        [2] = v.HumanoidRootPart
-                                                    }
-                                                    game:GetService("Players").LocalPlayer.Character[SelectToolWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
-												    UseSkillGun = true 
-                                                else
-												    UseSkillGun = false 
+                        CheckQuest()
+                        if game:GetService("Workspace").Enemies:FindFirstChild(Mon) then
+                            for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                                if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                                    if v.Name == Mon then
+                                        if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
+                                            HealthMs = v.Humanoid.MaxHealth * _G.Kill_At/100
+                                            repeat task.wait()
+                                                if v.Humanoid.Health <= HealthMs then
+                                                    AutoHaki()
+                                                    EquipWeapon(SelectWeaponGun)
+                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(0,10,0))
+                                                    v.HumanoidRootPart.CanCollide = false
+                                                    PosMonMasteryGun = v.HumanoidRootPart.CFrame
+                                                    v.Humanoid.WalkSpeed = 2
+                                                    v.Head.CanCollide = false
+                                                    UseSkill = true
+                                                else           
+                                                    UseSkill = false 
                                                     AutoHaki()
                                                     EquipWeapon(_G.SelectWeapon)
-							                        v.Humanoid.JumpPower = 0
-							                        v.Humanoid.WalkSpeed = 0         
-												    v.HumanoidRootPart.CanCollide = false
-                                                    v.Head.CanCollide = false               
+                                                    TP1(v.HumanoidRootPart.CFrame * CFrame.new(PosX,PosY,PosZ))
+                                                    v.HumanoidRootPart.CanCollide = false
                                                     v.HumanoidRootPart.Size = Vector3.new(50,50,50)
-                                                    TP(v.HumanoidRootPart.CFrame * MethodFarm)
-													game:GetService'VirtualUser':CaptureController()
-                                                    game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
+                                                    PosMonMasteryGun= v.HumanoidRootPart.CFrame
+                                                    v.Humanoid.WalkSpeed = 2
+                                                    v.Head.CanCollide = false
                                                 end
                                                 StartMasteryGunMagnet = true
-												wait(0.2)
-                                                PosMonMasteryGun = v.HumanoidRootPart.CFrame
-										        game:GetService'VirtualUser':CaptureController()
+                                                game:GetService'VirtualUser':CaptureController()
                                                 game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
-                                            else
-												UseSkillGun = false 
-                                                StartMasteryGunMagnet = false
-                                                TP(CFrameMon)
-                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-                                            end
-                                        until v.Humanoid.Health <= 0 or _G.AutoFarmGunMastery == false or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                        StartMasteryGunMagnet = false
-					                   	UseSkillGun = false 
+                                            until not _G.AutoFarmGunMastery or v.Humanoid.Health <= 0 or not v.Parent or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                        else
+                                            UseSkill = false
+                                            StartMasteryGunMagnet = false
+                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                                        end
                                     end
                                 end
-                            end)
+                            end
                         else
-                            StartMasteryGunMagnet = false
-							UseSkillGun = false 
-                            TP(CFrameMon)
-                            local Mob = game:GetService("ReplicatedStorage"):FindFirstChild(Ms) 
+                            TP1(CFrameMon)
+                            StartMasteryGunMagnet = false   
+                            UseSkill = false 
+                            local Mob = game:GetService("ReplicatedStorage"):FindFirstChild(Mon) 
                             if Mob then
-                                TP(Mob.HumanoidRootPart.CFrame * CFrame.new(5,35,5))
+                                TP1(Mob.HumanoidRootPart.CFrame * CFrame.new(0,0,10))
                             else
                                 if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame.Y <= 1 then
                                     game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = true
+                                    task.wait()
                                     game:GetService("Players").LocalPlayer.Character.Humanoid.Jump = false
                                 end
                             end
-                        end 
+                        end
                     end
-                end
+                end)
             end
-        end)
-    end)
+        end
+    end) --logika ini udah bener tinggal auto spam skill
     
     spawn(function()
-        while wait(1) do
-            if UseSkillGun then
+        while wait() do
+            if UseSkill then
                 pcall(function()
-                    CheckLevel()
-                    for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do                                                 
-                            if _G.SkillGunZ then
-                                local args = {
-                                    [1] = PosMonMasteryGun.Position
-                                }
-                                game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))                        
-                                game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
+                    CheckQuest()
+                    -- Mengecek apakah ada gun yang sedang dilengkapi oleh karakter pemain
+                    if game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool") then
+                        local equippedGun = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                        if equippedGun:IsA("Tool") and (equippedGun.ToolTip == "Gun" or equippedGun.Name == "Slingshot" or 
+                            equippedGun.Name == "Flintlock" or equippedGun.Name == "Musket" or 
+                            equippedGun.Name == "Acidum Rifle" or equippedGun.Name == "Bizarre Rifle" or 
+                            equippedGun.Name == "Cannon" or equippedGun.Name == "Refined Flintlock" or 
+                            equippedGun.Name == "Refined Musket" or equippedGun.Name == "Refined Slingshot" or 
+                            equippedGun.Name == "Bazooka" or equippedGun.Name == "Kabucha" or 
+                            equippedGun.Name == "Serpent Bow" or equippedGun.Name == "Soul Guitar") then
+    
+                            -- Pastikan ada target yang valid
+                            for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                                if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and 
+                                   v.Humanoid.Health > 0 and v.Name == Mon then
+                                    
+                                    -- Gunakan variabel PosMonMasteryGun yang sudah ada di kode sebelumnya
+                                    if _G.GunSkillZ then
+                                        local args = {
+                                            [1] = PosMonMasteryGun.Position
+                                        }
+                                        equippedGun.RemoteEvent:FireServer(unpack(args))
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(false,"Z",false,game)
+                                    end
+                                    
+                                    wait(0.5)
+                                    
+                                    if _G.GunSkillX then          
+                                        local args = {
+                                            [1] = PosMonMasteryGun.Position
+                                        }
+                                        equippedGun.RemoteEvent:FireServer(unpack(args))
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
+                                    end
+                                    
+                                    wait(0.5)
+                                    break -- Keluar dari loop setelah menggunakan skill pada satu target
+                                end
                             end
-                            if _G.SkillGunX then          
-                                local args = {
-                                    [1] = PosMonMasteryGun.Position
-                                }
-                                game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").Name].RemoteEvent:FireServer(unpack(args))               
-                                game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(false,"X",false,game)
                         end
                     end
                 end)
             end
         end
     end)
-
+     -- belum dicoba
+    
     spawn(function()
         game:GetService("RunService").RenderStepped:Connect(function()
             pcall(function()
-                if UseSkillGun then
+                if UseSkill then
                     for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Notifications:GetChildren()) do
                         if v.Name == "NotificationTemplate" then
                             if string.find(v.Text,"Skill locked!") then
@@ -8941,19 +9166,6 @@ end)
                             end
                         end
                     end
-                end
-            end)
-        end)
-    end)
-    
-    spawn(function()
-        pcall(function()
-            game:GetService("RunService").RenderStepped:Connect(function()
-                if UseSkillGun then
-                    local args = {
-                        [1] = PosMonMasteryGun.Position
-                    }
-                    game:GetService("Players").LocalPlayer.Character[game:GetService("Players").LocalPlayer.Data.Gun.Value].RemoteEvent:FireServer(unpack(args))
                 end
             end)
         end)
