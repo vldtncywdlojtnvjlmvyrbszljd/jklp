@@ -53,8 +53,6 @@ end
 local function InitializeProtection()
     pcall(function()
         AntiBan()
-        AntiAFK()
-        AntiLag()
         AntiCheatDetector()
         
         -- Tambahan: Monitoring untuk script yang dicurigai
@@ -75,36 +73,19 @@ local function InitializeProtection()
     end)
 end
 
--- Jalankan proteksi
-InitializeProtection()
+-- Simpan fungsi asli InitializeProtection
+local originalInitializeProtection = InitializeProtection
 
-local RunService = game:GetService("RunService")
-
--- Atur pengaturan optimal
-local function optimizePerformance()
-    -- Batasi frame rate untuk mengurangi penggunaan CPU/GPU
-    RunService:Set3dRenderingEnabled(true)
-    RunService.Heartbeat:Connect(function()
-        -- Sesuaikan pengaturan detail grafis sesuai kebutuhan perangkat
-        if game:GetService("Stats").FrameRateManager:GetFramerate() < 30 then
-            -- Misalnya, matikan efek yang tidak terlalu penting
-            for _, effect in pairs(workspace:GetDescendants()) do
-                if effect:IsA("ParticleEmitter") or effect:IsA("Light") then
-                    effect.Enabled = false
-                end
-            end
-        else
-            -- Aktifkan efek ketika frame rate cukup tinggi
-            for _, effect in pairs(workspace:GetDescendants()) do
-                if effect:IsA("ParticleEmitter") or effect:IsA("Light") then
-                    effect.Enabled = true
-                end
-            end
-        end
-    end)
+-- Override InitializeProtection dengan versi baru yang menambahkan log
+InitializeProtection = function(...)
+    -- Panggil fungsi aslinya
+    originalInitializeProtection(...)
+    
+    -- Tambahkan log ke console setelah InitializeProtection dijalankan
+    print("Install Protection Successfully)
 end
 
-optimizePerformance()
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 shared.LoaderTitle = 'Botuna.INC X Medusa Script'
