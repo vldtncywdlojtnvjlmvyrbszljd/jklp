@@ -9222,8 +9222,11 @@ end)
                                     -- Gunakan variabel PosMonMasteryGun yang sudah ada di kode sebelumnya
                                     if _G.GunSkillZ then
                                         local targetPosition = PosMonMasteryGun.Position
+
+                                        -- Arahkan ke bawah dengan menurunkan ketinggian (nilai Y)
+                                        local downPosition = Vector3.new(targetPosition.X, targetPosition.Y - 10, targetPosition.Z)
                                         local args = {
-                                            [1] = targetPosition
+                                            [1] = downPosition
                                         }
                                         equippedGun.RemoteEvent:FireServer(unpack(args))
                                         game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
@@ -9231,10 +9234,13 @@ end)
                                     end
                                     wait(0.1)
                                     
-                                    if _G.GunSkillX then     
-                                        local targetPosition = PosMonMasteryGun.Position     
+                                    if _G.GunSkillX then    
+                                        local targetPosition = PosMonMasteryGun.Position
+
+                                        -- Arahkan ke bawah dengan menurunkan ketinggian (nilai Y)
+                                        local downPosition = Vector3.new(targetPosition.X, targetPosition.Y - 10, targetPosition.Z)      
                                         local args = {
-                                            [1] = targetPosition
+                                            [1] = downPosition
                                         }
                                         equippedGun.RemoteEvent:FireServer(unpack(args))
                                         game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
