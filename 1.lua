@@ -9223,7 +9223,7 @@ end)
                                     if _G.GunSkillZ then
                                         local targetPosition = PosMonMasteryGun.Position
                                         local args = {
-                                            [1] = PosMonMasteryGun.Position
+                                            [1] = targetPosition
                                         }
                                         equippedGun.RemoteEvent:FireServer(unpack(args))
                                         game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
@@ -9234,7 +9234,7 @@ end)
                                     if _G.GunSkillX then     
                                         local targetPosition = PosMonMasteryGun.Position     
                                         local args = {
-                                            [1] = PosMonMasteryGun.Position
+                                            [1] = targetPosition
                                         }
                                         equippedGun.RemoteEvent:FireServer(unpack(args))
                                         game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
