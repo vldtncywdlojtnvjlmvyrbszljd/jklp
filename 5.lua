@@ -78,20 +78,34 @@ end
 -- Jalankan proteksi
 InitializeProtection()
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local message = "Thanks For Use My Script"
-local delayTime = 5 -- Jeda waktu dalam detik
+local RunService = game:GetService("RunService")
 
--- Mengirim pesan ke tab chat tanpa muncul di atas karakter
-local function sendChatMessage()
-    ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+-- Atur pengaturan optimal
+local function optimizePerformance()
+    -- Batasi frame rate untuk mengurangi penggunaan CPU/GPU
+    RunService:Set3dRenderingEnabled(true)
+    RunService.Heartbeat:Connect(function()
+        -- Sesuaikan pengaturan detail grafis sesuai kebutuhan perangkat
+        if game:GetService("Stats").FrameRateManager:GetFramerate() < 30 then
+            -- Misalnya, matikan efek yang tidak terlalu penting
+            for _, effect in pairs(workspace:GetDescendants()) do
+                if effect:IsA("ParticleEmitter") or effect:IsA("Light") then
+                    effect.Enabled = false
+                end
+            end
+        else
+            -- Aktifkan efek ketika frame rate cukup tinggi
+            for _, effect in pairs(workspace:GetDescendants()) do
+                if effect:IsA("ParticleEmitter") or effect:IsA("Light") then
+                    effect.Enabled = true
+                end
+            end
+        end
+    end)
 end
 
--- Pengiriman pesan dengan jeda waktu
-while true do
-    sendChatMessage()
-    wait(delayTime)
-end
+optimizePerformance()
+console.log(optimizePerformance())
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 shared.LoaderTitle = 'Botuna.INC X Medusa Script'
