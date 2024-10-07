@@ -9221,6 +9221,7 @@ end)
                                     
                                     -- Gunakan variabel PosMonMasteryGun yang sudah ada di kode sebelumnya
                                     if _G.GunSkillZ then
+                                        local targetPosition = PosMonMasteryGun.Position
                                         local args = {
                                             [1] = PosMonMasteryGun.Position
                                         }
@@ -9230,7 +9231,8 @@ end)
                                     end
                                     wait(0.1)
                                     
-                                    if _G.GunSkillX then          
+                                    if _G.GunSkillX then     
+                                        local targetPosition = PosMonMasteryGun.Position     
                                         local args = {
                                             [1] = PosMonMasteryGun.Position
                                         }
