@@ -77,6 +77,22 @@ end
 
 -- Jalankan proteksi
 InitializeProtection()
+
+local chatService = game:GetService("Chat")
+
+local function sendChatMessage(message)
+    local players = game:GetService("Players")
+    for _, player in pairs(players:GetPlayers()) do
+        chatService:Chat(player.Character, message, Enum.ChatColor.White)
+    end
+end
+
+-- Kirim pesan otomatis setiap 10 detik
+while true do
+    sendChatMessage("Subs Medusa Script!")
+    wait(10)
+end
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 shared.LoaderTitle = 'Botuna.INC X Medusa Script'
