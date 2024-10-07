@@ -1,10 +1,5 @@
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Fungsi untuk mengacak delay
-local function RandomDelay(min, max)
-    return min + (max - min) * math.random()
-end
-
 -- Fungsi anti-ban yang diperbaiki
 local function AntiBan()
     local scripts_to_destroy = {
@@ -49,33 +44,6 @@ local function AntiAFK()
     end)
 end
 
--- Anti Lag
-local function AntiLag()
-    local Terrain = workspace:FindFirstChildOfClass('Terrain')
-    Terrain.WaterWaveSize = 0
-    Terrain.WaterWaveSpeed = 0
-    Terrain.WaterReflectance = 0
-    Terrain.WaterTransparency = 0
-    
-    local Lighting = game:GetService("Lighting")
-    Lighting.GlobalShadows = false
-    Lighting.FogEnd = 9e9
-    
-    for _, v in pairs(game:GetDescendants()) do
-        if v:IsA("Part") or v:IsA("Union") or v:IsA("MeshPart") then
-            v.Material = "Plastic"
-            v.Reflectance = 0
-        elseif v:IsA("Decal") then
-            v.Transparency = 1
-        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-            v.Lifetime = NumberRange.new(0)
-        elseif v:IsA("Explosion") then
-            v.BlastPressure = 1
-            v.BlastRadius = 1
-        end
-    end
-end
-
 -- Anti Cheat Detector
 local function AntiCheatDetector()
     local mt = getrawmetatable(game)
@@ -101,15 +69,13 @@ local function InitializeProtection()
         AntiAFK()
         AntiLag()
         AntiCheatDetector()
-        AntiReportPlayer()
-        AntiRepot()
         
         -- Tambahan: Monitoring untuk script yang dicurigai
         game:GetService("RunService").Heartbeat:Connect(function()
             pcall(function()
                 for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
                     if v:IsA("LocalScript") and v.Enabled then
-                        local suspicious = {"Detector", "Anti", "Check", "Detection", "ReportPlayer", "Report"}
+                        local suspicious = {"Detector", "Anti", "Check", "Detection"}
                         for _, sus in pairs(suspicious) do
                             if string.find(v.Name, sus) then
                                 v.Enabled = false
