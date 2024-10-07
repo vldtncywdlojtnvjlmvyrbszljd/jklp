@@ -128,7 +128,7 @@ validationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 validationLabel.BackgroundTransparency = 1
 validationLabel.Parent = frame
 
-local keyFileUrl = "https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/28s92hs/main/keqy.txt"
+local keyFileUrl = "https://raw.githubusercontent.com/vldtncywdlojtnvjlmvyrbszljd/28s92hs/main/key.txt"
 local savedKey = nil
 
 -- Daftar pasangan key dan username (langsung dari kode Lua)
