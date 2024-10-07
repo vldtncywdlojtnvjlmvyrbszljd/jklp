@@ -79,10 +79,19 @@ end
 InitializeProtection()
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local message = "Brutality Hub V4 ON TOP!!"
+local message = "Thanks For Use My Script"
+local delayTime = 5 -- Jeda waktu dalam detik
 
--- Mengirim pesan ke tab chat tanpa di atas karakter
-ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+-- Mengirim pesan ke tab chat tanpa muncul di atas karakter
+local function sendChatMessage()
+    ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+end
+
+-- Pengiriman pesan dengan jeda waktu
+while true do
+    sendChatMessage()
+    wait(delayTime)
+end
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 shared.LoaderTitle = 'Botuna.INC X Medusa Script'
