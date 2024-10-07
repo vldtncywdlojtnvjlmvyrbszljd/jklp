@@ -202,21 +202,5 @@ end
 
 UpdatePercentage(100, 4)
 
-TweenObject(Top, 0.5, {
-    TextTransparency = 1
-})
-TweenObject(Title, 0.5, {
-    TextTransparency = 1
-})
-TweenObject(BG, 0.5, {
-    BackgroundTransparency = 1
-})
-TweenObject(Progress, 0.5, {
-    BackgroundTransparency = 1
-})
-wait(0.5)
-TweenObject(Main, 0.25, {
-    Size = UDim2.new(0, 0, 0, 0)
-})
-wait(0.25)
-Core:Destroy()
+
+
